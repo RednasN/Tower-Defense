@@ -5,6 +5,7 @@ import { CanvasService } from '../game/canvas.service';
 import { GridService } from '../game/grid.service';
 import { ImageService } from '../game/image.service';
 
+import { GrenadeService } from './grenade.service';
 import { LaserService } from './laser.service';
 import { RocketService } from './rocket.service';
 import { TurretBulletService } from './turret-bullet.service';
@@ -20,6 +21,7 @@ export class ProjectileService {
   private readonly rocketService = inject(RocketService);
   private readonly laserService = inject(LaserService);
   private readonly turretBulletService = inject(TurretBulletService);
+  private readonly grenadeService = inject(GrenadeService);
 
   public projectiles: Projectile[] = [];
 
@@ -44,17 +46,22 @@ export class ProjectileService {
       if (projectile.type === ProjectileType.Laser) {
         this.laserService.calculate(projectile);
       }
+
+      if (projectile.type === ProjectileType.GrenadeMine) {
+        this.grenadeService.calculate(projectile);
+      }
     });
+
+    this.projectiles = this.projectiles.filter(projectile => projectile.needdraw);
   }
 
   public draw(): void {
     this.projectiles.forEach(projectile => {
       if (projectile.needdraw) {
         try {
-          const image = this.imageService.bullets[projectile.type][Math.floor(projectile.angle ?? 0)];
-
           switch (projectile.type) {
             case ProjectileType.Laser: {
+              const image = this.imageService.getRotationFrame(this.imageService.bullets[projectile.type], projectile.angle ?? 0);
               for (const laserPart of projectile.laserParts) {
                 this.canvasService.draw(
                   image,
@@ -65,7 +72,27 @@ export class ProjectileService {
               break;
             }
 
+            case ProjectileType.GrenadeMine: {
+              const grenadeFrameIndex = projectile.isArmed && projectile.angle === 1 ? 1 : 0;
+              const image = this.imageService.bullets[projectile.type][grenadeFrameIndex] ?? this.imageService.bullets[projectile.type][0];
+              if (!image) {
+                break;
+              }
+
+              this.canvasService.draw(
+                image,
+                projectile.x + this.canvasService.mainCanvasXOffset - 25,
+                projectile.y + this.canvasService.mainCanvasYOffset - 25
+              );
+              break;
+            }
+
             default: {
+              const image = this.imageService.getRotationFrame(this.imageService.bullets[projectile.type], projectile.angle ?? 0);
+              if (!image) {
+                break;
+              }
+
               this.canvasService.draw(
                 image,
                 projectile.x + this.canvasService.mainCanvasXOffset - 25,

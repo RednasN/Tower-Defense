@@ -11,10 +11,11 @@ import { GridService } from '../game/grid.service';
 export class EnemyTankService {
   private readonly gridService = inject(GridService);
   private readonly canvasService = inject(CanvasService);
-  public create(reward: number, lives: number, imageIndex: number): EnemyTank {
+  public create(reward: number, lives: number, imageIndex: number, speed = 100): EnemyTank {
     const enemyTank = {
       reward,
       lives,
+      maxLives: lives,
       imageIndex,
       drawx: -1,
       drawy: -1,
@@ -28,8 +29,9 @@ export class EnemyTankService {
       t: 0.0,
       angle: 0,
       died: false,
+      escaped: false,
       isRight: true,
-      speed: 100,
+      speed,
       docurve: false,
     };
 
@@ -41,13 +43,11 @@ export class EnemyTankService {
   }
 
   public hit(enemyTank: EnemyTank, hit: number): void {
-    if (enemyTank.lives >= 0) {
-      enemyTank.lives += -hit;
-
-      if (enemyTank.lives < 0) {
-        this.gridService.money += enemyTank.reward;
-      }
+    if (enemyTank.lives <= 0) {
+      return;
     }
+
+    enemyTank.lives = Math.max(0, enemyTank.lives - hit);
   }
 
   public calculate(enemyTank: EnemyTank): void {
@@ -65,6 +65,13 @@ export class EnemyTankService {
         3
       )
     ) {
+      if (enemyTank.routeindex === 0) {
+        enemyTank.escaped = true;
+        enemyTank.lives = 0;
+        enemyTank.died = true;
+        return;
+      }
+
       if (enemyTank.routeindex !== 0) {
         enemyTank.routeindex -= 1;
       }

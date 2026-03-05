@@ -1,30 +1,32 @@
 <!-- eslint-disable @angular-eslint/template/click-events-have-key-events -->
 <!-- eslint-disable @angular-eslint/template/interactive-supports-focus -->
-<h2 mat-dialog-title>Build a tower</h2>
+<h2 mat-dialog-title>{{ isUpgradeMode ? 'Upgrade tower' : 'Build a tower' }}</h2>
 <mat-dialog-content disableRipple>
   <div class="layout-container">
-    <div class="turret-container">
-      <p>Select a tower</p>
+    @if (!isUpgradeMode) {
+      <div class="turret-container">
+        <p>Select a tower</p>
 
-      <div class="turret-list">
-        @for (item of turrets; track item.type) {
-          <div [class.not-selected]="!item.selected">
-            <img (click)="selectTurret(item)" class="turret-image" [src]="item.imageSrc" alt="{{ item.type }}" />
-            <div class="upgrade-info">
-              <img src="./assets/money.png" width="15" height="15" alt="Money" />
-              <span>{{ item.cost }}</span>
+        <div class="turret-list">
+          @for (item of turrets; track item.type) {
+            <div [class.not-selected]="!item.selected">
+              <img (click)="selectTurret(item)" class="turret-image" [src]="item.imageSrc" alt="{{ item.type }}" />
+              <div class="upgrade-info">
+                <img src="./assets/money.png" width="15" height="15" alt="Money" />
+                <span>{{ item.cost }}</span>
+              </div>
             </div>
-          </div>
-        }
+          }
+        </div>
       </div>
-    </div>
+    }
     <div class="upgrades">
       <p>Upgrade Options</p>
       <div class="upgrade-options">
         <div class="upgrade-item" *ngFor="let option of upgradeOptions">
           <app-progression-circle [image]="option.icon" [progression]="20 * option.level" style="height: 35px; width: 35px">
           </app-progression-circle>
-          <button mat-raised-button color="accent" (click)="upgrade(option)" class="upgrade-button">
+          <button mat-raised-button color="accent" (click)="upgrade(option)" class="upgrade-button" [disabled]="!canUpgradeOption(option)">
             <div class="upgrade-info">
               <img src="./assets/money.png" width="20" height="20" alt="Money" />
               <span>{{ option.upgradeCost ?? '-' }}</span>
@@ -42,5 +44,7 @@
 </mat-dialog-content>
 <mat-dialog-actions>
   <button mat-button color="accent" (click)="cancel()">Cancel</button>
-  <button mat-button color="accent" (click)="buildTower()">Build</button>
+  <button mat-button color="accent" (click)="buildTower()" [disabled]="isUpgradeMode && !canApply">
+    {{ isUpgradeMode ? 'Apply upgrades' : 'Build' }}
+  </button>
 </mat-dialog-actions>

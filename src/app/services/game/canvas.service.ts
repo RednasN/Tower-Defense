@@ -51,6 +51,22 @@ export class CanvasService {
     this.mainCtx.drawImage(image, Math.floor(x), Math.floor(y));
   }
 
+  public fillCircle(x: number, y: number, radius: number, fillStyle: string): void {
+    this.mainCtx.save();
+    this.mainCtx.fillStyle = fillStyle;
+    this.mainCtx.beginPath();
+    this.mainCtx.arc(x, y, radius, 0, Math.PI * 2);
+    this.mainCtx.fill();
+    this.mainCtx.restore();
+  }
+
+  public fillRect(x: number, y: number, width: number, height: number, fillStyle: string): void {
+    this.mainCtx.save();
+    this.mainCtx.fillStyle = fillStyle;
+    this.mainCtx.fillRect(x, y, width, height);
+    this.mainCtx.restore();
+  }
+
   public move(x: number, y: number): void {
     const diffY = y / this.scaleToFit - this.mainCanvasYCurrent;
     this.mainCanvasYCurrent += diffY;

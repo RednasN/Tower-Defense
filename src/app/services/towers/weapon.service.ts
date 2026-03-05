@@ -38,7 +38,7 @@ export abstract class WeaponService {
   }
 
   public setStats(weapon: Weapon): void {
-    const stats = this.turretConfigService.getTurretSpecification(weapon.type, weapon.speedLevel, weapon.powerLevel, weapon.rangeLevel);
+    const stats = this.turretConfigService.getTurretSpecification(weapon.type, weapon.speedLevel, weapon.rangeLevel, weapon.powerLevel);
     weapon.damage = stats.damage;
     weapon.speed = stats.speed;
     weapon.range = stats.range;

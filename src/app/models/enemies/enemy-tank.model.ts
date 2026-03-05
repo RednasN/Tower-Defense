@@ -5,6 +5,7 @@ export type EnemyTank = {
 
   routeindex: number;
   lives: number;
+  maxLives: number;
 
   reward: number;
   imageIndex: number;
@@ -17,6 +18,7 @@ export type EnemyTank = {
   t: number;
   angle: number;
   died: boolean;
+  escaped: boolean;
 
   isRight: boolean;
   speed: number;

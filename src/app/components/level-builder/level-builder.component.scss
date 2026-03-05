@@ -1,0 +1,129 @@
+.builder-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+}
+
+.builder-panel {
+  width: 100%;
+  max-width: 1200px;
+  max-height: calc(100vh - 24px);
+  overflow: auto;
+  background: rgba(20, 20, 20, 0.95);
+  color: white;
+  border: 1px solid #555;
+  border-radius: 6px;
+  padding: 12px;
+}
+
+.builder-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.builder-header h2 {
+  margin: 0;
+}
+
+.builder-controls {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.builder-controls label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.builder-controls input {
+  width: 72px;
+}
+
+.builder-controls button,
+.close-btn,
+.tile-button,
+.grid-cell {
+  cursor: pointer;
+}
+
+.builder-controls button.active {
+  background: #2c6d39;
+  color: white;
+}
+
+.palette {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tile-button {
+  border: 1px solid #666;
+  background: #222;
+  color: white;
+  padding: 3px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 58px;
+}
+
+.tile-button.selected {
+  border-color: #ff5252;
+}
+
+.tile-button img {
+  width: 50px;
+  height: 50px;
+}
+
+.grid-wrapper {
+  margin-top: 12px;
+  overflow: auto;
+  max-height: 60vh;
+  border: 1px solid #555;
+}
+
+.level-grid {
+  display: grid;
+  width: max-content;
+}
+
+.grid-cell {
+  position: relative;
+  width: 50px;
+  height: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 0;
+  background: transparent;
+}
+
+.grid-cell img {
+  width: 100%;
+  height: 100%;
+}
+
+.route-step {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 8px;
+  background: #d32f2f;
+  color: white;
+  font-size: 11px;
+  line-height: 16px;
+  text-align: center;
+}
