@@ -332,6 +332,21 @@ const gridImages: string[] = [
   './assets/levels/tile-14.png',
   './assets/levels/tile-15.png',
   './assets/levels/tile-16.png',
+  './assets/levels/tile-17.png',
+  './assets/levels/tile-18.png',
+  './assets/levels/tile-19.png',
+  './assets/levels/tile-20.png',
+  './assets/levels/tile-21.png',
+  './assets/levels/tile-22.png',
+  './assets/levels/tile-23.png',
+  './assets/levels/tile-24.png',
+  './assets/levels/tile-25.png',
+  './assets/levels/tile-26.png',
+  './assets/levels/tile-27.png',
+  './assets/levels/tile-28.png',
+  './assets/levels/tile-29.png',
+  './assets/levels/tile-30.png',
+  './assets/levels/tile-31.png',
 ];
 
 const default_explosion_sheet =

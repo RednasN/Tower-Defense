@@ -20,7 +20,6 @@ export type EnemyTank = {
   died: boolean;
   escaped: boolean;
 
-  isRight: boolean;
   speed: number;
   docurve: boolean;
 };

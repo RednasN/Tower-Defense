@@ -31,6 +31,7 @@ export class GameCanvasComponent implements OnInit {
 
     this.addTouchStartListener();
     this.addTouchMoveListener();
+    this.addMouseDownListener();
   }
 
   @HostListener('window:resize', ['$event'])
@@ -43,26 +44,7 @@ export class GameCanvasComponent implements OnInit {
       this.canvasService.mainCanvasYCurrent = e.targetTouches[0].pageY / this.canvasService.scaleToFit;
       this.canvasService.mainCanvasXCurrent = e.targetTouches[0].pageX / this.canvasService.scaleToFit;
 
-      const clickedCell = this.getClickedCell();
-      this.gridService.selectedCell = clickedCell;
-
-      if (clickedCell) {
-        this.towerService.selectWeaponAtCell(clickedCell.x, clickedCell.y);
-
-        if (this.towerService.getSelectedWeapon() && this.isDoubleTapOnSameCell(clickedCell)) {
-          this.openTowerUpgradeDialog();
-          this.lastTapCell = null;
-          this.lastTapTimestamp = 0;
-          return;
-        }
-
-        this.lastTapCell = clickedCell;
-        this.lastTapTimestamp = Date.now();
-      } else {
-        this.towerService.clearSelectedWeapon();
-        this.lastTapCell = null;
-        this.lastTapTimestamp = 0;
-      }
+      this.handleSelection();
     });
   }
 
@@ -71,6 +53,14 @@ export class GameCanvasComponent implements OnInit {
       this.canvasService.move(e.targetTouches[0].pageX, e.targetTouches[0].pageY);
 
       e.preventDefault();
+    });
+  }
+
+  private addMouseDownListener(): void {
+    this.canvasService.mainCanvas.addEventListener('mousedown', e => {
+      this.canvasService.mainCanvasYCurrent = e.pageY / this.canvasService.scaleToFit;
+      this.canvasService.mainCanvasXCurrent = e.pageX / this.canvasService.scaleToFit;
+      this.handleSelection();
     });
   }
 
@@ -101,6 +91,30 @@ export class GameCanvasComponent implements OnInit {
     const isSameCell = this.lastTapCell.x === cell.x && this.lastTapCell.y === cell.y;
     const isWithinThreshold = Date.now() - this.lastTapTimestamp <= this.doubleTapThresholdMs;
     return isSameCell && isWithinThreshold;
+  }
+
+  private handleSelection(): void {
+    const clickedCell = this.getClickedCell();
+    this.gridService.selectedCell = clickedCell;
+
+    if (clickedCell) {
+      this.towerService.selectWeaponAtCell(clickedCell.x, clickedCell.y);
+
+      if (this.towerService.getSelectedWeapon() && this.isDoubleTapOnSameCell(clickedCell)) {
+        this.openTowerUpgradeDialog();
+        this.lastTapCell = null;
+        this.lastTapTimestamp = 0;
+        return;
+      }
+
+      this.lastTapCell = clickedCell;
+      this.lastTapTimestamp = Date.now();
+      return;
+    }
+
+    this.towerService.clearSelectedWeapon();
+    this.lastTapCell = null;
+    this.lastTapTimestamp = 0;
   }
 
   private openTowerUpgradeDialog(): void {
