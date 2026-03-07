@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-label="Next wave">
+  <g fill="#EC5D57">
+    <path d="M10 10l18 14-18 14z" />
+    <path d="M24 10l18 14-18 14z" opacity="0.9" />
+    <rect x="40" y="10" width="4" height="28" rx="1" />
+  </g>
+</svg>

@@ -5,6 +5,7 @@ import {
   TurretConfig,
   UpgradeType,
   bulletShooterConfig,
+  grenadeThrowerConfig,
   laserTurretConfig,
   nuclearLauncherConfig,
   rocketLauncherConfig,
@@ -30,6 +31,7 @@ export class TurretConfigService {
     this.turretConfigs.push(laserTurretConfig);
     this.turretConfigs.push(nuclearLauncherConfig);
     this.turretConfigs.push(slowRocketLauncherConfig);
+    this.turretConfigs.push(grenadeThrowerConfig);
   }
 
   public getTurretSpecification(turretType: WeaponType, speedLevel: number, rangeLevel: number, damageLevel: number): TurretSpecification {

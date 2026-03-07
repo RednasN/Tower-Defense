@@ -31,6 +31,13 @@
   margin-bottom: 10px;
 }
 
+.upgrade-button:disabled {
+  opacity: 0.45;
+  visibility: visible;
+  display: inline-flex;
+  background-color: var(--mdc-protected-button-container-color);
+}
+
 .upgrade-info {
   display: flex;
   align-items: center; /* Centers content vertically */

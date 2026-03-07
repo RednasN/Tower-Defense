@@ -12,6 +12,10 @@ import { EnemyTankService } from './enemy-tank.service';
   providedIn: 'root',
 })
 export class EnemyService {
+  private readonly healthBarWidth = 34;
+  private readonly healthBarHeight = 5;
+  private readonly healthBarYOffset = 8;
+
   private readonly canvasService = inject(CanvasService);
   private readonly imageService = inject(ImageService);
 
@@ -22,8 +26,8 @@ export class EnemyService {
 
   public enemies: EnemyTank[] = [];
 
-  public createEnemyTank(reward: number, lives: number, imageIndex: number): void {
-    const enemyTank = this.enemyTankService.create(reward, lives, imageIndex);
+  public createEnemyTank(reward: number, lives: number, imageIndex: number, speed = 100): void {
+    const enemyTank = this.enemyTankService.create(reward, lives, imageIndex, speed);
     this.enemies.push(enemyTank);
   }
 
@@ -36,28 +40,53 @@ export class EnemyService {
   public draw(): void {
     this.enemies.forEach(enemy => {
       if (enemy.lives <= 0) {
-        if (!enemy.died) {
-          this.explosionService.createDefaultExplosion(enemy.drawx, enemy.drawy, 0);
-          this.gameState.addReward(enemy.reward);
-          enemy.died = true;
-        }
-
+        this.handleEnemyDestroyed(enemy);
         return;
       }
 
       this.canvasService.draw(
-        this.imageService.enemies[enemy.imageIndex].images[enemy.angle],
+        this.imageService.getRotationFrame(this.imageService.enemies[enemy.imageIndex].images, enemy.angle),
         Math.round(enemy.drawx) + this.canvasService.mainCanvasXOffset,
         Math.round(enemy.drawy) + this.canvasService.mainCanvasYOffset
       );
+
+      this.drawHealthBar(enemy);
     });
   }
 
   public hit(enemyIndex: number, hit: number): void {
-    this.enemyTankService.hit(this.enemies[enemyIndex], hit);
+    const enemy = this.enemies[enemyIndex];
+    if (!enemy || enemy.lives <= 0) {
+      return;
+    }
+
+    this.enemyTankService.hit(enemy, hit);
+
+    if (enemy.lives <= 0) {
+      this.handleEnemyDestroyed(enemy);
+    }
   }
 
   public getFirstEnemyAlive(): EnemyTank | undefined {
     return this.enemies.find(enemy => enemy.lives > 0);
+  }
+
+  private handleEnemyDestroyed(enemy: EnemyTank): void {
+    if (enemy.escaped || enemy.died) {
+      return;
+    }
+
+    this.explosionService.createDefaultExplosion(enemy.drawx, enemy.drawy, 0);
+    this.gameState.addReward(enemy.reward);
+    enemy.died = true;
+  }
+
+  private drawHealthBar(enemy: EnemyTank): void {
+    const healthRatio = enemy.maxLives > 0 ? Math.max(0, Math.min(1, enemy.lives / enemy.maxLives)) : 0;
+    const barX = enemy.drawx + this.canvasService.mainCanvasXOffset + 25 - this.healthBarWidth / 2;
+    const barY = enemy.drawy + this.canvasService.mainCanvasYOffset - this.healthBarYOffset;
+
+    this.canvasService.fillRect(barX, barY, this.healthBarWidth, this.healthBarHeight, '#e74c3c');
+    this.canvasService.fillRect(barX, barY, this.healthBarWidth * healthRatio, this.healthBarHeight, '#2ecc71');
   }
 }

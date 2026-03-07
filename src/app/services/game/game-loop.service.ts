@@ -7,6 +7,7 @@ import { TowerService } from '../towers/tower.service';
 
 import { CanvasService } from './canvas.service';
 import { GridService } from './grid.service';
+import { WaveService } from './wave.service';
 
 @Injectable({
   providedIn: 'root',
@@ -28,6 +29,7 @@ export class GameLoopService {
   private readonly canvasService = inject(CanvasService);
   private readonly enemyService = inject(EnemyService);
   private readonly explosionService = inject(ExplosionService);
+  private readonly waveService = inject(WaveService);
   private readonly ngZone = inject(NgZone);
 
   constructor() {
@@ -62,6 +64,7 @@ export class GameLoopService {
 
         //this.gridService.calculateTurrets();
         //this.gridService.calculateEnemies();
+        this.waveService.tick(this.dt * 1000);
         this.enemyService.calculate();
         //this.gridService.calculateBullets();
         this.towerService.calculate();

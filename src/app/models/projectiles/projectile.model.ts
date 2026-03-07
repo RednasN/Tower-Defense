@@ -6,6 +6,7 @@ export enum ProjectileType {
   Laser = 'Laser',
   NuclearBullet = 'NuclearBullet',
   SlowRocket = 'SlowRocket',
+  GrenadeMine = 'GrenadeMine',
 }
 
 export type BaseProjectTile = {
@@ -54,9 +55,29 @@ export type Laser = BaseProjectTile & {
   laserParts: LaserPart[];
 };
 
+export type Grenade = BaseProjectTile & {
+  type: ProjectileType.GrenadeMine;
+  gridY: number;
+  gridX: number;
+  x: number;
+  y: number;
+  enemyIndex: number;
+  needdraw: boolean;
+  damage: number;
+  angle: number | null;
+  speed: number;
+  targetX: number;
+  targetY: number;
+  isArmed: boolean;
+  blinkTimerMs: number;
+  blastRadius: number;
+  triggerRadius: number;
+  lifeTimeMs: number;
+};
+
 export type LaserPart = {
   x: number;
   y: number;
 };
 
-export type Projectile = Rocket | Bullet | Laser;
+export type Projectile = Rocket | Bullet | Laser | Grenade;

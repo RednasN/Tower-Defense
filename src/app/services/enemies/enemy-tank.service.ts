@@ -2,19 +2,20 @@ import { Injectable, inject } from '@angular/core';
 
 import { delta } from '../../models/constants';
 import { EnemyTank } from '../../models/enemies/enemy-tank.model';
-import { CanvasService } from '../game/canvas.service';
 import { GridService } from '../game/grid.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EnemyTankService {
+  private readonly turnEpsilon = 0.05;
   private readonly gridService = inject(GridService);
-  private readonly canvasService = inject(CanvasService);
-  public create(reward: number, lives: number, imageIndex: number): EnemyTank {
+
+  public create(reward: number, lives: number, imageIndex: number, speed = 100): EnemyTank {
     const enemyTank = {
       reward,
       lives,
+      maxLives: lives,
       imageIndex,
       drawx: -1,
       drawy: -1,
@@ -28,8 +29,8 @@ export class EnemyTankService {
       t: 0.0,
       angle: 0,
       died: false,
-      isRight: true,
-      speed: 100,
+      escaped: false,
+      speed,
       docurve: false,
     };
 
@@ -41,13 +42,11 @@ export class EnemyTankService {
   }
 
   public hit(enemyTank: EnemyTank, hit: number): void {
-    if (enemyTank.lives >= 0) {
-      enemyTank.lives += -hit;
-
-      if (enemyTank.lives < 0) {
-        this.gridService.money += enemyTank.reward;
-      }
+    if (enemyTank.lives <= 0) {
+      return;
     }
+
+    enemyTank.lives = Math.max(0, enemyTank.lives - hit);
   }
 
   public calculate(enemyTank: EnemyTank): void {
@@ -55,110 +54,166 @@ export class EnemyTankService {
       return;
     }
 
+    if (this.gridService.route.length === 0) {
+      return;
+    }
+
+    if (enemyTank.routeindex < 0 || enemyTank.routeindex >= this.gridService.route.length) {
+      return;
+    }
+
     const oldDrawx = enemyTank.drawx;
     const oldDrawy = enemyTank.drawy;
 
+    if (enemyTank.docurve) {
+      this.calculateCurve(enemyTank);
+    } else {
+      this.moveTowardsCurrentTarget(enemyTank);
+    }
+
+    this.updateAngleFromMovement(enemyTank, oldDrawx, oldDrawy);
+  }
+
+  private calculateBezier(t: number, start: number, control: number, end: number): number {
+    return (1 - t) * (1 - t) * start + 2 * (1 - t) * t * control + t * t * end;
+  }
+
+  private calculateCurve(enemyTank: EnemyTank): void {
     if (
-      this.isCloseEnough(
-        { x: enemyTank.drawx, y: enemyTank.drawy },
-        { x: this.gridService.route[enemyTank.routeindex].drawx, y: this.gridService.route[enemyTank.routeindex].drawy },
-        3
-      )
+      enemyTank.curveStartx === null ||
+      enemyTank.curveStarty === null ||
+      enemyTank.curveEndx === null ||
+      enemyTank.curveEndy === null ||
+      enemyTank.bezierx === null ||
+      enemyTank.beziery === null
     ) {
-      if (enemyTank.routeindex !== 0) {
+      enemyTank.docurve = false;
+      enemyTank.t = 0;
+      return;
+    }
+
+    enemyTank.t += (enemyTank.speed / 100) * delta;
+    const t = Math.min(1, enemyTank.t);
+
+    enemyTank.drawx = this.calculateBezier(t, enemyTank.curveStartx, enemyTank.bezierx, enemyTank.curveEndx);
+    enemyTank.drawy = this.calculateBezier(t, enemyTank.curveStarty, enemyTank.beziery, enemyTank.curveEndy);
+
+    if (enemyTank.t >= 1) {
+      enemyTank.drawx = enemyTank.curveEndx;
+      enemyTank.drawy = enemyTank.curveEndy;
+      enemyTank.docurve = false;
+      enemyTank.t = 0;
+
+      if (enemyTank.routeindex > 0) {
         enemyTank.routeindex -= 1;
       }
 
-      if (enemyTank.routeindex - 1 >= 0) {
-        const prev = this.gridService.route[enemyTank.routeindex - 1];
-        const next = this.gridService.route[enemyTank.routeindex + 1];
-        const current = this.gridService.route[enemyTank.routeindex];
-
-        if (this.shouldCurve(next, prev)) {
-          enemyTank.docurve = true;
-          enemyTank.curveStartx = next.drawx;
-          enemyTank.curveStarty = next.drawy;
-          enemyTank.curveEndx = prev.drawx;
-          enemyTank.curveEndy = prev.drawy;
-          enemyTank.bezierx = current.drawx;
-          enemyTank.beziery = current.drawy;
-
-          enemyTank.isRight = this.determineDirection({ x: next.x, y: next.y }, { x: current.x, y: current.y }, { x: prev.x, y: prev.y });
-        }
+      if (enemyTank.routeindex === 0) {
+        enemyTank.escaped = true;
+        enemyTank.lives = 0;
+        enemyTank.died = true;
       }
     }
+  }
 
-    if (enemyTank.docurve) {
-      // Calculate Bézier curve position
-      enemyTank.drawx = this.calculateBezier(enemyTank.t, enemyTank.curveStartx!, enemyTank.bezierx!, enemyTank.curveEndx!);
-      enemyTank.drawy = this.calculateBezier(enemyTank.t, enemyTank.curveStarty!, enemyTank.beziery!, enemyTank.curveEndy!);
+  private moveTowardsCurrentTarget(enemyTank: EnemyTank): void {
+    let remainingStep = enemyTank.speed * delta;
 
-      // Increment t for curve animation
-      enemyTank.t += (enemyTank.speed / 100) * delta;
-      if (enemyTank.t > 1) {
-        enemyTank.routeindex--;
-        enemyTank.docurve = false;
-        enemyTank.t = 0;
+    while (remainingStep > 0 && !enemyTank.docurve && enemyTank.lives > 0) {
+      if (enemyTank.routeindex < 0 || enemyTank.routeindex >= this.gridService.route.length) {
+        return;
       }
 
-      // Determine angle based on direction
-      const deltaX = enemyTank.isRight ? enemyTank.drawx - enemyTank.bezierx! : enemyTank.bezierx! - enemyTank.drawx;
-      const deltaY = enemyTank.isRight ? enemyTank.drawy - enemyTank.beziery! : enemyTank.beziery! - enemyTank.drawy;
-
-      enemyTank.angle = this.calculateAngle(deltaX, deltaY);
-    } else {
       const target = this.gridService.route[enemyTank.routeindex];
+      const dx = target.drawx - enemyTank.drawx;
+      const dy = target.drawy - enemyTank.drawy;
+      const distance = Math.hypot(dx, dy);
 
-      // Update position based on target
-      if (enemyTank.drawx + this.canvasService.mainCanvasXOffset !== target.drawx + this.canvasService.mainCanvasXOffset) {
-        enemyTank.drawx +=
-          (target.drawx + this.canvasService.mainCanvasXOffset > enemyTank.drawx + this.canvasService.mainCanvasXOffset ? 1 : -1) *
-          enemyTank.speed *
-          delta;
+      if (distance <= remainingStep) {
+        enemyTank.drawx = target.drawx;
+        enemyTank.drawy = target.drawy;
+        remainingStep -= distance;
+        this.onReachedRoutePoint(enemyTank);
+        continue;
       }
 
-      if (enemyTank.drawy + this.canvasService.mainCanvasYOffset !== target.drawy + this.canvasService.mainCanvasYOffset) {
-        enemyTank.drawy +=
-          (target.drawy + this.canvasService.mainCanvasYOffset > enemyTank.drawy + this.canvasService.mainCanvasYOffset ? 1 : -1) *
-          enemyTank.speed *
-          delta;
-      }
-
-      // Calculate angle
-      const deltaX = oldDrawx - enemyTank.drawx;
-      const deltaY = oldDrawy - enemyTank.drawy;
-
-      const rad = Math.atan2(deltaY, deltaX); // In radians
-      enemyTank.angle = (Math.round((rad * 180) / Math.PI) + 180) % 360;
+      enemyTank.drawx += (dx / distance) * remainingStep;
+      enemyTank.drawy += (dy / distance) * remainingStep;
+      remainingStep = 0;
     }
   }
 
-  // Helper function to calculate quadratic Bézier curve position
-  private calculateBezier(t: number, start: number, control: number, end: number): number {
-    return Math.round((1 - t) * (1 - t) * start + 2 * (1 - t) * t * control + t * t * end);
+  private onReachedRoutePoint(enemyTank: EnemyTank): void {
+    if (enemyTank.routeindex === 0) {
+      enemyTank.escaped = true;
+      enemyTank.lives = 0;
+      enemyTank.died = true;
+      return;
+    }
+
+    enemyTank.routeindex -= 1;
+
+    if (enemyTank.routeindex - 1 < 0 || enemyTank.routeindex + 1 >= this.gridService.route.length) {
+      return;
+    }
+
+    const previous = this.gridService.route[enemyTank.routeindex - 1];
+    const current = this.gridService.route[enemyTank.routeindex];
+    const next = this.gridService.route[enemyTank.routeindex + 1];
+
+    if (!this.shouldCurveOnDirectionChange(next, current, previous)) {
+      return;
+    }
+
+    enemyTank.docurve = true;
+    enemyTank.t = 0;
+    enemyTank.curveStartx = next.drawx;
+    enemyTank.curveStarty = next.drawy;
+    enemyTank.curveEndx = previous.drawx;
+    enemyTank.curveEndy = previous.drawy;
+    enemyTank.bezierx = current.drawx;
+    enemyTank.beziery = current.drawy;
   }
 
-  // Helper function to calculate angle based on deltaX and deltaY
-  private calculateAngle(deltaX: number, deltaY: number): number {
-    const angle = Math.round((Math.atan2(deltaY, deltaX) * 180) / Math.PI + 180);
-    return angle > 359 ? 0 : angle < 0 ? 359 : 360 - angle;
+  private updateAngleFromMovement(enemyTank: EnemyTank, oldDrawx: number, oldDrawy: number): void {
+    const movementDx = enemyTank.drawx - oldDrawx;
+    const movementDy = enemyTank.drawy - oldDrawy;
+    const movementMagnitude = Math.hypot(movementDx, movementDy);
+
+    if (movementMagnitude < 0.001) {
+      return;
+    }
+
+    enemyTank.angle = this.normalizeAngle((Math.atan2(movementDy, movementDx) * 180) / Math.PI);
   }
 
-  private isCloseEnough(point1: { x: number; y: number }, point2: { x: number; y: number }, threshold: number): boolean {
-    return Math.abs(point1.x - point2.x) < threshold && Math.abs(point1.y - point2.y) < threshold;
+  private normalizeAngle(angle: number): number {
+    const normalizedAngle = Math.round(angle) % 360;
+    return normalizedAngle < 0 ? normalizedAngle + 360 : normalizedAngle;
   }
 
-  private shouldCurve(start: { x: number; y: number }, end: { x: number; y: number }): boolean {
-    return start.y !== end.y && start.x !== end.x;
-  }
+  private shouldCurveOnDirectionChange(
+    next: { x: number; y: number },
+    current: { x: number; y: number },
+    previous: { x: number; y: number }
+  ): boolean {
+    const v1x = current.x - next.x;
+    const v1y = current.y - next.y;
+    const v2x = previous.x - current.x;
+    const v2y = previous.y - current.y;
 
-  private determineDirection(start: { x: number; y: number }, mid: { x: number; y: number }, end: { x: number; y: number }): boolean {
-    return !(
-      start.x === mid.x &&
-      ((start.x > end.x && start.y > end.y && start.y > mid.y) ||
-        (start.x < end.x && start.y < end.y && start.y < mid.y) ||
-        (start.x < end.x && start.y > end.y && start.y > mid.y) ||
-        (start.x > end.x && start.y < end.y && start.y < mid.y))
-    );
+    const len1 = Math.hypot(v1x, v1y);
+    const len2 = Math.hypot(v2x, v2y);
+    if (len1 === 0 || len2 === 0) {
+      return false;
+    }
+
+    const n1x = v1x / len1;
+    const n1y = v1y / len1;
+    const n2x = v2x / len2;
+    const n2y = v2y / len2;
+
+    const cross = n1x * n2y - n1y * n2x;
+    return Math.abs(cross) > this.turnEpsilon;
   }
 }

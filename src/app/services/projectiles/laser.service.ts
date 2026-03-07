@@ -50,7 +50,7 @@ export class LaserService {
       bullet.needdraw = false;
     }
 
-    enemy.lives -= bullet.damage;
+    this.enemyService.hit(bullet.enemyIndex, bullet.damage);
 
     const cellHeight = cell.height / 2;
     const cellWidth = cell.width / 2;

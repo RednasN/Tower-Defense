@@ -8,6 +8,7 @@ export enum WeaponType {
   MultiRocketLauncher = 'MultiRocketLauncher',
   LaserTurret = 'LaserTurret',
   SlowRocketLauncher = 'SlowRocketLauncher',
+  GrenadeThrower = 'GrenadeThrower',
 }
 
 export type Weapon = {
@@ -56,6 +57,10 @@ export type SlowRocketLauncher = Weapon & {
   type: WeaponType.SlowRocketLauncher;
 };
 
+export type GrenadeThrower = Weapon & {
+  type: WeaponType.GrenadeThrower;
+};
+
 export function isRocketLauncher(weapon: Weapon): weapon is RocketLauncher {
   return weapon.type === WeaponType.RocketLauncher;
 }
@@ -74,4 +79,8 @@ export function isNucleareLauncher(weapon: Weapon): weapon is NuclearLauncher {
 
 export function isSlowRocketLauncher(weapon: Weapon): weapon is SlowRocketLauncher {
   return weapon.type === WeaponType.SlowRocketLauncher;
+}
+
+export function isGrenadeThrower(weapon: Weapon): weapon is GrenadeThrower {
+  return weapon.type === WeaponType.GrenadeThrower;
 }

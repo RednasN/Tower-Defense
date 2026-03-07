@@ -4,14 +4,27 @@
 
 <div class="summary" style="pointer-events: none">
   <div style="float: left">
+    <img src="./assets/wave.svg" width="12" height="12" alt="Wave" style="float: left; margin-top: 3px" />
+  </div>
+  <div id="wave" style="float: left">{{ waveLabel$ | async }}</div>
+  <div style="float: left">
     <img src="./assets/money.png" width="12" height="12" alt="Money" style="float: left; margin-top: 3px" />
   </div>
   <div id="pocket" style="float: left; margin-left: 3px">{{ money$ | async }}</div>
 </div>
 
 <div class="menu" style="background: rgba(0, 0, 0, 0.5)">
-  <img src="./assets/menu.svg" alt="Show menu" />
+  <img src="./assets/menu.svg" alt="Show menu" (click)="toggleMenu()" />
   <img src="./assets/build.svg" (click)="buildTower()" alt="Build" />
   <img src="./assets/{{ paused ? 'pause' : 'play' }}.svg" (click)="togglePause()" alt="play" />
   <img src="./assets/speed-level-{{ speed }}.svg" (click)="changeSpeed()" alt="speed" />
+  <img src="./assets/next-wave.svg" (click)="startNextWave()" alt="Start next wave" />
 </div>
+
+<div *ngIf="isMenuOpen" class="menu-backdrop" (click)="closeMenu()"></div>
+<div *ngIf="isMenuOpen" class="menu-dropdown">
+  <div class="menu-dropdown-title">Menu</div>
+  <button type="button" class="menu-action-button" (click)="openLevelBuilder()">Level builder</button>
+</div>
+
+<app-level-builder *ngIf="isLevelBuilderOpen" (closeBuilder)="closeLevelBuilder()"></app-level-builder>

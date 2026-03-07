@@ -1,0 +1,56 @@
+<div class="builder-overlay" (click)="close()">
+  <div class="builder-panel" (click)="$event.stopPropagation()">
+    <div class="builder-header">
+      <h2>Level builder</h2>
+      <button type="button" class="close-btn" (click)="close()">Close</button>
+    </div>
+
+    <div class="builder-controls">
+      <label>
+        Size X
+        <input type="number" min="1" [(ngModel)]="gridWidth" />
+      </label>
+      <label>
+        Size Y
+        <input type="number" min="1" [(ngModel)]="gridHeight" />
+      </label>
+      <button type="button" (click)="createGrid()">Create grid</button>
+      <button type="button" (click)="clearGridTiles()">Clear grid tiles</button>
+      <button type="button" (click)="clearRoute()">Clear route</button>
+      <button type="button" [class.active]="routeMode" (click)="routeMode = !routeMode">
+        {{ routeMode ? 'Route mode: ON' : 'Route mode: OFF' }}
+      </button>
+      <button type="button" (click)="save()">Save</button>
+    </div>
+
+    <div class="palette">
+      <button
+        *ngFor="let tile of tileSources; let i = index; trackBy: trackByIndex"
+        type="button"
+        class="tile-button"
+        [class.selected]="selectedTileIndex === i"
+        (click)="selectedTileIndex = i"
+      >
+        <img [src]="tile" [alt]="'Tile ' + i" />
+        <span>{{ i }}</span>
+      </button>
+    </div>
+
+    <div class="grid-wrapper">
+      <div class="level-grid" [style.grid-template-columns]="'repeat(' + gridWidth + ', 50px)'">
+        <ng-container *ngFor="let y of rowIndexes; trackBy: trackByIndex">
+          <button
+            *ngFor="let x of columnIndexes; trackBy: trackByIndex"
+            type="button"
+            class="grid-cell"
+            (click)="onCellClick(x, y)"
+            [title]="'x:' + x + ' y:' + y"
+          >
+            <img [src]="getCellTileSource(x, y)" [alt]="'Tile at ' + x + ',' + y" />
+            <span *ngIf="isRouteCell(x, y)" class="route-step">{{ getRouteStep(x, y) }}</span>
+          </button>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>
