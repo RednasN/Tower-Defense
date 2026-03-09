@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 
+import { DamageType } from '../../models/configs/turret-config.model';
 import { Laser, ProjectileType } from '../../models/projectiles/projectile.model';
 import { EnemyService } from '../enemies/enemy.service';
 import { GridService } from '../game/grid.service';
@@ -11,7 +12,7 @@ export class LaserService {
   private readonly gridService = inject(GridService);
   private readonly enemyService = inject(EnemyService);
 
-  public create(x: number, y: number, enemyIndex: number, damage: number): Laser {
+  public create(x: number, y: number, enemyIndex: number, damage: number, damageType: DamageType): Laser {
     const cellHeight = this.gridService.grid[x][y].height / 2;
     const cellWidth = this.gridService.grid[x][y].width / 2;
 
@@ -36,6 +37,7 @@ export class LaserService {
       enemyIndex,
       needdraw: true,
       damage,
+      damageType,
       angle: null,
       laserParts: [],
     };
@@ -50,7 +52,7 @@ export class LaserService {
       bullet.needdraw = false;
     }
 
-    this.enemyService.hit(bullet.enemyIndex, bullet.damage);
+    this.enemyService.hit(bullet.enemyIndex, bullet.damage, bullet.damageType);
 
     const cellHeight = cell.height / 2;
     const cellWidth = cell.width / 2;

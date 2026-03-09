@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 
 import { delta } from '../../models/constants';
+import { ArmorClass } from '../../models/configs/turret-config.model';
 import { EnemyTank } from '../../models/enemies/enemy-tank.model';
 import { GridService } from '../game/grid.service';
 
@@ -11,12 +12,13 @@ export class EnemyTankService {
   private readonly turnEpsilon = 0.05;
   private readonly gridService = inject(GridService);
 
-  public create(reward: number, lives: number, imageIndex: number, speed = 100): EnemyTank {
+  public create(reward: number, lives: number, imageIndex: number, armorClass: ArmorClass, speed = 100): EnemyTank {
     const enemyTank = {
       reward,
       lives,
       maxLives: lives,
       imageIndex,
+      armorClass,
       drawx: -1,
       drawy: -1,
       routeindex: -1,

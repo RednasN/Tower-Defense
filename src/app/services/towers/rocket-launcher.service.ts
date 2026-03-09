@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 
+import { getDamageTypeForWeaponType } from '../../models/configs/turret-config.model';
 import { delta } from '../../models/constants';
 import { RocketLauncher, WeaponType } from '../../models/weapons/weapon.model';
 import { EnemyService } from '../enemies/enemy.service';
@@ -69,7 +70,14 @@ export class RocketLauncherService extends WeaponService {
 
   public shoot(weapon: RocketLauncher): void {
     const angle = weapon.canons[Math.floor(Math.random() * weapon.canons.length)];
-    const rocket = this.rocketService.create(weapon.gridX, weapon.gridY, weapon.focusedIndex, angle, weapon.damage);
+    const rocket = this.rocketService.create(
+      weapon.gridX,
+      weapon.gridY,
+      weapon.focusedIndex,
+      angle,
+      weapon.damage,
+      getDamageTypeForWeaponType(weapon.type)
+    );
     this.projectileService.addProjectile(rocket);
   }
 }

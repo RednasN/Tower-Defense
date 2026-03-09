@@ -64,7 +64,8 @@ export class GameLoopService {
 
         //this.gridService.calculateTurrets();
         //this.gridService.calculateEnemies();
-        this.waveService.tick(this.dt * 1000);
+        // Scale wave timers with simulation speed to keep spawning/intermission pacing aligned.
+        this.waveService.tick(this.dt * 1000 * this.speed);
         this.enemyService.calculate();
         //this.gridService.calculateBullets();
         this.towerService.calculate();
@@ -104,5 +105,15 @@ export class GameLoopService {
 
   public changePause(): void {
     this.paused = this.paused ? false : true;
+  }
+
+  public setSpeed(speed: number): void {
+    const clampedSpeed = Math.max(1, Math.min(4, Math.floor(speed)));
+    this.speed = clampedSpeed;
+    this.dt = 1000 / (60 * this.speed) / 1000;
+  }
+
+  public setPaused(paused: boolean): void {
+    this.paused = paused;
   }
 }

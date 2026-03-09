@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 
+import { getDamageTypeForWeaponType } from '../../models/configs/turret-config.model';
 import { delta } from '../../models/constants';
 import { ProjectileType, type Grenade } from '../../models/projectiles/projectile.model';
 import { WeaponType, type GrenadeThrower } from '../../models/weapons/weapon.model';
@@ -87,7 +88,14 @@ export class GrenadeThrowerService extends WeaponService {
     const grenadeX = randomPathCell.drawx + 25;
     const grenadeY = randomPathCell.drawy + 25;
 
-    const grenade = this.grenadeService.create(towerCenterX, towerCenterY, grenadeX, grenadeY, weapon.damage);
+    const grenade = this.grenadeService.create(
+      towerCenterX,
+      towerCenterY,
+      grenadeX,
+      grenadeY,
+      weapon.damage,
+      getDamageTypeForWeaponType(weapon.type)
+    );
     this.projectileService.addProjectile(grenade);
   }
 }

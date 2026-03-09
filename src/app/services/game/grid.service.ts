@@ -218,6 +218,16 @@ export class GridService {
       this.grid.push(gridRow);
     }
   }
+
+  public getSnapshot(): { selectedCell: Cell | null } {
+    return {
+      selectedCell: this.selectedCell ? structuredClone(this.selectedCell) : null,
+    };
+  }
+
+  public restoreSnapshot(snapshot: { selectedCell: Cell | null }): void {
+    this.selectedCell = snapshot.selectedCell;
+  }
 }
 
 const fixedRoute = JSON.parse(

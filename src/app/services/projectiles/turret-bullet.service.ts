@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 
+import { DamageType } from '../../models/configs/turret-config.model';
 import { delta } from '../../models/constants';
 import { Bullet, ProjectileType } from '../../models/projectiles/projectile.model';
 import { EnemyService } from '../enemies/enemy.service';
@@ -18,7 +19,8 @@ export class TurretBulletService {
     y: number,
     enemyIndex: number,
     damage: number,
-    speed: number
+    speed: number,
+    damageType: DamageType
   ): Bullet {
     const cellHeight = this.gridService.grid[x][y].height / 2;
     const cellWidth = this.gridService.grid[x][y].width / 2;
@@ -37,6 +39,7 @@ export class TurretBulletService {
     return {
       speed,
       damage,
+      damageType,
       type: type,
       gridX: x,
       gridY: y,
@@ -68,7 +71,7 @@ export class TurretBulletService {
 
       if (Math.abs(bullet.x - centerEnemyX) < 10 && Math.abs(bullet.y - centerEnemyY) < 10) {
         bullet.needdraw = false;
-        this.enemyService.hit(bullet.enemyIndex, bullet.damage);
+        this.enemyService.hit(bullet.enemyIndex, bullet.damage, bullet.damageType);
       }
     }
   }

@@ -5,19 +5,23 @@ import { MatDialog } from '@angular/material/dialog';
 import { Observable, map } from 'rxjs';
 
 import { BuildTowerDialogComponent } from './components/build-tower-dialog/build-tower-dialog.component';
+import { BalanceSimulatorComponent } from './components/balance-simulator/balance-simulator.component';
 import { GameCanvasComponent } from './components/game-canvas/game-canvas.component';
 import { LevelBuilderComponent } from './components/level-builder/level-builder.component';
+import { EnemyType } from './models/configs/turret-config.model';
 import { GameLoopService } from './services/game/game-loop.service';
 import { GameStateService } from './services/game/game-state.service';
 import { GridService } from './services/game/grid.service';
 import { ImageService } from './services/game/image.service';
 import { TowerService } from './services/towers/tower.service';
 import { WaveService } from './services/game/wave.service';
+import { CanvasService } from './services/game/canvas.service';
+import { BalanceReplayService } from './services/simulation/balance-replay.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, GameCanvasComponent, LevelBuilderComponent],
+  imports: [CommonModule, GameCanvasComponent, LevelBuilderComponent, BalanceSimulatorComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
@@ -30,12 +34,15 @@ export class AppComponent implements OnInit {
   private readonly gameLoopService = inject(GameLoopService);
   private readonly waveService = inject(WaveService);
   private readonly towerService = inject(TowerService);
+  private readonly canvasService = inject(CanvasService);
+  private readonly balanceReplayService = inject(BalanceReplayService);
   private readonly dialog = inject(MatDialog);
 
   private readonly gameState = inject(GameStateService);
   public readonly waveLabel$ = this.waveService.waveState$.pipe(map(state => state.waveNumber.toString().padStart(3, '0')));
   public isMenuOpen = false;
   public isLevelBuilderOpen = false;
+  public isBalanceSimulatorOpen = false;
 
   public ngOnInit(): void {
     this.imageService
@@ -47,9 +54,18 @@ export class AppComponent implements OnInit {
       .then(() => this.imageService.setupExplosions())
       .then(() => {
         this.gridService.setupLevelOne();
+        this.registerWorldSize();
         this.waveService.initialize();
         this.waveService.setEnemyEscapedHandler(event => {
-          console.log('Enemy escaped', event);
+          if (this.balanceReplayService.handleEnemyEscaped(event)) {
+            return;
+          }
+
+          const damage = this.getBaseDamageForEnemyType(event.enemyType);
+          this.gameState.damageBase(damage);
+          if (this.gameState.getBaseHealth() === 0 && !this.gameLoopService.paused) {
+            this.gameLoopService.changePause();
+          }
         });
 
         console.log('Images loaded');
@@ -58,15 +74,31 @@ export class AppComponent implements OnInit {
   }
 
   public togglePause(): void {
+    if (this.balanceReplayService.isReplayActive()) {
+      return;
+    }
+
     this.gameLoopService.changePause();
   }
 
   public changeSpeed(): void {
+    if (this.balanceReplayService.isReplayActive()) {
+      return;
+    }
+
     this.gameLoopService.changeSpeed();
   }
 
   public startNextWave(): void {
+    if (this.balanceReplayService.isReplayActive()) {
+      return;
+    }
+
     this.waveService.startWaveEarly();
+  }
+
+  public changeZoom(): void {
+    this.canvasService.changeZoom();
   }
 
   public get speed(): number {
@@ -77,11 +109,23 @@ export class AppComponent implements OnInit {
     return this.gameLoopService.paused;
   }
 
+  public get zoomLevel(): number {
+    return this.canvasService.zoomLevel;
+  }
+
   public get money$(): Observable<number> {
     return this.gameState.moneyChanged$;
   }
 
+  public get baseHealth$(): Observable<number> {
+    return this.gameState.baseHealthChanged$;
+  }
+
   public buildTower(): void {
+    if (this.balanceReplayService.isReplayActive()) {
+      return;
+    }
+
     const selectedCell = this.gridService.selectedCell;
     const selectedWeapon = selectedCell ? this.towerService.getWeaponAtCell(selectedCell.x, selectedCell.y) : null;
 
@@ -110,11 +154,50 @@ export class AppComponent implements OnInit {
   }
 
   public openLevelBuilder(): void {
+    if (this.balanceReplayService.isReplayActive()) {
+      return;
+    }
+
     this.isLevelBuilderOpen = true;
     this.isMenuOpen = false;
   }
 
   public closeLevelBuilder(): void {
     this.isLevelBuilderOpen = false;
+  }
+
+  public openBalanceSimulator(): void {
+    this.isBalanceSimulatorOpen = true;
+    this.isMenuOpen = false;
+  }
+
+  public closeBalanceSimulator(): void {
+    this.isBalanceSimulatorOpen = false;
+  }
+
+  private registerWorldSize(): void {
+    const grid = this.gridService.grid;
+    const gridWidth = grid.length;
+    const gridHeight = grid[0]?.length ?? 0;
+    const cellWidth = grid[0]?.[0]?.width ?? 50;
+    const cellHeight = grid[0]?.[0]?.height ?? 50;
+
+    this.canvasService.setWorldSize(gridWidth * cellWidth, gridHeight * cellHeight);
+  }
+
+  private getBaseDamageForEnemyType(enemyType: EnemyType): number {
+    switch (enemyType) {
+      case EnemyType.ScoutTank:
+      case EnemyType.SiegeTank:
+      case EnemyType.LightHovercraft:
+      case EnemyType.HeavyHovercraft:
+        return 2;
+      case EnemyType.FighterPlane:
+      case EnemyType.BomberPlane:
+      case EnemyType.Boss:
+        return 3;
+      default:
+        return 1;
+    }
   }
 }

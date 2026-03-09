@@ -1,3 +1,5 @@
+import { ArmorClass } from '../configs/turret-config.model';
+
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
 export type EnemyTank = {
   drawx: number;
@@ -9,6 +11,7 @@ export type EnemyTank = {
 
   reward: number;
   imageIndex: number;
+  armorClass: ArmorClass;
   curveStartx: number | null;
   curveStarty: number | null;
   curveEndx: number | null;

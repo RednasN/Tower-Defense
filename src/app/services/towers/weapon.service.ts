@@ -143,7 +143,7 @@ export abstract class WeaponService {
             shortestIndex = i;
           }
 
-          if (this.enemyService.enemies[i].routeindex > shortestIndex) {
+          if (this.enemyService.enemies[i].routeindex > shortestRoute) {
             shortestRoute = this.enemyService.enemies[i].routeindex;
             shortestIndex = i;
           }

@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 
+import { getDamageTypeForWeaponType } from '../../models/configs/turret-config.model';
 import { ProjectileType } from '../../models/projectiles/projectile.model';
 import { BulletShooter, SlowRocketLauncher, WeaponType } from '../../models/weapons/weapon.model';
 import { EnemyService } from '../enemies/enemy.service';
@@ -48,7 +49,8 @@ export class SlowRocketLauncherService extends WeaponService {
       weapon.gridY,
       weapon.focusedIndex,
       weapon.damage,
-      125
+      125,
+      getDamageTypeForWeaponType(weapon.type)
     );
     this.projectileService.addProjectile(bullet);
   }

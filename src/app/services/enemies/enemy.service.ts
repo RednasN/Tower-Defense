@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 
+import { ArmorClass, DamageType, getDamageMultiplier } from '../../models/configs/turret-config.model';
 import { EnemyTank } from '../../models/enemies/enemy-tank.model';
 import { ExplosionService } from '../explosions/explosion.service';
 import { CanvasService } from '../game/canvas.service';
@@ -25,9 +26,15 @@ export class EnemyService {
   private readonly gameState = inject(GameStateService);
 
   public enemies: EnemyTank[] = [];
+  private readonly damageByType: Record<DamageType, number> = {
+    [DamageType.Bullet]: 0,
+    [DamageType.Explosive]: 0,
+    [DamageType.Energy]: 0,
+    [DamageType.SlowExplosive]: 0,
+  };
 
-  public createEnemyTank(reward: number, lives: number, imageIndex: number, speed = 100): void {
-    const enemyTank = this.enemyTankService.create(reward, lives, imageIndex, speed);
+  public createEnemyTank(reward: number, lives: number, imageIndex: number, armorClass: ArmorClass, speed = 100): void {
+    const enemyTank = this.enemyTankService.create(reward, lives, imageIndex, armorClass, speed);
     this.enemies.push(enemyTank);
   }
 
@@ -54,13 +61,17 @@ export class EnemyService {
     });
   }
 
-  public hit(enemyIndex: number, hit: number): void {
+  public hit(enemyIndex: number, hit: number, damageType: DamageType): void {
     const enemy = this.enemies[enemyIndex];
     if (!enemy || enemy.lives <= 0) {
       return;
     }
 
-    this.enemyTankService.hit(enemy, hit);
+    const multiplier = getDamageMultiplier(damageType, enemy.armorClass);
+    const adjustedHit = hit * multiplier;
+    const previousLives = enemy.lives;
+    this.enemyTankService.hit(enemy, adjustedHit);
+    this.damageByType[damageType] += Math.max(0, previousLives - enemy.lives);
 
     if (enemy.lives <= 0) {
       this.handleEnemyDestroyed(enemy);
@@ -69,6 +80,28 @@ export class EnemyService {
 
   public getFirstEnemyAlive(): EnemyTank | undefined {
     return this.enemies.find(enemy => enemy.lives > 0);
+  }
+
+  public getSnapshot(): { enemies: EnemyTank[] } {
+    return {
+      enemies: structuredClone(this.enemies),
+    };
+  }
+
+  public restoreSnapshot(snapshot: { enemies: EnemyTank[] }): void {
+    this.enemies = structuredClone(snapshot.enemies);
+    this.resetDamageStats();
+  }
+
+  public getDamageStats(): Record<DamageType, number> {
+    return { ...this.damageByType };
+  }
+
+  public resetDamageStats(): void {
+    this.damageByType[DamageType.Bullet] = 0;
+    this.damageByType[DamageType.Explosive] = 0;
+    this.damageByType[DamageType.Energy] = 0;
+    this.damageByType[DamageType.SlowExplosive] = 0;
   }
 
   private handleEnemyDestroyed(enemy: EnemyTank): void {

@@ -4,12 +4,7 @@ import { Injectable } from '@angular/core';
 import {
   TurretConfig,
   UpgradeType,
-  bulletShooterConfig,
-  grenadeThrowerConfig,
-  laserTurretConfig,
-  nuclearLauncherConfig,
-  rocketLauncherConfig,
-  slowRocketLauncherConfig,
+  getTurretConfigs,
 } from '../../models/configs/turret-config.model';
 import { WeaponType } from '../../models/weapons/weapon.model';
 
@@ -26,12 +21,7 @@ export class TurretConfigService {
   private readonly turretConfigs: TurretConfig[] = [];
 
   constructor() {
-    this.turretConfigs.push(rocketLauncherConfig);
-    this.turretConfigs.push(bulletShooterConfig);
-    this.turretConfigs.push(laserTurretConfig);
-    this.turretConfigs.push(nuclearLauncherConfig);
-    this.turretConfigs.push(slowRocketLauncherConfig);
-    this.turretConfigs.push(grenadeThrowerConfig);
+    this.turretConfigs.push(...getTurretConfigs());
   }
 
   public getTurretSpecification(turretType: WeaponType, speedLevel: number, rangeLevel: number, damageLevel: number): TurretSpecification {

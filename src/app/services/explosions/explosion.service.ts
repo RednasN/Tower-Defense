@@ -40,4 +40,14 @@ export class ExplosionService {
       }
     });
   }
+
+  public getSnapshot(): { explosions: Explosion[] } {
+    return {
+      explosions: structuredClone(this.explosions),
+    };
+  }
+
+  public restoreSnapshot(snapshot: { explosions: Explosion[] }): void {
+    this.explosions = structuredClone(snapshot.explosions);
+  }
 }

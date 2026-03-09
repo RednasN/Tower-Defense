@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 
+import { getDamageTypeForWeaponType } from '../../models/configs/turret-config.model';
 import { delta } from '../../models/constants';
 import { LaserTurret, Weapon, WeaponType } from '../../models/weapons/weapon.model';
 import { EnemyService } from '../enemies/enemy.service';
@@ -53,7 +54,13 @@ export class LaserTurretService extends WeaponService {
   }
 
   public shoot(weapon: LaserTurret): void {
-    const laser = this.laserService.create(weapon.gridX, weapon.gridY, weapon.focusedIndex, weapon.damage);
+    const laser = this.laserService.create(
+      weapon.gridX,
+      weapon.gridY,
+      weapon.focusedIndex,
+      weapon.damage,
+      getDamageTypeForWeaponType(weapon.type)
+    );
     this.projectileService.addProjectile(laser);
   }
 }

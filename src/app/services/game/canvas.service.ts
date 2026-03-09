@@ -10,16 +10,20 @@ export class CanvasService {
   public mainCanvasYOffset = 0;
 
   public drawScale = 1;
+  public zoomLevel = 2;
 
   public mainCanvas!: HTMLCanvasElement;
   public mainCtx!: CanvasRenderingContext2D;
 
   public scaleToFit = 1;
+  private readonly zoomScales = [0.75, 1, 1.25] as const;
+  private worldWidth = 0;
+  private worldHeight = 0;
 
   public initialize(): void {
     this.mainCanvas = document.getElementById('towerDefenseView') as HTMLCanvasElement;
     this.mainCtx = this.mainCanvas.getContext('2d') as CanvasRenderingContext2D;
-
+    this.applyZoomScale();
     this.calculateSize();
   }
 
@@ -37,6 +41,7 @@ export class CanvasService {
 
     this.mainCanvas.style.transformOrigin = '0 0';
     this.mainCanvas.style.transform = 'scale(' + this.scaleToFit + ')';
+    this.clampOffsets();
   }
 
   public clear(): void {
@@ -76,7 +81,50 @@ export class CanvasService {
     this.mainCanvasXCurrent += diffX;
     this.mainCanvasXOffset += diffX;
 
-    this.mainCanvasYOffset = Math.floor(this.mainCanvasYOffset);
-    this.mainCanvasXOffset = Math.floor(this.mainCanvasXOffset);
+    this.clampOffsets();
+  }
+
+  public changeZoom(): void {
+    this.zoomLevel = this.zoomLevel !== 3 ? this.zoomLevel + 1 : 1;
+    this.applyZoomScale();
+    this.calculateSize();
+  }
+
+  public setWorldSize(width: number, height: number): void {
+    this.worldWidth = Math.max(0, width);
+    this.worldHeight = Math.max(0, height);
+
+    if (this.mainCanvas) {
+      this.clampOffsets();
+    }
+  }
+
+  private applyZoomScale(): void {
+    this.drawScale = this.zoomScales[this.zoomLevel - 1];
+  }
+
+  private clampOffsets(): void {
+    if (!this.mainCanvas || this.worldWidth <= 0 || this.worldHeight <= 0) {
+      return;
+    }
+
+    const viewWidth = this.mainCanvas.width;
+    const viewHeight = this.mainCanvas.height;
+
+    if (this.worldWidth <= viewWidth) {
+      this.mainCanvasXOffset = Math.floor((viewWidth - this.worldWidth) / 2);
+    } else {
+      const minX = viewWidth - this.worldWidth;
+      this.mainCanvasXOffset = Math.min(0, Math.max(minX, this.mainCanvasXOffset));
+      this.mainCanvasXOffset = Math.floor(this.mainCanvasXOffset);
+    }
+
+    if (this.worldHeight <= viewHeight) {
+      this.mainCanvasYOffset = Math.floor((viewHeight - this.worldHeight) / 2);
+    } else {
+      const minY = viewHeight - this.worldHeight;
+      this.mainCanvasYOffset = Math.min(0, Math.max(minY, this.mainCanvasYOffset));
+      this.mainCanvasYOffset = Math.floor(this.mainCanvasYOffset);
+    }
   }
 }

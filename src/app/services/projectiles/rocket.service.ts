@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 
+import { DamageType } from '../../models/configs/turret-config.model';
 import { delta } from '../../models/constants';
 import { ProjectileType, Rocket } from '../../models/projectiles/projectile.model';
 import { EnemyService } from '../enemies/enemy.service';
@@ -12,7 +13,7 @@ export class RocketService {
   private readonly gridServcie = inject(GridService);
   private readonly enemyService = inject(EnemyService);
 
-  public create(x: number, y: number, enemyIndex: number, angle: number, damage: number): Rocket {
+  public create(x: number, y: number, enemyIndex: number, angle: number, damage: number, damageType: DamageType): Rocket {
     const cellHeight = this.gridServcie.grid[x][y].height / 2;
     const cellWidth = this.gridServcie.grid[x][y].width / 2;
 
@@ -33,6 +34,7 @@ export class RocketService {
       locked: false,
       needdraw: true,
       damage,
+      damageType,
       plusrotation: null,
       steps: 0,
     };
@@ -65,7 +67,7 @@ export class RocketService {
 
     if (hasReachedTarget(rocket, centerEnemyX, centerEnemyY)) {
       rocket.needdraw = false;
-      this.enemyService.hit(rocket.enemyIndex, rocket.damage);
+      this.enemyService.hit(rocket.enemyIndex, rocket.damage, rocket.damageType);
     }
   }
 }

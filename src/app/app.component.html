@@ -11,6 +11,10 @@
     <img src="./assets/money.png" width="12" height="12" alt="Money" style="float: left; margin-top: 3px" />
   </div>
   <div id="pocket" style="float: left; margin-left: 3px">{{ money$ | async }}</div>
+  <div style="float: left; margin-left: 8px">
+    <img src="./assets/heart.svg" width="12" height="12" alt="Base health" style="float: left; margin-top: 3px" />
+  </div>
+  <div id="base-health" style="float: left; margin-left: 3px">{{ baseHealth$ | async }}</div>
 </div>
 
 <div class="menu" style="background: rgba(0, 0, 0, 0.5)">
@@ -18,6 +22,7 @@
   <img src="./assets/build.svg" (click)="buildTower()" alt="Build" />
   <img src="./assets/{{ paused ? 'pause' : 'play' }}.svg" (click)="togglePause()" alt="play" />
   <img src="./assets/speed-level-{{ speed }}.svg" (click)="changeSpeed()" alt="speed" />
+  <img src="./assets/zoom-level-{{ zoomLevel }}.svg" (click)="changeZoom()" alt="zoom" />
   <img src="./assets/next-wave.svg" (click)="startNextWave()" alt="Start next wave" />
 </div>
 
@@ -25,6 +30,8 @@
 <div *ngIf="isMenuOpen" class="menu-dropdown">
   <div class="menu-dropdown-title">Menu</div>
   <button type="button" class="menu-action-button" (click)="openLevelBuilder()">Level builder</button>
+  <button type="button" class="menu-action-button" (click)="openBalanceSimulator()">Balance simulator</button>
 </div>
 
 <app-level-builder *ngIf="isLevelBuilderOpen" (closeBuilder)="closeLevelBuilder()"></app-level-builder>
+<app-balance-simulator *ngIf="isBalanceSimulatorOpen" (closeSimulator)="closeBalanceSimulator()"></app-balance-simulator>

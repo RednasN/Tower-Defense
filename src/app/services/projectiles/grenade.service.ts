@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 
+import { DamageType } from '../../models/configs/turret-config.model';
 import { delta } from '../../models/constants';
 import { ProjectileType, type Grenade } from '../../models/projectiles/projectile.model';
 import { EnemyService } from '../enemies/enemy.service';
@@ -12,7 +13,7 @@ export class GrenadeService {
   private readonly enemyService = inject(EnemyService);
   private readonly explosionService = inject(ExplosionService);
 
-  public create(startX: number, startY: number, targetX: number, targetY: number, damage: number): Grenade {
+  public create(startX: number, startY: number, targetX: number, targetY: number, damage: number, damageType: DamageType): Grenade {
     const rad = Math.atan2(targetY - startY, targetX - startX);
     const angle = (Math.round((rad * 180) / Math.PI) + 360) % 360;
 
@@ -25,6 +26,7 @@ export class GrenadeService {
       enemyIndex: -1,
       needdraw: true,
       damage,
+      damageType,
       angle,
       speed: 250,
       targetX,
@@ -105,7 +107,7 @@ export class GrenadeService {
       const distanceToBlast = Math.hypot(enemyCenterX - grenade.x, enemyCenterY - grenade.y);
 
       if (distanceToBlast <= grenade.blastRadius) {
-        this.enemyService.hit(enemyIndex, grenade.damage);
+        this.enemyService.hit(enemyIndex, grenade.damage, grenade.damageType);
       }
     }
 

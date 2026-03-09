@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 
+import { getDamageTypeForWeaponType } from '../../models/configs/turret-config.model';
 import { ProjectileType } from '../../models/projectiles/projectile.model';
 import { BulletShooter, WeaponType } from '../../models/weapons/weapon.model';
 import { EnemyService } from '../enemies/enemy.service';
@@ -48,7 +49,8 @@ export class BasicTurretService extends WeaponService {
       weapon.gridY,
       weapon.focusedIndex,
       weapon.damage,
-      250
+      250,
+      getDamageTypeForWeaponType(weapon.type)
     );
     this.projectileService.addProjectile(bullet);
   }

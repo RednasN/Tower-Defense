@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 import { EnemyConfig, EnemyType, enemyConfigs } from '../../models/configs/turret-config.model';
+import { balanceRuntimeConfig } from '../../models/configs/balance-runtime-config';
 import { EnemyTank } from '../../models/enemies/enemy-tank.model';
 import { EnemyEscapedEvent, WaveEnemySpawnPlan, WaveState } from '../../models/game/wave.model';
 import { EnemyService } from '../enemies/enemy.service';
@@ -11,6 +12,16 @@ import { ImageService } from './image.service';
 type WaveQueueEntry = {
   enemyConfig: EnemyConfig;
   waveNumber: number;
+};
+
+export type WaveServiceSnapshot = {
+  waveState: WaveState;
+  currentSpawnPlan: WaveEnemySpawnPlan[];
+  spawnQueue: WaveQueueEntry[];
+  spawnTimerMs: number;
+  enemyTypeByEnemyEntries: [EnemyTank, EnemyType][];
+  waveNumberByEnemyEntries: [EnemyTank, number][];
+  reportedEscapes: EnemyTank[];
 };
 
 @Injectable({
@@ -155,6 +166,45 @@ export class WaveService {
     this.escapedHandler = handler;
   }
 
+  public getCurrentState(): WaveState {
+    return this.waveState.value;
+  }
+
+  public getSnapshot(): WaveServiceSnapshot {
+    return {
+      waveState: structuredClone(this.waveState.value),
+      currentSpawnPlan: [...this.currentSpawnPlan],
+      spawnQueue: [...this.spawnQueue],
+      spawnTimerMs: this.spawnTimerMs,
+      enemyTypeByEnemyEntries: Array.from(this.enemyTypeByEnemy.entries()),
+      waveNumberByEnemyEntries: Array.from(this.waveNumberByEnemy.entries()),
+      reportedEscapes: Array.from(this.reportedEscapes.values()),
+    };
+  }
+
+  public restoreSnapshot(snapshot: WaveServiceSnapshot): void {
+    this.currentSpawnPlan = [...snapshot.currentSpawnPlan];
+    this.spawnQueue = [...snapshot.spawnQueue];
+    this.spawnTimerMs = snapshot.spawnTimerMs;
+
+    this.enemyTypeByEnemy.clear();
+    for (const [enemy, type] of snapshot.enemyTypeByEnemyEntries) {
+      this.enemyTypeByEnemy.set(enemy, type);
+    }
+
+    this.waveNumberByEnemy.clear();
+    for (const [enemy, waveNumber] of snapshot.waveNumberByEnemyEntries) {
+      this.waveNumberByEnemy.set(enemy, waveNumber);
+    }
+
+    this.reportedEscapes.clear();
+    for (const escapedEnemy of snapshot.reportedEscapes) {
+      this.reportedEscapes.add(escapedEnemy);
+    }
+
+    this.waveState.next(structuredClone(snapshot.waveState));
+  }
+
   private startSpawningPhase(waveNumber: number): void {
     this.currentSpawnPlan = this.createWaveSpawnPlan(waveNumber);
     this.spawnQueue = this.createWaveQueueEntries(this.currentSpawnPlan, waveNumber);
@@ -198,7 +248,7 @@ export class WaveService {
 
   private createWaveSpawnPlan(waveNumber: number): WaveEnemySpawnPlan[] {
     const unlockedEnemyConfigs = this.getUnlockedEnemyConfigs(waveNumber);
-    const totalEnemies = 8 + Math.floor((waveNumber - 1) * 2.5);
+    const totalEnemies = this.getWaveEnemyCount(waveNumber);
     const quantities = new Map<EnemyType, number>();
 
     for (let pick = 0; pick < totalEnemies; pick++) {
@@ -239,15 +289,24 @@ export class WaveService {
     this.spawnQueue.splice(queueIndex, 1);
     const { enemyConfig, waveNumber } = queuedEnemy;
 
-    const healthMultiplier = 1 + (waveNumber - 1) * 0.12;
-    const speedMultiplier = Math.min(1.6, 1 + (waveNumber - 1) * 0.015);
-    const spawnHealth = Math.round(enemyConfig.health * healthMultiplier);
-    const spawnSpeed = Math.round(enemyConfig.speed * speedMultiplier);
-    const spawnReward = enemyConfig.reward;
+    const healthMultiplier = 1 + (waveNumber - 1) * balanceRuntimeConfig.wave.healthGrowth;
+    const speedMultiplier = Math.min(1.45, 1 + (waveNumber - 1) * balanceRuntimeConfig.wave.speedGrowth);
+    const earlyWaveHealthMultiplier = waveNumber <= balanceRuntimeConfig.wave.earlyWaves ? balanceRuntimeConfig.wave.earlyHealthMultiplier : 1;
+    const earlyWaveSpeedMultiplier = waveNumber <= balanceRuntimeConfig.wave.earlyWaves ? balanceRuntimeConfig.wave.earlySpeedMultiplier : 1;
+    const rewardMultiplier = 1 + (waveNumber - 1) * balanceRuntimeConfig.wave.rewardGrowth;
+    const spawnHealth = Math.round(enemyConfig.health * healthMultiplier * earlyWaveHealthMultiplier);
+    const spawnSpeed = Math.round(enemyConfig.speed * speedMultiplier * earlyWaveSpeedMultiplier);
+    const spawnReward = Math.round(enemyConfig.reward * rewardMultiplier);
 
     const imageIndex = this.imageService.enemies.findIndex(enemy => enemy.name === enemyConfig.imageName);
 
-    this.enemyService.createEnemyTank(spawnReward, spawnHealth, imageIndex >= 0 ? imageIndex : 0, spawnSpeed);
+    this.enemyService.createEnemyTank(
+      spawnReward,
+      spawnHealth,
+      imageIndex >= 0 ? imageIndex : 0,
+      enemyConfig.armorClass,
+      spawnSpeed
+    );
 
     const spawnedEnemy = this.enemyService.enemies[this.enemyService.enemies.length - 1];
     if (spawnedEnemy) {
@@ -259,20 +318,33 @@ export class WaveService {
   }
 
   private getSpawnIntervalMs(waveNumber: number): number {
-    return Math.max(220, 900 - (waveNumber - 1) * 35);
+    return Math.max(
+      balanceRuntimeConfig.wave.spawnMinMs,
+      balanceRuntimeConfig.wave.spawnBaseMs - (waveNumber - 1) * balanceRuntimeConfig.wave.spawnDecayMs
+    );
+  }
+
+  private getWaveEnemyCount(waveNumber: number): number {
+    return waveNumber === 1 ? 2 : 3 + Math.floor((waveNumber - 1) * balanceRuntimeConfig.wave.countGrowth);
   }
 
   private getUnlockedEnemyConfigs(waveNumber: number): typeof enemyConfigs {
-    if (waveNumber <= 2) {
+    if (waveNumber <= 3) {
+      return enemyConfigs.slice(0, 1);
+    }
+    if (waveNumber <= 5) {
+      return enemyConfigs.slice(0, 2);
+    }
+    if (waveNumber <= 7) {
       return enemyConfigs.slice(0, 3);
     }
-    if (waveNumber <= 4) {
+    if (waveNumber <= 9) {
       return enemyConfigs.slice(0, 5);
     }
-    if (waveNumber <= 6) {
+    if (waveNumber <= 11) {
       return enemyConfigs.slice(0, 7);
     }
-    if (waveNumber <= 8) {
+    if (waveNumber <= 13) {
       return enemyConfigs.slice(0, 9);
     }
 

@@ -1,3 +1,5 @@
+import { DamageType } from '../configs/turret-config.model';
+
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
 export enum ProjectileType {
   Base = 'Base',
@@ -24,6 +26,7 @@ export type Rocket = BaseProjectTile & {
   locked: boolean;
   needdraw: boolean;
   damage: number;
+  damageType: DamageType;
   plusrotation: boolean | null;
   steps: number;
 };
@@ -37,6 +40,7 @@ export type Bullet = BaseProjectTile & {
   enemyIndex: number;
   needdraw: boolean;
   damage: number;
+  damageType: DamageType;
   angle: number | null;
   speed: number;
 };
@@ -50,6 +54,7 @@ export type Laser = BaseProjectTile & {
   enemyIndex: number;
   needdraw: boolean;
   damage: number;
+  damageType: DamageType;
   angle: number | null;
   duration: number;
   laserParts: LaserPart[];
@@ -64,6 +69,7 @@ export type Grenade = BaseProjectTile & {
   enemyIndex: number;
   needdraw: boolean;
   damage: number;
+  damageType: DamageType;
   angle: number | null;
   speed: number;
   targetX: number;

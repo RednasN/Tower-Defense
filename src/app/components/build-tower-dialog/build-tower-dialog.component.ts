@@ -87,11 +87,11 @@ export class BuildTowerDialogComponent implements OnInit {
   }
 
   public get canApply(): boolean {
-    if (!this.isUpgradeMode) {
-      return true;
+    if (this.totalCost === null) {
+      return false;
     }
 
-    if (!this.selectedWeapon || this.totalCost === null) {
+    if (this.isUpgradeMode && !this.selectedWeapon) {
       return false;
     }
 
@@ -108,10 +108,6 @@ export class BuildTowerDialogComponent implements OnInit {
   public canUpgradeOption(option: UpgradeDetails): boolean {
     if (option.level >= 5 || option.upgradeCost === undefined) {
       return false;
-    }
-
-    if (!this.isUpgradeMode) {
-      return true;
     }
 
     const currentTotal = this.totalCost ?? 0;
@@ -136,6 +132,10 @@ export class BuildTowerDialogComponent implements OnInit {
       return;
     }
 
+    if (!this.canApply) {
+      return;
+    }
+
     const selectedTurret = this.turrets.find(turret => turret.selected);
     if (!selectedTurret) return;
 
@@ -155,6 +155,11 @@ export class BuildTowerDialogComponent implements OnInit {
       upgradeLevels[UpgradeType.Damage] ?? 1,
       upgradeLevels[UpgradeType.Range] ?? 1
     );
+
+    const totalCost = this.totalCost ?? 0;
+    if (totalCost > 0) {
+      this.gameState.spendMoney(totalCost);
+    }
 
     this.dialogRef.close();
   }
@@ -212,7 +217,8 @@ export class BuildTowerDialogComponent implements OnInit {
       return;
     }
 
-    const currentUpgrades = upgradeConfig.details.filter(x => x.level <= currentStats.level);
+    // Build mode starts at level 1 by default; only charge additional levels above 1.
+    const currentUpgrades = upgradeConfig.details.filter(x => x.level > 1 && x.level <= currentStats.level);
     currentStats.currentCost = currentUpgrades.reduce((acc, x) => acc + x.cost, 0);
   }
 
@@ -295,11 +301,11 @@ export class BuildTowerDialogComponent implements OnInit {
       return;
     }
 
-    const totalCost = this.totalCost ?? 0;
-    if (this.gameState.getMoney() < totalCost) {
+    if (!this.canApply) {
       return;
     }
 
+    const totalCost = this.totalCost ?? 0;
     if (totalCost > 0) {
       this.gameState.spendMoney(totalCost);
     }

@@ -106,6 +106,30 @@ export class TowerService {
     return this.weapons.find(weapon => weapon.gridX === x && weapon.gridY === y) ?? null;
   }
 
+  public getWeapons(): readonly Weapon[] {
+    return this.weapons;
+  }
+
+  public getSnapshot(): { weapons: Weapon[]; selectedWeapon: Weapon | null } {
+    return {
+      weapons: structuredClone(this.weapons),
+      selectedWeapon: this.selectedWeapon ? structuredClone(this.selectedWeapon) : null,
+    };
+  }
+
+  public restoreSnapshot(snapshot: { weapons: Weapon[]; selectedWeapon: Weapon | null }): void {
+    this.weapons = structuredClone(snapshot.weapons);
+    if (!snapshot.selectedWeapon) {
+      this.selectedWeapon = null;
+      return;
+    }
+
+    this.selectedWeapon =
+      this.weapons.find(
+        weapon => weapon.gridX === snapshot.selectedWeapon!.gridX && weapon.gridY === snapshot.selectedWeapon!.gridY
+      ) ?? null;
+  }
+
   public upgradeTower(weapon: Weapon, levels: { speedLevel: number; powerLevel: number; rangeLevel: number }): void {
     const existingWeapon = this.weapons.find(w => w === weapon);
     if (!existingWeapon) {
