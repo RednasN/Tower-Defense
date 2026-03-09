@@ -130,11 +130,13 @@ function expectedWaveProfile(enemyConfigs, waveNumber) {
   const count = waveEnemyCount(waveNumber);
   const weights = normalizedWeights(enemyWeights(unlocked, waveNumber));
 
-  const healthMultiplier = 1 + (waveNumber - 1) * runtimeConfig.wave.healthGrowth;
+  const lateWaveHealthFactor = waveNumber >= 12 ? 1.12 : 1;
+  const lateWaveRewardFactor = waveNumber >= 12 ? 0.82 : 1;
+  const healthMultiplier = (1 + (waveNumber - 1) * runtimeConfig.wave.healthGrowth) * lateWaveHealthFactor;
   const speedMultiplier = Math.min(1.45, 1 + (waveNumber - 1) * runtimeConfig.wave.speedGrowth);
   const earlyWaveHealthMultiplier = waveNumber <= runtimeConfig.wave.earlyWaves ? runtimeConfig.wave.earlyHealthMultiplier : 1;
   const earlyWaveSpeedMultiplier = waveNumber <= runtimeConfig.wave.earlyWaves ? runtimeConfig.wave.earlySpeedMultiplier : 1;
-  const rewardMultiplier = 1 + (waveNumber - 1) * runtimeConfig.wave.rewardGrowth;
+  const rewardMultiplier = (1 + (waveNumber - 1) * runtimeConfig.wave.rewardGrowth) * lateWaveRewardFactor;
 
   let avgHealth = 0;
   let avgSpeed = 0;
@@ -171,6 +173,14 @@ function getCoverageWeight(damageType, armorWeights, getDamageMultiplier) {
     weighted += getDamageMultiplier(damageType, armorClass) * weight;
   }
   return weighted || 1;
+}
+
+function getEffectiveDpsByDamageType(rawDpsByType, armorWeights, getDamageMultiplier) {
+  let total = 0;
+  for (const [damageType, rawDps] of Object.entries(rawDpsByType)) {
+    total += rawDps * getCoverageWeight(damageType, armorWeights, getDamageMultiplier);
+  }
+  return total;
 }
 
 function simulatePurchases(towerMetrics, wallet, profile, builtCounts, getDamageMultiplier) {
@@ -241,7 +251,7 @@ function run() {
   const bestTower = towerMetrics[0];
 
   let wallet = Math.round(runtimeConfig.economy.startMoney);
-  let currentDps = 0;
+  let currentRawDps = 0;
   let previousWaveReward = 0;
   const builtCounts = {};
   const estimatedDamageByType = {};
@@ -252,15 +262,20 @@ function run() {
   console.log(`Route length(px): ${format(routeLength, 0)}`);
   console.log(`Best L1 DPS/gold: ${bestTower.type} (cost ${bestTower.cost}, DPS ${format(bestTower.dps)}, DPS/g ${format(bestTower.dpsPerGold, 4)})`);
   console.log('');
-  console.log('Wave | Enemies | AvgHP | AvgSpeed | ReqDPS | Wallet$ | BuiltDPS | PressureIdx | Reward$ | Leaks');
-  console.log('-----|---------|-------|----------|--------|---------|----------|------------|---------|------');
+  console.log('CLI note: this is an economic approximation; live replay is balancing truth.');
+  console.log('');
+  console.log('Wave | Enemies | AvgHP | AvgSpeed | ReqDPS | Income$ | Spend$ | EndWallet$ | RawDPS | EffDPS | RawP | EffP | Reward$ | Leaks');
+  console.log('-----|---------|-------|----------|--------|---------|--------|-----------|--------|--------|------|------|---------|------');
 
   for (let wave = 1; wave <= maxWave; wave++) {
     const profile = expectedWaveProfile(enemyConfigs, wave);
-    wallet += previousWaveReward;
+    const waveIncome = previousWaveReward;
+    wallet += waveIncome;
+    const walletBeforeBuild = wallet;
     const buildStep = simulatePurchases(towerMetrics, wallet, profile, builtCounts, turretConfigModule.getDamageMultiplier);
     wallet = buildStep.remainingWallet;
-    currentDps += buildStep.addedDps;
+    const waveSpend = walletBeforeBuild - wallet;
+    currentRawDps += buildStep.addedDps;
     for (const [type, value] of Object.entries(buildStep.estimatedDamageByType)) {
       estimatedDamageByType[type] = (estimatedDamageByType[type] ?? 0) + value;
     }
@@ -270,8 +285,10 @@ function run() {
     const waveDurationSec = Math.max(1, spawnDurationSec + travelDurationSec);
 
     const requiredDps = profile.totalWaveHealth / waveDurationSec;
-    const pressureIndex = currentDps / requiredDps;
-    const clearRatio = Math.min(1, pressureIndex);
+    const effectiveDps = getEffectiveDpsByDamageType(estimatedDamageByType, profile.armorWeights, turretConfigModule.getDamageMultiplier);
+    const rawPressure = currentRawDps / requiredDps;
+    const effectivePressure = effectiveDps / requiredDps;
+    const clearRatio = Math.min(1, effectivePressure);
     const realizedReward = profile.totalWaveReward * clearRatio;
     const leaks = Math.max(0, Math.round(profile.count * (1 - clearRatio)));
     previousWaveReward = realizedReward;
@@ -279,11 +296,13 @@ function run() {
     console.log(
       `${String(wave).padStart(4)} | ${String(profile.count).padStart(7)} | ${String(format(profile.avgHealth, 1)).padStart(5)} | ${String(
         format(profile.avgSpeed, 0)
-      ).padStart(8)} | ${String(format(requiredDps, 1)).padStart(6)} | ${String(format(wallet, 0)).padStart(7)} | ${String(
-        format(currentDps, 1)
-      ).padStart(8)} | ${String(format(pressureIndex, 2)).padStart(10)} | ${String(format(realizedReward, 0)).padStart(7)} | ${String(
-        leaks
-      ).padStart(5)}`
+      ).padStart(8)} | ${String(format(requiredDps, 1)).padStart(6)} | ${String(format(waveIncome, 0)).padStart(7)} | ${String(
+        format(waveSpend, 0)
+      ).padStart(6)} | ${String(format(wallet, 0)).padStart(9)} | ${String(format(currentRawDps, 1)).padStart(6)} | ${String(
+        format(effectiveDps, 1)
+      ).padStart(6)} | ${String(format(rawPressure, 2)).padStart(4)} | ${String(format(effectivePressure, 2)).padStart(4)} | ${String(
+        format(realizedReward, 0)
+      ).padStart(7)} | ${String(leaks).padStart(5)}`
     );
 
     if (showBuilds) {
@@ -305,9 +324,9 @@ function run() {
 
   console.log('');
   console.log('Interpretation:');
-  console.log('- PressureIdx < 0.9: likely too hard');
-  console.log('- PressureIdx 0.9-1.2: challenging/fair target band');
-  console.log('- PressureIdx > 1.2: likely too easy (or economy too generous)');
+  console.log('- Effective pressure < 0.9: likely too hard');
+  console.log('- Effective pressure 0.9-1.2: challenging/fair target band');
+  console.log('- Effective pressure > 1.2: likely too easy (or economy too generous)');
   console.log('');
   console.log('Per-tower L1 efficiency:');
   for (const tower of towerMetrics) {

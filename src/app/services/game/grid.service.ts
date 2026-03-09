@@ -36,7 +36,7 @@ export class GridService {
     this.grid = fixedGrid;
     this.route = fixedRoute;
 
-    this.route = this.route.reverse();
+    //this.route = this.route
 
     //for (let x = 0; x < 15; x++) {
     //  this.turrets[x] = [];

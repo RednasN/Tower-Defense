@@ -2,63 +2,63 @@
 // Source: scripts/out/balance-config.json
 export const generatedBalanceRuntimeConfig = {
   "wave": {
-    "healthGrowth": 0.06764958372339606,
-    "speedGrowth": 0.008100152503931896,
-    "earlyHealthMultiplier": 0.7228257044777274,
-    "earlySpeedMultiplier": 0.830335085587576,
+    "healthGrowth": 0.12,
+    "speedGrowth": 0.002,
+    "earlyHealthMultiplier": 0.5,
+    "earlySpeedMultiplier": 0.9950159891042858,
     "earlyWaves": 5,
-    "rewardGrowth": 0.07984302560798824,
-    "countGrowth": 0.8,
-    "spawnBaseMs": 1423.1016499595717,
-    "spawnDecayMs": 38.86743299663067,
-    "spawnMinMs": 458.835342542734
+    "rewardGrowth": 0.02,
+    "countGrowth": 1.4541108431993053,
+    "spawnBaseMs": 1115.1696321181953,
+    "spawnDecayMs": 51.84684139210731,
+    "spawnMinMs": 320
   },
   "economy": {
-    "startMoney": 102.6112164966762,
-    "reserveIntermissionBase": 11.802777431439608,
-    "reserveIntermissionPerWave": 2.8818037267774343,
-    "reserveSpawningBase": 19.481740187853575,
-    "reserveSpawningPerWave": 3.8567367708310485,
-    "reserveCleanupBase": 13.74437417741865,
-    "reserveCleanupPerWave": 1.652096690237522
+    "startMoney": 99.85012700594962,
+    "reserveIntermissionBase": 2.956111630424857,
+    "reserveIntermissionPerWave": 6.05718144653365,
+    "reserveSpawningBase": 24.35512161999941,
+    "reserveSpawningPerWave": 7.030939674656838,
+    "reserveCleanupBase": 5.698762357234955,
+    "reserveCleanupPerWave": 0.6789558302611112
   },
   "ai": {
-    "diversityPenalty": 0.49098807463422417,
-    "compositionStrength": 2.1316118561662734,
-    "upgradePreference": 0.9759431300405413,
-    "rangeUtilityPerLevel": 0.030390578024089336
+    "diversityPenalty": 0.640303390212357,
+    "compositionStrength": 2.9184913577046245,
+    "upgradePreference": 1.2921592224389316,
+    "rangeUtilityPerLevel": 0
   },
   "multipliers": {
     "turretCostByType": {
-      "BulletShooter": 1.122461996623315,
-      "RocketLauncher": 0.961999861896038,
-      "LaserTurret": 0.9037789731053636,
-      "SlowRocketLauncher": 1.0823460121173412,
-      "NuclearLauncher": 1.0889346149982884,
-      "GrenadeThrower": 1.0495615650899708
+      "BulletShooter": 1.4105210143607114,
+      "RocketLauncher": 1.0007525524822996,
+      "LaserTurret": 0.9581652228254824,
+      "SlowRocketLauncher": 1.6145132918143643,
+      "NuclearLauncher": 1.2623210849706081,
+      "GrenadeThrower": 1.2018245225539432
     },
     "turretDamageByType": {
-      "BulletShooter": 1.1173664941079915,
-      "RocketLauncher": 0.8982133682910353,
-      "LaserTurret": 0.9682933573052287,
-      "SlowRocketLauncher": 1.0621973418723791,
-      "NuclearLauncher": 0.8701270567439496,
-      "GrenadeThrower": 1.1259549905080348
+      "BulletShooter": 0.8422318285889924,
+      "RocketLauncher": 0.75,
+      "LaserTurret": 0.7560869977716357,
+      "SlowRocketLauncher": 0.8127389706671238,
+      "NuclearLauncher": 0.75,
+      "GrenadeThrower": 1.02399598127231
     },
     "turretSpeedByType": {
-      "BulletShooter": 0.9054606887511909,
-      "RocketLauncher": 0.9939602867886425,
-      "LaserTurret": 0.9371435870416462,
-      "SlowRocketLauncher": 0.9456392751634121,
-      "NuclearLauncher": 1.09019350444898,
-      "GrenadeThrower": 0.9800066449120641
+      "BulletShooter": 1.4,
+      "RocketLauncher": 1.0016620200313628,
+      "LaserTurret": 1.2952399043366312,
+      "SlowRocketLauncher": 0.75,
+      "NuclearLauncher": 0.853805374875665,
+      "GrenadeThrower": 1.0533252380974594
     },
     "damageTypeEffectiveness": {
-      "bullet": 0.9772785669378936,
-      "explosive": 1.0632886108756066,
-      "energy": 0.9316740324534476,
-      "slowExplosive": 1.0155258883163334
+      "bullet": 0.8321550746634602,
+      "explosive": 0.7,
+      "energy": 1.030267762579024,
+      "slowExplosive": 0.7082413711771368
     },
-    "upgradeCostMultiplier": 1.1145414108783007
+    "upgradeCostMultiplier": 1.455681635439396
   }
 } as const;

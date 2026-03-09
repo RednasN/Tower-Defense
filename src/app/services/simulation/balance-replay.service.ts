@@ -44,8 +44,13 @@ export type ReplayWaveRow = {
   requiredDps: number;
   wallet: number;
   builtDps: number;
+  rawBuiltDps: number;
+  effectiveBuiltDps: number;
   pressureIndex: number;
   reward: number;
+  waveIncome: number;
+  waveSpend: number;
+  savingsRate: number;
   leaks: number;
   buildSummary: string;
 };
@@ -63,6 +68,11 @@ type UpgradeCandidate = {
   nextLevels: { speedLevel: number; powerLevel: number; rangeLevel: number };
   cost: number;
   score: number;
+};
+
+type WaveEconomyStats = {
+  startWallet: number;
+  spend: number;
 };
 
 type ReplaySessionSnapshot = {
@@ -132,6 +142,7 @@ export class BalanceReplayService {
   private replayIntervalId: number | null = null;
   private lastAutoBuildAt = 0;
   private waveRows = new Map<number, ReplayWaveRow>();
+  private waveEconomy = new Map<number, WaveEconomyStats>();
   private buildLog: ReplayBuildEvent[] = [];
   private leaks = 0;
   private snapshot: ReplaySessionSnapshot | null = null;
@@ -237,6 +248,7 @@ export class BalanceReplayService {
 
   private resetReplayState(maxWaves: number, replaySpeed: number): void {
     this.waveRows.clear();
+    this.waveEconomy.clear();
     this.buildLog = [];
     this.leaks = 0;
     this.lastAutoBuildAt = 0;
@@ -275,9 +287,11 @@ export class BalanceReplayService {
 
     const waveState = this.waveService.getCurrentState();
     const now = Date.now();
+    const pressureEstimate = this.estimatePressureForWave(waveState.waveNumber);
+    const autoBuildIntervalMs = this.getAutoBuildIntervalMs(waveState, pressureEstimate);
 
-    if (now - this.lastAutoBuildAt > 350) {
-      this.autoBuild(waveState);
+    if (now - this.lastAutoBuildAt > autoBuildIntervalMs) {
+      this.autoBuild(waveState, pressureEstimate);
       this.lastAutoBuildAt = now;
     }
 
@@ -288,8 +302,8 @@ export class BalanceReplayService {
     }
   }
 
-  private autoBuild(waveState: WaveState): void {
-    const reserve = this.getReserveMoney(waveState);
+  private autoBuild(waveState: WaveState, pressureEstimate: number): void {
+    const reserve = this.getReserveMoney(waveState, pressureEstimate);
     const availableBudget = this.gameState.getMoney() - reserve;
     if (availableBudget <= 0) {
       return;
@@ -321,6 +335,7 @@ export class BalanceReplayService {
     if (bestUpgrade && bestUpgrade.score >= bestBuildScore * balanceRuntimeConfig.ai.upgradePreference) {
       this.towerService.upgradeTower(bestUpgrade.weapon, bestUpgrade.nextLevels);
       this.gameState.spendMoney(bestUpgrade.cost);
+      this.recordWaveSpend(waveState.waveNumber, bestUpgrade.cost);
       return;
     }
 
@@ -331,6 +346,7 @@ export class BalanceReplayService {
 
     this.towerService.createTower(bestTower.type, cell.x, cell.y, 1, 1, 1);
     this.gameState.spendMoney(bestTower.cost);
+    this.recordWaveSpend(waveState.waveNumber, bestTower.cost);
 
     this.buildLog.push({
       wave: waveState.waveNumber,
@@ -419,18 +435,28 @@ export class BalanceReplayService {
     const waveDurationSec = Math.max(1, spawnDurationSec + travelDurationSec);
 
     const requiredDps = profile.totalWaveHealth / waveDurationSec;
-    const builtDps = this.calculateCurrentBuiltDps();
-    const pressureIndex = requiredDps > 0 ? builtDps / requiredDps : 0;
+    const rawBuiltDps = this.calculateCurrentRawBuiltDps();
+    const effectiveBuiltDps = this.calculateCurrentEffectiveBuiltDps(profile.armorWeights);
+    const pressureIndex = requiredDps > 0 ? effectiveBuiltDps / requiredDps : 0;
+    const economy = this.getOrCreateWaveEconomy(waveState.waveNumber);
+    const wallet = this.gameState.getMoney();
+    const waveIncome = wallet - economy.startWallet + economy.spend;
+    const savingsRate = waveIncome > 0 ? (wallet - economy.startWallet) / waveIncome : 0;
     const row: ReplayWaveRow = {
       wave: waveState.waveNumber,
       enemyCount: profile.count,
       avgHealth: profile.avgHealth,
       avgSpeed: profile.avgSpeed,
       requiredDps,
-      wallet: this.gameState.getMoney(),
-      builtDps,
+      wallet,
+      builtDps: effectiveBuiltDps,
+      rawBuiltDps,
+      effectiveBuiltDps,
       pressureIndex,
       reward: profile.totalWaveReward,
+      waveIncome,
+      waveSpend: economy.spend,
+      savingsRate,
       leaks: this.leaks,
       buildSummary: this.toBuildSummary(waveState.waveNumber),
     };
@@ -438,7 +464,7 @@ export class BalanceReplayService {
     this.waveRows.set(waveState.waveNumber, row);
     this.pushState({
       currentWave: waveState.waveNumber,
-      money: this.gameState.getMoney(),
+      money: wallet,
       baseHealth: this.gameState.getBaseHealth(),
       leaks: this.leaks,
       buildLog: [...this.buildLog],
@@ -447,8 +473,18 @@ export class BalanceReplayService {
     });
   }
 
-  private calculateCurrentBuiltDps(): number {
+  private calculateCurrentRawBuiltDps(): number {
     return this.towerService.getWeapons().reduce((total, weapon) => total + weapon.damage / (weapon.speed / 1000), 0);
+  }
+
+  private calculateCurrentEffectiveBuiltDps(enemyArmorWeights: Partial<Record<ArmorClass, number>>): number {
+    return this.towerService.getWeapons().reduce((total, weapon) => {
+      const damageType = getDamageTypeForWeaponType(weapon.type);
+      const rawDps = weapon.damage / (weapon.speed / 1000);
+      const coverage = this.getCoverageWeight(damageType, enemyArmorWeights);
+      const utility = 1 + balanceRuntimeConfig.ai.rangeUtilityPerLevel * Math.max(0, weapon.rangeLevel - 1);
+      return total + rawDps * coverage * utility;
+    }, 0);
   }
 
   private toBuildSummary(waveNumber: number): string {
@@ -603,29 +639,87 @@ export class BalanceReplayService {
     return 1 + deficit * balanceRuntimeConfig.ai.compositionStrength;
   }
 
-  private getReserveMoney(waveState: WaveState): number {
+  private getReserveMoney(waveState: WaveState, pressureEstimate: number): number {
+    // When pressure is low, force spending by shrinking reserve.
+    // When pressure is high, keep only a small reserve to avoid runaway hoarding.
+    const pressureFactor = pressureEstimate < 1.0 ? 0.2 : pressureEstimate > 1.3 ? 0.4 : 0.65;
+
     if (waveState.phase === 'intermission') {
       if (waveState.intermissionRemainingMs <= 1200) {
         return 0;
       }
-        return Math.min(
-          90,
-          balanceRuntimeConfig.economy.reserveIntermissionBase +
-            waveState.waveNumber * balanceRuntimeConfig.economy.reserveIntermissionPerWave
-        );
+      const reserve =
+        balanceRuntimeConfig.economy.reserveIntermissionBase +
+        waveState.waveNumber * balanceRuntimeConfig.economy.reserveIntermissionPerWave;
+      return Math.max(0, Math.round(Math.min(90, reserve) * pressureFactor));
     }
 
     if (waveState.phase === 'spawning') {
-      return Math.min(
+      const reserve = Math.min(
         120,
         balanceRuntimeConfig.economy.reserveSpawningBase + waveState.waveNumber * balanceRuntimeConfig.economy.reserveSpawningPerWave
       );
+      return Math.max(0, Math.round(reserve * pressureFactor));
     }
 
-    return Math.min(
+    const reserve = Math.min(
       80,
       balanceRuntimeConfig.economy.reserveCleanupBase + waveState.waveNumber * balanceRuntimeConfig.economy.reserveCleanupPerWave
     );
+    return Math.max(0, Math.round(reserve * pressureFactor));
+  }
+
+  private getAutoBuildIntervalMs(waveState: WaveState, pressureEstimate: number): number {
+    if (waveState.phase === 'spawning') {
+      if (pressureEstimate < 1.0) {
+        return 70;
+      }
+      if (waveState.waveNumber >= 12 || pressureEstimate > 1.3) {
+        return 110;
+      }
+      if (waveState.waveNumber >= 8) {
+        return 150;
+      }
+      return 200;
+    }
+
+    if (waveState.phase === 'intermission') {
+      if (waveState.intermissionRemainingMs <= 1000) {
+        return 60;
+      }
+      return pressureEstimate < 1.0 ? 100 : 180;
+    }
+
+    return 200;
+  }
+
+  private getOrCreateWaveEconomy(waveNumber: number): WaveEconomyStats {
+    const existing = this.waveEconomy.get(waveNumber);
+    if (existing) {
+      return existing;
+    }
+
+    const created: WaveEconomyStats = {
+      startWallet: this.gameState.getMoney(),
+      spend: 0,
+    };
+    this.waveEconomy.set(waveNumber, created);
+    return created;
+  }
+
+  private recordWaveSpend(waveNumber: number, amount: number): void {
+    const waveEconomy = this.getOrCreateWaveEconomy(waveNumber);
+    waveEconomy.spend += amount;
+  }
+
+  private estimatePressureForWave(waveNumber: number): number {
+    const profile = this.expectedWaveProfile(waveNumber);
+    const spawnDurationSec = ((profile.count - 1) * this.getSpawnIntervalMs(waveNumber)) / 1000;
+    const travelDurationSec = this.computeRouteLength(this.gridService.route) / profile.avgSpeed;
+    const waveDurationSec = Math.max(1, spawnDurationSec + travelDurationSec);
+    const requiredDps = profile.totalWaveHealth / waveDurationSec;
+    const effectiveDps = this.calculateCurrentEffectiveBuiltDps(profile.armorWeights);
+    return requiredDps > 0 ? effectiveDps / requiredDps : 0;
   }
 
   private getBestUpgradeCandidate(
@@ -635,6 +729,9 @@ export class BalanceReplayService {
     waveNumber: number
   ): UpgradeCandidate | null {
     const candidates: UpgradeCandidate[] = [];
+    const totalCells = this.gridService.grid.reduce((sum, column) => sum + column.length, 0);
+    const occupiedRatio = totalCells > 0 ? this.towerService.getWeapons().length / totalCells : 0;
+    const occupancyBoost = 1 + occupiedRatio * 0.6;
 
     for (const weapon of this.towerService.getWeapons()) {
       const config = getTurretConfig(weapon.type);
@@ -649,10 +746,11 @@ export class BalanceReplayService {
           const upgradedDps = newDamage / (weapon.speed / 1000);
           const dpsGain = upgradedDps - currentDps;
           if (dpsGain > 0) {
-          const score =
-            (dpsGain / cost) *
-            this.getCoverageWeight(damageType, enemyArmorWeights) *
-            this.getCompositionBoost(damageType, currentMix, waveNumber);
+            const score =
+              (dpsGain / cost) *
+              this.getCoverageWeight(damageType, enemyArmorWeights) *
+              this.getCompositionBoost(damageType, currentMix, waveNumber) *
+              occupancyBoost;
             candidates.push({
               weapon,
               nextLevels: {
@@ -675,10 +773,11 @@ export class BalanceReplayService {
           const upgradedDps = weapon.damage / (newSpeed / 1000);
           const dpsGain = upgradedDps - currentDps;
           if (dpsGain > 0) {
-          const score =
-            (dpsGain / cost) *
-            this.getCoverageWeight(damageType, enemyArmorWeights) *
-            this.getCompositionBoost(damageType, currentMix, waveNumber);
+            const score =
+              (dpsGain / cost) *
+              this.getCoverageWeight(damageType, enemyArmorWeights) *
+              this.getCompositionBoost(damageType, currentMix, waveNumber) *
+              occupancyBoost;
             candidates.push({
               weapon,
               nextLevels: {
@@ -703,7 +802,8 @@ export class BalanceReplayService {
             const score =
               (dpsGain / cost) *
               this.getCoverageWeight(damageType, enemyArmorWeights) *
-              this.getCompositionBoost(damageType, currentMix, waveNumber);
+              this.getCompositionBoost(damageType, currentMix, waveNumber) *
+              occupancyBoost;
             candidates.push({
               weapon,
               nextLevels: {
@@ -731,6 +831,7 @@ export class BalanceReplayService {
     count: number;
     avgHealth: number;
     avgSpeed: number;
+    armorWeights: Partial<Record<ArmorClass, number>>;
     totalWaveHealth: number;
     totalWaveReward: number;
   } {
@@ -738,27 +839,33 @@ export class BalanceReplayService {
     const count = this.getWaveEnemyCount(waveNumber);
     const weights = this.getNormalizedWeights(this.getEnemyWeights(unlocked, waveNumber));
 
-    const healthMultiplier = 1 + (waveNumber - 1) * balanceRuntimeConfig.wave.healthGrowth;
+    const lateWaveHealthFactor = waveNumber >= 12 ? 1.12 : 1;
+    const lateWaveRewardFactor = waveNumber >= 12 ? 0.82 : 1;
+
+    const healthMultiplier = (1 + (waveNumber - 1) * balanceRuntimeConfig.wave.healthGrowth) * lateWaveHealthFactor;
     const speedMultiplier = Math.min(1.45, 1 + (waveNumber - 1) * balanceRuntimeConfig.wave.speedGrowth);
     const earlyWaveHealthMultiplier = waveNumber <= balanceRuntimeConfig.wave.earlyWaves ? balanceRuntimeConfig.wave.earlyHealthMultiplier : 1;
     const earlyWaveSpeedMultiplier = waveNumber <= balanceRuntimeConfig.wave.earlyWaves ? balanceRuntimeConfig.wave.earlySpeedMultiplier : 1;
-    const rewardMultiplier = 1 + (waveNumber - 1) * balanceRuntimeConfig.wave.rewardGrowth;
+    const rewardMultiplier = (1 + (waveNumber - 1) * balanceRuntimeConfig.wave.rewardGrowth) * lateWaveRewardFactor;
 
     let avgHealth = 0;
     let avgSpeed = 0;
     let avgReward = 0;
+    const armorWeights: Partial<Record<ArmorClass, number>> = {};
     for (let i = 0; i < unlocked.length; i++) {
       const enemy = unlocked[i];
       const weight = weights[i];
       avgHealth += enemy.health * healthMultiplier * earlyWaveHealthMultiplier * weight;
       avgSpeed += enemy.speed * speedMultiplier * earlyWaveSpeedMultiplier * weight;
       avgReward += enemy.reward * rewardMultiplier * weight;
+      armorWeights[enemy.armorClass] = (armorWeights[enemy.armorClass] ?? 0) + weight;
     }
 
     return {
       count,
       avgHealth,
       avgSpeed,
+      armorWeights,
       totalWaveHealth: avgHealth * count,
       totalWaveReward: avgReward * count,
     };

@@ -565,6 +565,7 @@ function simulateRun({
   let previousReward = 0;
   let reachedWave = 0;
   let totalLeaks = 0;
+  let terminalEffectivePressure = 0;
 
   for (let waveNumber = 1; waveNumber <= maxWaves; waveNumber++) {
     wallet += previousReward;
@@ -636,6 +637,7 @@ function simulateRun({
     }, 0);
 
     const pressure = requiredDps > 0 ? builtEffectiveDps / requiredDps : 0;
+    terminalEffectivePressure = pressure;
     const clearRatio = clamp(Math.pow(Math.max(0, pressure), 0.85), 0, 1);
 
     const leaks = Math.max(0, Math.round(profile.count * (1 - clearRatio)));
@@ -660,13 +662,23 @@ function simulateRun({
   const diversity = totalBuilt > 0 ? uniqueTypes / 6 : 0;
 
   const reachPenalty = Math.abs(reachedWave - targetWave) * 8;
-  const overEasyPenalty = reachedWave >= maxWaves ? Math.max(0, wallet - 180) * 0.22 : 0;
+  const overEasyPenalty = reachedWave >= maxWaves ? Math.max(0, wallet - 120) * 0.35 : 0;
+  const terminalPressurePenalty = reachedWave >= maxWaves ? Math.max(0, terminalEffectivePressure - 1.3) * 120 : 0;
+  const terminalWalletPenalty = reachedWave >= maxWaves ? Math.max(0, wallet - 80) * 0.5 : 0;
   const hardPenalty = reachedWave < 8 ? (8 - reachedWave) * 35 : 0;
-  const moneyPenalty = Math.max(0, wallet - 120) * 0.08;
+  const moneyPenalty = Math.max(0, wallet - 90) * 0.12;
   const leakPenalty = totalLeaks * 0.9;
   const diversityPenalty = (1 - diversity) * 80;
 
-  const score = reachPenalty + overEasyPenalty + hardPenalty + moneyPenalty + leakPenalty + diversityPenalty;
+  const score =
+    reachPenalty +
+    overEasyPenalty +
+    terminalPressurePenalty +
+    terminalWalletPenalty +
+    hardPenalty +
+    moneyPenalty +
+    leakPenalty +
+    diversityPenalty;
 
   return {
     seed,
@@ -675,6 +687,7 @@ function simulateRun({
     baseHealth,
     totalLeaks,
     diversity,
+    terminalEffectivePressure,
     score,
   };
 }
@@ -706,6 +719,7 @@ function evaluateCandidate({ candidate, seeds, maxWaves, targetWave, moduleRef, 
     avgWallet: mean('wallet'),
     avgLeaks: mean('totalLeaks'),
     avgDiversity: mean('diversity'),
+    avgTerminalPressure: mean('terminalEffectivePressure'),
     runs,
   };
 }
@@ -768,11 +782,13 @@ function main() {
 
     const elites = scored.slice(0, Math.max(4, Math.floor(population * 0.18)));
 
-    if (verbose || gen === 1 || gen === generations || gen % 5 === 0) {
-      const top = scored[0];
-      console.log(
-        `Gen ${String(gen).padStart(2)} | score=${format(top.metrics.score, 2)} | avgWave=${format(top.metrics.avgReachedWave, 2)} | avgWallet=${format(top.metrics.avgWallet, 1)} | avgLeaks=${format(top.metrics.avgLeaks, 2)} | diversity=${format(top.metrics.avgDiversity, 3)}`
-      );
+    const top = scored[0];
+    console.log(
+      `Generation ${String(gen).padStart(2)} finished | score=${format(top.metrics.score, 2)} | avgWave=${format(top.metrics.avgReachedWave, 2)} | avgWallet=${format(top.metrics.avgWallet, 1)} | avgLeaks=${format(top.metrics.avgLeaks, 2)} | avgEffP=${format(top.metrics.avgTerminalPressure, 2)} | diversity=${format(top.metrics.avgDiversity, 3)}`
+    );
+
+    if (verbose && gen % 10 === 0) {
+      console.log(`Top candidate snapshot at generation ${gen}:`, JSON.stringify(top.candidate));
     }
 
     const next = elites.map(item => cloneCandidate(item.candidate));
@@ -805,6 +821,7 @@ function main() {
       avgWallet: best.metrics.avgWallet,
       avgLeaks: best.metrics.avgLeaks,
       avgDiversity: best.metrics.avgDiversity,
+      avgTerminalPressure: best.metrics.avgTerminalPressure,
     },
     bestCandidate: best.candidate,
     runs: best.metrics.runs,
@@ -826,6 +843,7 @@ function main() {
   console.log(`Average reached wave: ${format(best.metrics.avgReachedWave, 2)}`);
   console.log(`Average end wallet: ${format(best.metrics.avgWallet, 1)}`);
   console.log(`Average leaks: ${format(best.metrics.avgLeaks, 2)}`);
+  console.log(`Average terminal effective pressure: ${format(best.metrics.avgTerminalPressure, 2)}`);
   console.log(`Average diversity: ${format(best.metrics.avgDiversity, 3)}`);
   console.log(`\nWrote: ${path.relative(ROOT, jsonPath)}`);
   console.log(`Wrote: ${path.relative(ROOT, snippetPath)}`);

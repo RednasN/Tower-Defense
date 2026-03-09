@@ -289,11 +289,14 @@ export class WaveService {
     this.spawnQueue.splice(queueIndex, 1);
     const { enemyConfig, waveNumber } = queuedEnemy;
 
-    const healthMultiplier = 1 + (waveNumber - 1) * balanceRuntimeConfig.wave.healthGrowth;
+    const lateWaveHealthFactor = waveNumber >= 12 ? 1.12 : 1;
+    const lateWaveRewardFactor = waveNumber >= 12 ? 0.82 : 1;
+
+    const healthMultiplier = (1 + (waveNumber - 1) * balanceRuntimeConfig.wave.healthGrowth) * lateWaveHealthFactor;
     const speedMultiplier = Math.min(1.45, 1 + (waveNumber - 1) * balanceRuntimeConfig.wave.speedGrowth);
     const earlyWaveHealthMultiplier = waveNumber <= balanceRuntimeConfig.wave.earlyWaves ? balanceRuntimeConfig.wave.earlyHealthMultiplier : 1;
     const earlyWaveSpeedMultiplier = waveNumber <= balanceRuntimeConfig.wave.earlyWaves ? balanceRuntimeConfig.wave.earlySpeedMultiplier : 1;
-    const rewardMultiplier = 1 + (waveNumber - 1) * balanceRuntimeConfig.wave.rewardGrowth;
+    const rewardMultiplier = (1 + (waveNumber - 1) * balanceRuntimeConfig.wave.rewardGrowth) * lateWaveRewardFactor;
     const spawnHealth = Math.round(enemyConfig.health * healthMultiplier * earlyWaveHealthMultiplier);
     const spawnSpeed = Math.round(enemyConfig.speed * speedMultiplier * earlyWaveSpeedMultiplier);
     const spawnReward = Math.round(enemyConfig.reward * rewardMultiplier);

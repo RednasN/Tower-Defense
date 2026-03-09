@@ -44,8 +44,12 @@
             <th>Avg Speed</th>
             <th>Req DPS</th>
             <th>Wallet</th>
-            <th>Built DPS</th>
+            <th>Eff DPS</th>
+            <th>Raw DPS</th>
             <th>Pressure</th>
+            <th>Income</th>
+            <th>Spend</th>
+            <th>Savings</th>
             <th>Leaks</th>
             <th>Builds</th>
           </tr>
@@ -58,10 +62,14 @@
             <td>{{ row.avgSpeed | number: '1.0-0' }}</td>
             <td>{{ row.requiredDps | number: '1.1-1' }}</td>
             <td>{{ row.wallet | number: '1.0-0' }}</td>
-            <td>{{ row.builtDps | number: '1.1-1' }}</td>
+            <td>{{ row.effectiveBuiltDps | number: '1.1-1' }}</td>
+            <td>{{ row.rawBuiltDps | number: '1.1-1' }}</td>
             <td [class.pressure-hard]="row.pressureIndex < 0.9" [class.pressure-easy]="row.pressureIndex > 1.2">
               {{ row.pressureIndex | number: '1.2-2' }}
             </td>
+            <td>{{ row.waveIncome | number: '1.0-0' }}</td>
+            <td>{{ row.waveSpend | number: '1.0-0' }}</td>
+            <td>{{ row.savingsRate | percent: '1.0-0' }}</td>
             <td>{{ row.leaks }}</td>
             <td>{{ row.buildSummary }}</td>
           </tr>
