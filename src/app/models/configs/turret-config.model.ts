@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
 import { WeaponType } from '../weapons/weapon.model';
-import { balanceRuntimeConfig } from './balance-runtime-config';
 
 export enum UpgradeType {
   Range = 'range',
@@ -21,6 +20,13 @@ export enum DamageType {
   Energy = 'energy',
   SlowExplosive = 'slowExplosive',
 }
+
+const EASY_DAMAGE_TYPE_EFFECTIVENESS = {
+  [DamageType.Bullet]: 1.4,
+  [DamageType.Explosive]: 1.4,
+  [DamageType.Energy]: 1.4,
+  [DamageType.SlowExplosive]: 1.4,
+} as const;
 
 export type DamageMultiplierMatrix = Record<DamageType, Partial<Record<ArmorClass, number>>>;
 
@@ -53,7 +59,7 @@ export const damageMultipliers: DamageMultiplierMatrix = {
 
 export function getDamageMultiplier(damageType: DamageType, armorClass: ArmorClass): number {
   const base = damageMultipliers[damageType][armorClass] ?? 1;
-  return base * (balanceRuntimeConfig.multipliers.damageTypeEffectiveness[damageType] ?? 1);
+  return base * (EASY_DAMAGE_TYPE_EFFECTIVENESS[damageType] ?? 1);
 }
 
 export function getDamageTypeForWeaponType(weaponType: WeaponType): DamageType {
@@ -456,7 +462,7 @@ export function getTurretConfigs(): TurretConfig[] {
     grenadeThrowerConfig,
   ];
 
-  return configs.map(config => applyRuntimeMultipliers(config));
+  return configs;
 }
 
 export function getTurretConfig(type: WeaponType): TurretConfig {
@@ -479,35 +485,5 @@ export function getTurretConfig(type: WeaponType): TurretConfig {
     }
   };
 
-  return applyRuntimeMultipliers(resolveBaseConfig());
-}
-
-function applyRuntimeMultipliers(config: TurretConfig): TurretConfig {
-  const damageMultiplier = balanceRuntimeConfig.multipliers.turretDamageByType[config.type] ?? 1;
-  const speedMultiplier = balanceRuntimeConfig.multipliers.turretSpeedByType[config.type] ?? 1;
-  const costMultiplier = balanceRuntimeConfig.multipliers.turretCostByType[config.type] ?? 1;
-  const upgradeCostMultiplier = balanceRuntimeConfig.multipliers.upgradeCostMultiplier;
-
-  return {
-    ...config,
-    cost: Math.max(1, Math.round(config.cost * costMultiplier)),
-    upgrades: config.upgrades.map(upgrade => ({
-      ...upgrade,
-      details: upgrade.details.map(detail => {
-        let value = detail.value;
-        if (upgrade.type === UpgradeType.Damage) {
-          value = detail.value * damageMultiplier;
-        }
-        if (upgrade.type === UpgradeType.Speed) {
-          value = detail.value / speedMultiplier;
-        }
-
-        return {
-          ...detail,
-          cost: Math.max(1, Math.round(detail.cost * upgradeCostMultiplier)),
-          value,
-        };
-      }),
-    })),
-  };
+  return resolveBaseConfig();
 }

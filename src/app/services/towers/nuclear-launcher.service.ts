@@ -49,7 +49,7 @@ export class NuclearLauncherService extends WeaponService {
       weapon.gridY,
       weapon.focusedIndex,
       weapon.damage,
-      250,
+      500,
       getDamageTypeForWeaponType(weapon.type)
     );
     this.projectileService.addProjectile(bullet);

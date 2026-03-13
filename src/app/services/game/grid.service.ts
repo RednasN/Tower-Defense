@@ -35,44 +35,7 @@ export class GridService {
 
     this.grid = fixedGrid;
     this.route = fixedRoute;
-
-    //this.route = this.route
-
-    //for (let x = 0; x < 15; x++) {
-    //  this.turrets[x] = [];
-    //  for (let y = 0; y < 15; y++) {
-    //    this.turrets[x][y] = null;
-    //   }
-    // }
   }
-
-  //public calculateTurrets(): void {
-  //  for (const turretRow of this.turrets) {
-  //   for (const turret of turretRow) {
-  //     if (turret !== null) {
-  //        turret.calculate();
-  //      }
-  //    }
-  //  }
-  //}
-
-  //public calculateEnemies(): void {
-  //  for (const enemy of this.enemies) {
-  //     enemy.calculate();
-  //  }
-  //}
-
-  //public calculateExplosions(): void {
-  //  for (const explosion of this.explosions) {
-  //    explosion.calculate();
-  //  }
-  //}
-
-  //public calculateBullets(): void {
-  //  for (const bullet of this.bullets) {
-  //    bullet.calculate();
-  //  }
-  //}
 
   public drawAssets(): void {
     if (this.selectedCell !== null) {
@@ -82,34 +45,6 @@ export class GridService {
       this.render(this.imageService.imgSurrounder, drawAssetx, drawAssety);
     }
   }
-
-  //public drawBullets(): void {
-  //  for (const bullet of this.bullets) {
-  //    bullet.draw();
-  //  }
-  // }
-
-  //public drawTurrets(): void {
-  //  for (const turretRow of this.turrets) {
-  //    for (const turret of turretRow) {
-  //      if (turret !== null) {
-  //        turret.draw();
-  //      }
-  //    }
-  //  }
-  //}
-
-  //public drawExplosions(): void {
-  //  for (const explosion of this.explosions) {
-  //    explosion.draw();
-  //  }
-  //}
-
-  //public drawEnemies(): void {
-  //  for (const enemy of this.enemies) {
-  //    enemy.draw();
-  //  }
-  //}
 
   public draw(): void {
     if (this.grid_width === null && this.grid_height === null) {
@@ -217,16 +152,6 @@ export class GridService {
       }
       this.grid.push(gridRow);
     }
-  }
-
-  public getSnapshot(): { selectedCell: Cell | null } {
-    return {
-      selectedCell: this.selectedCell ? structuredClone(this.selectedCell) : null,
-    };
-  }
-
-  public restoreSnapshot(snapshot: { selectedCell: Cell | null }): void {
-    this.selectedCell = snapshot.selectedCell;
   }
 }
 

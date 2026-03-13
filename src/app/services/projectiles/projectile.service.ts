@@ -108,14 +108,4 @@ export class ProjectileService {
       }
     });
   }
-
-  public getSnapshot(): { projectiles: Projectile[] } {
-    return {
-      projectiles: structuredClone(this.projectiles),
-    };
-  }
-
-  public restoreSnapshot(snapshot: { projectiles: Projectile[] }): void {
-    this.projectiles = structuredClone(snapshot.projectiles);
-  }
 }

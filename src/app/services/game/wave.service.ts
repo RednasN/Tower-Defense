@@ -3,25 +3,17 @@ import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 import { EnemyConfig, EnemyType, enemyConfigs } from '../../models/configs/turret-config.model';
-import { balanceRuntimeConfig } from '../../models/configs/balance-runtime-config';
 import { EnemyTank } from '../../models/enemies/enemy-tank.model';
 import { EnemyEscapedEvent, WaveEnemySpawnPlan, WaveState } from '../../models/game/wave.model';
 import { EnemyService } from '../enemies/enemy.service';
+
 import { ImageService } from './image.service';
+
+const EASY_SPAWN_INTERVAL_MS = 1600;
 
 type WaveQueueEntry = {
   enemyConfig: EnemyConfig;
   waveNumber: number;
-};
-
-export type WaveServiceSnapshot = {
-  waveState: WaveState;
-  currentSpawnPlan: WaveEnemySpawnPlan[];
-  spawnQueue: WaveQueueEntry[];
-  spawnTimerMs: number;
-  enemyTypeByEnemyEntries: [EnemyTank, EnemyType][];
-  waveNumberByEnemyEntries: [EnemyTank, number][];
-  reportedEscapes: EnemyTank[];
 };
 
 @Injectable({
@@ -170,41 +162,6 @@ export class WaveService {
     return this.waveState.value;
   }
 
-  public getSnapshot(): WaveServiceSnapshot {
-    return {
-      waveState: structuredClone(this.waveState.value),
-      currentSpawnPlan: [...this.currentSpawnPlan],
-      spawnQueue: [...this.spawnQueue],
-      spawnTimerMs: this.spawnTimerMs,
-      enemyTypeByEnemyEntries: Array.from(this.enemyTypeByEnemy.entries()),
-      waveNumberByEnemyEntries: Array.from(this.waveNumberByEnemy.entries()),
-      reportedEscapes: Array.from(this.reportedEscapes.values()),
-    };
-  }
-
-  public restoreSnapshot(snapshot: WaveServiceSnapshot): void {
-    this.currentSpawnPlan = [...snapshot.currentSpawnPlan];
-    this.spawnQueue = [...snapshot.spawnQueue];
-    this.spawnTimerMs = snapshot.spawnTimerMs;
-
-    this.enemyTypeByEnemy.clear();
-    for (const [enemy, type] of snapshot.enemyTypeByEnemyEntries) {
-      this.enemyTypeByEnemy.set(enemy, type);
-    }
-
-    this.waveNumberByEnemy.clear();
-    for (const [enemy, waveNumber] of snapshot.waveNumberByEnemyEntries) {
-      this.waveNumberByEnemy.set(enemy, waveNumber);
-    }
-
-    this.reportedEscapes.clear();
-    for (const escapedEnemy of snapshot.reportedEscapes) {
-      this.reportedEscapes.add(escapedEnemy);
-    }
-
-    this.waveState.next(structuredClone(snapshot.waveState));
-  }
-
   private startSpawningPhase(waveNumber: number): void {
     this.currentSpawnPlan = this.createWaveSpawnPlan(waveNumber);
     this.spawnQueue = this.createWaveQueueEntries(this.currentSpawnPlan, waveNumber);
@@ -248,11 +205,10 @@ export class WaveService {
 
   private createWaveSpawnPlan(waveNumber: number): WaveEnemySpawnPlan[] {
     const unlockedEnemyConfigs = this.getUnlockedEnemyConfigs(waveNumber);
-    const totalEnemies = this.getWaveEnemyCount(waveNumber);
     const quantities = new Map<EnemyType, number>();
 
-    for (let pick = 0; pick < totalEnemies; pick++) {
-      const pickedEnemy = this.pickWeightedEnemy(unlockedEnemyConfigs, waveNumber);
+    for (let pick = 0; pick < 2; pick++) {
+      const pickedEnemy = this.pickRandomEnemy(unlockedEnemyConfigs);
       quantities.set(pickedEnemy.type, (quantities.get(pickedEnemy.type) ?? 0) + 1);
     }
 
@@ -264,19 +220,9 @@ export class WaveService {
       }));
   }
 
-  private pickWeightedEnemy(unlockedEnemyConfigs: typeof enemyConfigs, waveNumber: number) {
-    const weights = unlockedEnemyConfigs.map((_, index) => 1 + index * 0.25 + (waveNumber - 1) * index * 0.03);
-    const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
-    let roll = Math.random() * totalWeight;
-
-    for (let index = 0; index < unlockedEnemyConfigs.length; index++) {
-      roll -= weights[index];
-      if (roll <= 0) {
-        return unlockedEnemyConfigs[index];
-      }
-    }
-
-    return unlockedEnemyConfigs[unlockedEnemyConfigs.length - 1];
+  private pickRandomEnemy(unlockedEnemyConfigs: typeof enemyConfigs) {
+    const index = Math.floor(Math.random() * unlockedEnemyConfigs.length);
+    return unlockedEnemyConfigs[index] ?? enemyConfigs[0];
   }
 
   private spawnNextEnemy(): number | null {
@@ -289,27 +235,13 @@ export class WaveService {
     this.spawnQueue.splice(queueIndex, 1);
     const { enemyConfig, waveNumber } = queuedEnemy;
 
-    const lateWaveHealthFactor = waveNumber >= 12 ? 1.12 : 1;
-    const lateWaveRewardFactor = waveNumber >= 12 ? 0.82 : 1;
-
-    const healthMultiplier = (1 + (waveNumber - 1) * balanceRuntimeConfig.wave.healthGrowth) * lateWaveHealthFactor;
-    const speedMultiplier = Math.min(1.45, 1 + (waveNumber - 1) * balanceRuntimeConfig.wave.speedGrowth);
-    const earlyWaveHealthMultiplier = waveNumber <= balanceRuntimeConfig.wave.earlyWaves ? balanceRuntimeConfig.wave.earlyHealthMultiplier : 1;
-    const earlyWaveSpeedMultiplier = waveNumber <= balanceRuntimeConfig.wave.earlyWaves ? balanceRuntimeConfig.wave.earlySpeedMultiplier : 1;
-    const rewardMultiplier = (1 + (waveNumber - 1) * balanceRuntimeConfig.wave.rewardGrowth) * lateWaveRewardFactor;
-    const spawnHealth = Math.round(enemyConfig.health * healthMultiplier * earlyWaveHealthMultiplier);
-    const spawnSpeed = Math.round(enemyConfig.speed * speedMultiplier * earlyWaveSpeedMultiplier);
-    const spawnReward = Math.round(enemyConfig.reward * rewardMultiplier);
+    const spawnHealth = enemyConfig.health;
+    const spawnSpeed = enemyConfig.speed;
+    const spawnReward = enemyConfig.reward;
 
     const imageIndex = this.imageService.enemies.findIndex(enemy => enemy.name === enemyConfig.imageName);
 
-    this.enemyService.createEnemyTank(
-      spawnReward,
-      spawnHealth,
-      imageIndex >= 0 ? imageIndex : 0,
-      enemyConfig.armorClass,
-      spawnSpeed
-    );
+    this.enemyService.createEnemyTank(spawnReward, spawnHealth, imageIndex >= 0 ? imageIndex : 0, enemyConfig.armorClass, spawnSpeed);
 
     const spawnedEnemy = this.enemyService.enemies[this.enemyService.enemies.length - 1];
     if (spawnedEnemy) {
@@ -321,36 +253,14 @@ export class WaveService {
   }
 
   private getSpawnIntervalMs(waveNumber: number): number {
-    return Math.max(
-      balanceRuntimeConfig.wave.spawnMinMs,
-      balanceRuntimeConfig.wave.spawnBaseMs - (waveNumber - 1) * balanceRuntimeConfig.wave.spawnDecayMs
-    );
+    return EASY_SPAWN_INTERVAL_MS;
   }
 
   private getWaveEnemyCount(waveNumber: number): number {
-    return waveNumber === 1 ? 2 : 3 + Math.floor((waveNumber - 1) * balanceRuntimeConfig.wave.countGrowth);
+    return 2;
   }
 
   private getUnlockedEnemyConfigs(waveNumber: number): typeof enemyConfigs {
-    if (waveNumber <= 3) {
-      return enemyConfigs.slice(0, 1);
-    }
-    if (waveNumber <= 5) {
-      return enemyConfigs.slice(0, 2);
-    }
-    if (waveNumber <= 7) {
-      return enemyConfigs.slice(0, 3);
-    }
-    if (waveNumber <= 9) {
-      return enemyConfigs.slice(0, 5);
-    }
-    if (waveNumber <= 11) {
-      return enemyConfigs.slice(0, 7);
-    }
-    if (waveNumber <= 13) {
-      return enemyConfigs.slice(0, 9);
-    }
-
     return enemyConfigs;
   }
 

@@ -82,17 +82,6 @@ export class EnemyService {
     return this.enemies.find(enemy => enemy.lives > 0);
   }
 
-  public getSnapshot(): { enemies: EnemyTank[] } {
-    return {
-      enemies: structuredClone(this.enemies),
-    };
-  }
-
-  public restoreSnapshot(snapshot: { enemies: EnemyTank[] }): void {
-    this.enemies = structuredClone(snapshot.enemies);
-    this.resetDamageStats();
-  }
-
   public getDamageStats(): Record<DamageType, number> {
     return { ...this.damageByType };
   }

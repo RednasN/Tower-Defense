@@ -13,7 +13,6 @@ import {
 import { CanvasService } from '../game/canvas.service';
 import { GridService } from '../game/grid.service';
 import { ImageService } from '../game/image.service';
-import { TurretConfigService } from './turret-config.service';
 
 import { BasicTurretService } from './basic-turret.service';
 import { GrenadeThrowerService } from './grenade-thrower.service';
@@ -21,6 +20,7 @@ import { LaserTurretService } from './laser-turret.service';
 import { NuclearLauncherService } from './nuclear-launcher.service';
 import { RocketLauncherService } from './rocket-launcher.service';
 import { SlowRocketLauncherService } from './slow-rocket-launcher.service';
+import { TurretConfigService } from './turret-config.service';
 
 @Injectable({
   providedIn: 'root',
@@ -108,26 +108,6 @@ export class TowerService {
 
   public getWeapons(): readonly Weapon[] {
     return this.weapons;
-  }
-
-  public getSnapshot(): { weapons: Weapon[]; selectedWeapon: Weapon | null } {
-    return {
-      weapons: structuredClone(this.weapons),
-      selectedWeapon: this.selectedWeapon ? structuredClone(this.selectedWeapon) : null,
-    };
-  }
-
-  public restoreSnapshot(snapshot: { weapons: Weapon[]; selectedWeapon: Weapon | null }): void {
-    this.weapons = structuredClone(snapshot.weapons);
-    if (!snapshot.selectedWeapon) {
-      this.selectedWeapon = null;
-      return;
-    }
-
-    this.selectedWeapon =
-      this.weapons.find(
-        weapon => weapon.gridX === snapshot.selectedWeapon!.gridX && weapon.gridY === snapshot.selectedWeapon!.gridY
-      ) ?? null;
   }
 
   public upgradeTower(weapon: Weapon, levels: { speedLevel: number; powerLevel: number; rangeLevel: number }): void {
