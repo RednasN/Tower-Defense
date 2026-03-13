@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
+import { ProjectileType } from '../projectiles/projectile-type.model';
 import { WeaponType } from '../weapons/weapon.model';
 
 export enum UpgradeType {
@@ -94,6 +95,8 @@ export type TurretConfig = {
   imageSrc: string;
   cost: number;
   type: WeaponType;
+  projectileType: ProjectileType;
+  projectileSpeed: number | null;
   upgrades: UpgradeDetails[];
 };
 
@@ -228,6 +231,8 @@ export const rocketLauncherConfig: TurretConfig = {
   type: WeaponType.RocketLauncher,
   imageSrc: './assets/turrets/rocket-launcher-basic.png',
   cost: 35,
+  projectileType: ProjectileType.Rocket,
+  projectileSpeed: 125,
   upgrades: [
     {
       type: UpgradeType.Range,
@@ -266,6 +271,8 @@ export const bulletShooterConfig: TurretConfig = {
   type: WeaponType.BulletShooter,
   imageSrc: './assets/turrets/turret.png',
   cost: 25,
+  projectileType: ProjectileType.Bullet,
+  projectileSpeed: 250,
   upgrades: [
     {
       type: UpgradeType.Range,
@@ -304,6 +311,8 @@ export const laserTurretConfig: TurretConfig = {
   type: WeaponType.LaserTurret,
   imageSrc: './assets/turrets/laser-shooter.png',
   cost: 38,
+  projectileType: ProjectileType.Laser,
+  projectileSpeed: null,
   upgrades: [
     {
       type: UpgradeType.Range,
@@ -342,6 +351,8 @@ export const slowRocketLauncherConfig: TurretConfig = {
   type: WeaponType.SlowRocketLauncher,
   imageSrc: './assets/turrets/slow-turret.png',
   cost: 33,
+  projectileType: ProjectileType.SlowRocket,
+  projectileSpeed: 125,
   upgrades: [
     {
       type: UpgradeType.Range,
@@ -380,6 +391,8 @@ export const nuclearLauncherConfig: TurretConfig = {
   type: WeaponType.NuclearLauncher,
   cost: 50,
   imageSrc: './assets/turrets/nuclear-turret.png',
+  projectileType: ProjectileType.NuclearBullet,
+  projectileSpeed: 500,
   upgrades: [
     {
       type: UpgradeType.Range,
@@ -418,6 +431,8 @@ export const grenadeThrowerConfig: TurretConfig = {
   type: WeaponType.GrenadeThrower,
   imageSrc: './assets/turrets/grenade-thrower.png',
   cost: 32,
+  projectileType: ProjectileType.GrenadeMine,
+  projectileSpeed: null,
   upgrades: [
     {
       type: UpgradeType.Range,

@@ -1,16 +1,7 @@
 import { DamageType } from '../configs/turret-config.model';
+import { ProjectileType } from './projectile-type.model';
 
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
-export enum ProjectileType {
-  Base = 'Base',
-  Rocket = 'Rocket',
-  Bullet = 'Bullet',
-  Laser = 'Laser',
-  NuclearBullet = 'NuclearBullet',
-  SlowRocket = 'SlowRocket',
-  GrenadeMine = 'GrenadeMine',
-}
-
 export type BaseProjectTile = {
   type: ProjectileType;
 };
@@ -29,6 +20,7 @@ export type Rocket = BaseProjectTile & {
   damageType: DamageType;
   plusrotation: boolean | null;
   steps: number;
+  speed: number;
 };
 
 export type Bullet = BaseProjectTile & {

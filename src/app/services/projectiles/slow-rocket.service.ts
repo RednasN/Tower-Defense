@@ -2,7 +2,8 @@ import { Injectable, inject } from '@angular/core';
 
 import { DamageType } from '../../models/configs/turret-config.model';
 import { delta } from '../../models/constants';
-import { ProjectileType, Rocket } from '../../models/projectiles/projectile.model';
+import { Rocket } from '../../models/projectiles/projectile.model';
+import { ProjectileType } from '../../models/projectiles/projectile-type.model';
 import { EnemyService } from '../enemies/enemy.service';
 import { GridService } from '../game/grid.service';
 
@@ -37,6 +38,7 @@ export class SlowRocketService {
       damageType,
       plusrotation: null,
       steps: 0,
+      speed: 100,
     };
   }
 

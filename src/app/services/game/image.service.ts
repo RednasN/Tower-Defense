@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { EnemyType } from '../../models/configs/turret-config.model';
 import { RotateImage } from '../../models/image.model';
-import { ProjectileType } from '../../models/projectiles/projectile.model';
+import { ProjectileType } from '../../models/projectiles/projectile-type.model';
 import { WeaponType } from '../../models/weapons/weapon.model';
 
 @Injectable({

@@ -1,4 +1,5 @@
 import { delta } from '../../models/constants';
+import { ProjectileType } from '../../models/projectiles/projectile-type.model';
 import { Weapon, WeaponType } from '../../models/weapons/weapon.model';
 import { EnemyService } from '../enemies/enemy.service';
 import { CanvasService } from '../game/canvas.service';
@@ -42,6 +43,39 @@ export abstract class WeaponService {
     weapon.damage = stats.damage;
     weapon.speed = stats.speed;
     weapon.range = stats.range;
+  }
+
+  protected getProjectileMetadata(weaponType: WeaponType): { projectileType: ProjectileType; projectileSpeed: number | null } {
+    const turretConfig = this.turretConfigService.getTurretConfig(weaponType);
+
+    return {
+      projectileType: turretConfig.projectileType,
+      projectileSpeed: turretConfig.projectileSpeed,
+    };
+  }
+
+  protected requireProjectileSpeed(weaponType: WeaponType): number {
+    const { projectileSpeed } = this.getProjectileMetadata(weaponType);
+    if (projectileSpeed === null) {
+      throw new Error(`Turret ${weaponType} requires a projectile speed.`);
+    }
+
+    return projectileSpeed;
+  }
+
+  protected requireBulletProjectileType(
+    weaponType: WeaponType
+  ): ProjectileType.Bullet | ProjectileType.SlowRocket | ProjectileType.NuclearBullet {
+    const { projectileType } = this.getProjectileMetadata(weaponType);
+    if (
+      projectileType !== ProjectileType.Bullet &&
+      projectileType !== ProjectileType.SlowRocket &&
+      projectileType !== ProjectileType.NuclearBullet
+    ) {
+      throw new Error(`Turret ${weaponType} requires a bullet-like projectile type.`);
+    }
+
+    return projectileType;
   }
 
   public canShoot(weapon: Weapon): void {

@@ -1,7 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 
 import { getDamageTypeForWeaponType } from '../../models/configs/turret-config.model';
-import { ProjectileType } from '../../models/projectiles/projectile.model';
 import { NuclearLauncher, WeaponType } from '../../models/weapons/weapon.model';
 import { EnemyService } from '../enemies/enemy.service';
 import { CanvasService } from '../game/canvas.service';
@@ -44,12 +43,12 @@ export class NuclearLauncherService extends WeaponService {
 
   public shoot(weapon: NuclearLauncher): void {
     const bullet = this.turretBulletService.create(
-      ProjectileType.NuclearBullet,
+      this.requireBulletProjectileType(weapon.type),
       weapon.gridX,
       weapon.gridY,
       weapon.focusedIndex,
       weapon.damage,
-      500,
+      this.requireProjectileSpeed(weapon.type),
       getDamageTypeForWeaponType(weapon.type)
     );
     this.projectileService.addProjectile(bullet);

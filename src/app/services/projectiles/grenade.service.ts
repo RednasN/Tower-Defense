@@ -2,7 +2,8 @@ import { Injectable, inject } from '@angular/core';
 
 import { DamageType } from '../../models/configs/turret-config.model';
 import { delta } from '../../models/constants';
-import { ProjectileType, type Grenade } from '../../models/projectiles/projectile.model';
+import { type Grenade } from '../../models/projectiles/projectile.model';
+import { ProjectileType } from '../../models/projectiles/projectile-type.model';
 import { EnemyService } from '../enemies/enemy.service';
 import { ExplosionService } from '../explosions/explosion.service';
 

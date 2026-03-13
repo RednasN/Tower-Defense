@@ -70,14 +70,19 @@ export class RocketLauncherService extends WeaponService {
 
   public shoot(weapon: RocketLauncher): void {
     const angle = weapon.canons[Math.floor(Math.random() * weapon.canons.length)];
+    const { projectileType } = this.getProjectileMetadata(weapon.type);
     const rocket = this.rocketService.create(
       weapon.gridX,
       weapon.gridY,
       weapon.focusedIndex,
       angle,
       weapon.damage,
+      this.requireProjectileSpeed(weapon.type),
       getDamageTypeForWeaponType(weapon.type)
     );
+    if (rocket.type !== projectileType) {
+      throw new Error(`Projectile config mismatch for ${weapon.type}`);
+    }
     this.projectileService.addProjectile(rocket);
   }
 }

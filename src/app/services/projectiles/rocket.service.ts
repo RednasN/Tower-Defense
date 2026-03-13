@@ -2,7 +2,8 @@ import { Injectable, inject } from '@angular/core';
 
 import { DamageType } from '../../models/configs/turret-config.model';
 import { delta } from '../../models/constants';
-import { ProjectileType, Rocket } from '../../models/projectiles/projectile.model';
+import { Rocket } from '../../models/projectiles/projectile.model';
+import { ProjectileType } from '../../models/projectiles/projectile-type.model';
 import { EnemyService } from '../enemies/enemy.service';
 import { GridService } from '../game/grid.service';
 
@@ -13,7 +14,7 @@ export class RocketService {
   private readonly gridServcie = inject(GridService);
   private readonly enemyService = inject(EnemyService);
 
-  public create(x: number, y: number, enemyIndex: number, angle: number, damage: number, damageType: DamageType): Rocket {
+  public create(x: number, y: number, enemyIndex: number, angle: number, damage: number, speed: number, damageType: DamageType): Rocket {
     const cellHeight = this.gridServcie.grid[x][y].height / 2;
     const cellWidth = this.gridServcie.grid[x][y].width / 2;
 
@@ -37,6 +38,7 @@ export class RocketService {
       damageType,
       plusrotation: null,
       steps: 0,
+      speed,
     };
   }
 
@@ -62,7 +64,7 @@ export class RocketService {
 
     rocket.angle = normalizeAngle(rocket.angle);
 
-    const speed = rocket.locked ? 250 : 150;
+    const speed = rocket.locked ? rocket.speed * 2 : rocket.speed;
     moveTowardsTarget(rocket, speed);
 
     if (hasReachedTarget(rocket, centerEnemyX, centerEnemyY)) {

@@ -2,7 +2,8 @@ import { Injectable, inject } from '@angular/core';
 
 import { getDamageTypeForWeaponType } from '../../models/configs/turret-config.model';
 import { delta } from '../../models/constants';
-import { ProjectileType, type Grenade } from '../../models/projectiles/projectile.model';
+import { type Grenade } from '../../models/projectiles/projectile.model';
+import { ProjectileType } from '../../models/projectiles/projectile-type.model';
 import { WeaponType, type GrenadeThrower } from '../../models/weapons/weapon.model';
 import { EnemyService } from '../enemies/enemy.service';
 import { CanvasService } from '../game/canvas.service';
@@ -58,6 +59,11 @@ export class GrenadeThrowerService extends WeaponService {
   }
 
   public shoot(weapon: GrenadeThrower): void {
+    const { projectileType, projectileSpeed } = this.getProjectileMetadata(weapon.type);
+    if (projectileSpeed !== null) {
+      throw new Error(`Grenade thrower ${weapon.type} should not define a projectile speed.`);
+    }
+
     const towerCenterX = this.gridService.grid[weapon.gridX][weapon.gridY].drawx + 25;
     const towerCenterY = this.gridService.grid[weapon.gridX][weapon.gridY].drawy + 25;
 
@@ -96,6 +102,9 @@ export class GrenadeThrowerService extends WeaponService {
       weapon.damage,
       getDamageTypeForWeaponType(weapon.type)
     );
+    if (grenade.type !== projectileType) {
+      throw new Error(`Projectile config mismatch for ${weapon.type}`);
+    }
     this.projectileService.addProjectile(grenade);
   }
 }

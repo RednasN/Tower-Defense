@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 
-import { Projectile, ProjectileType } from '../../models/projectiles/projectile.model';
+import { Projectile } from '../../models/projectiles/projectile.model';
+import { ProjectileType } from '../../models/projectiles/projectile-type.model';
 import { CanvasService } from '../game/canvas.service';
 import { GridService } from '../game/grid.service';
 import { ImageService } from '../game/image.service';

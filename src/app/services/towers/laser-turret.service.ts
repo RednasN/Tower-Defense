@@ -54,6 +54,11 @@ export class LaserTurretService extends WeaponService {
   }
 
   public shoot(weapon: LaserTurret): void {
+    const { projectileType, projectileSpeed } = this.getProjectileMetadata(weapon.type);
+    if (projectileSpeed !== null) {
+      throw new Error(`Laser turret ${weapon.type} should not define a projectile speed.`);
+    }
+
     const laser = this.laserService.create(
       weapon.gridX,
       weapon.gridY,
@@ -61,6 +66,9 @@ export class LaserTurretService extends WeaponService {
       weapon.damage,
       getDamageTypeForWeaponType(weapon.type)
     );
+    if (laser.type !== projectileType) {
+      throw new Error(`Projectile config mismatch for ${weapon.type}`);
+    }
     this.projectileService.addProjectile(laser);
   }
 }
