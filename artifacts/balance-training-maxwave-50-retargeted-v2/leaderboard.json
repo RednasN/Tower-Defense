@@ -1,0 +1,32 @@
+[
+  {
+    "averageScore": -16.392833064983165,
+    "minScore": 34.15,
+    "maxScore": 93.9,
+    "averageWave": 9
+  },
+  {
+    "averageScore": -24.371391894370063,
+    "minScore": 36.309756097560964,
+    "maxScore": 77.7,
+    "averageWave": 5.85
+  },
+  {
+    "averageScore": -40.907253873471234,
+    "minScore": 26.85,
+    "maxScore": 112.4,
+    "averageWave": 14.1
+  },
+  {
+    "averageScore": -54.78490676074591,
+    "minScore": 35.77368421052631,
+    "maxScore": 66.9,
+    "averageWave": 4.15
+  },
+  {
+    "averageScore": -268.74592670778486,
+    "minScore": 27.9,
+    "maxScore": 96.14999999999999,
+    "averageWave": 20.15
+  }
+]

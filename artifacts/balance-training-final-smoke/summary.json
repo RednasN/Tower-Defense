@@ -1,0 +1,2992 @@
+{
+  "bestAverageScore": -181.25,
+  "bestAverageWave": 35.2,
+  "buildableCells": 166,
+  "results": [
+    {
+      "policy": "aggressive-expansion",
+      "seed": 368823665,
+      "finalWave": 16,
+      "victory": false,
+      "baseHealthRemaining": 0,
+      "moneyEarned": 2325,
+      "moneySpent": 2373,
+      "moneyHoardedPeak": 163,
+      "towerBuildCounts": {
+        "BulletShooter": 5,
+        "RocketLauncher": 3
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 60,
+        "RocketLauncher": 36
+      },
+      "leakCounts": {
+        "lightHovercraft": 2,
+        "bomberPlane": 4,
+        "scoutTank": 1,
+        "fighterPlane": 1
+      },
+      "damageByType": {
+        "bullet": 3145.9463880000176,
+        "explosive": 412.87516800000026
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 11
+        },
+        {
+          "wave": 13,
+          "type": "RocketLauncher",
+          "x": 9,
+          "y": 8
+        },
+        {
+          "wave": 13,
+          "type": "RocketLauncher",
+          "x": 11,
+          "y": 11
+        },
+        {
+          "wave": 15,
+          "type": "RocketLauncher",
+          "x": 9,
+          "y": 12
+        }
+      ],
+      "score": {
+        "challenge": 44.4,
+        "spendPressure": 20,
+        "diversity": 5.8,
+        "antiHoarding": 5.85,
+        "stability": -8,
+        "total": 68.05
+      },
+      "averageSpendRatio": 0.9834836594028117,
+      "totalTicks": 30455
+    },
+    {
+      "policy": "upgrade-first",
+      "seed": 368823665,
+      "finalWave": 40,
+      "victory": true,
+      "baseHealthRemaining": 20,
+      "moneyEarned": 16420,
+      "moneySpent": 16482,
+      "moneyHoardedPeak": 100,
+      "towerBuildCounts": {
+        "BulletShooter": 10,
+        "LaserTurret": 65
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 120,
+        "LaserTurret": 571
+      },
+      "leakCounts": {},
+      "damageByType": {
+        "bullet": 641.0993340000015,
+        "energy": 23240.900666000078
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 11
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 8
+        },
+        {
+          "wave": 2,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 11
+        },
+        {
+          "wave": 4,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 12
+        },
+        {
+          "wave": 6,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 5
+        },
+        {
+          "wave": 6,
+          "type": "LaserTurret",
+          "x": 13,
+          "y": 7
+        },
+        {
+          "wave": 6,
+          "type": "BulletShooter",
+          "x": 8,
+          "y": 11
+        },
+        {
+          "wave": 9,
+          "type": "LaserTurret",
+          "x": 8,
+          "y": 12
+        },
+        {
+          "wave": 10,
+          "type": "LaserTurret",
+          "x": 13,
+          "y": 8
+        },
+        {
+          "wave": 12,
+          "type": "LaserTurret",
+          "x": 11,
+          "y": 4
+        },
+        {
+          "wave": 12,
+          "type": "LaserTurret",
+          "x": 9,
+          "y": 7
+        },
+        {
+          "wave": 13,
+          "type": "LaserTurret",
+          "x": 8,
+          "y": 9
+        },
+        {
+          "wave": 15,
+          "type": "LaserTurret",
+          "x": 13,
+          "y": 5
+        },
+        {
+          "wave": 17,
+          "type": "LaserTurret",
+          "x": 3,
+          "y": 5
+        },
+        {
+          "wave": 17,
+          "type": "LaserTurret",
+          "x": 3,
+          "y": 6
+        },
+        {
+          "wave": 17,
+          "type": "LaserTurret",
+          "x": 11,
+          "y": 3
+        },
+        {
+          "wave": 20,
+          "type": "LaserTurret",
+          "x": 4,
+          "y": 5
+        },
+        {
+          "wave": 20,
+          "type": "LaserTurret",
+          "x": 7,
+          "y": 12
+        },
+        {
+          "wave": 21,
+          "type": "LaserTurret",
+          "x": 4,
+          "y": 6
+        },
+        {
+          "wave": 21,
+          "type": "LaserTurret",
+          "x": 7,
+          "y": 11
+        },
+        {
+          "wave": 22,
+          "type": "LaserTurret",
+          "x": 2,
+          "y": 6
+        },
+        {
+          "wave": 22,
+          "type": "LaserTurret",
+          "x": 11,
+          "y": 12
+        },
+        {
+          "wave": 23,
+          "type": "LaserTurret",
+          "x": 13,
+          "y": 9
+        },
+        {
+          "wave": 23,
+          "type": "LaserTurret",
+          "x": 10,
+          "y": 5
+        },
+        {
+          "wave": 23,
+          "type": "LaserTurret",
+          "x": 2,
+          "y": 5
+        },
+        {
+          "wave": 24,
+          "type": "LaserTurret",
+          "x": 8,
+          "y": 8
+        },
+        {
+          "wave": 24,
+          "type": "LaserTurret",
+          "x": 13,
+          "y": 4
+        },
+        {
+          "wave": 25,
+          "type": "LaserTurret",
+          "x": 10,
+          "y": 4
+        },
+        {
+          "wave": 25,
+          "type": "LaserTurret",
+          "x": 7,
+          "y": 10
+        },
+        {
+          "wave": 26,
+          "type": "LaserTurret",
+          "x": 3,
+          "y": 3
+        },
+        {
+          "wave": 26,
+          "type": "LaserTurret",
+          "x": 2,
+          "y": 8
+        },
+        {
+          "wave": 26,
+          "type": "LaserTurret",
+          "x": 11,
+          "y": 2
+        },
+        {
+          "wave": 27,
+          "type": "LaserTurret",
+          "x": 10,
+          "y": 3
+        },
+        {
+          "wave": 27,
+          "type": "LaserTurret",
+          "x": 12,
+          "y": 11
+        },
+        {
+          "wave": 28,
+          "type": "LaserTurret",
+          "x": 2,
+          "y": 10
+        },
+        {
+          "wave": 28,
+          "type": "LaserTurret",
+          "x": 3,
+          "y": 8
+        },
+        {
+          "wave": 29,
+          "type": "LaserTurret",
+          "x": 2,
+          "y": 12
+        },
+        {
+          "wave": 29,
+          "type": "LaserTurret",
+          "x": 2,
+          "y": 9
+        },
+        {
+          "wave": 30,
+          "type": "LaserTurret",
+          "x": 4,
+          "y": 3
+        },
+        {
+          "wave": 30,
+          "type": "LaserTurret",
+          "x": 10,
+          "y": 2
+        },
+        {
+          "wave": 30,
+          "type": "LaserTurret",
+          "x": 2,
+          "y": 11
+        },
+        {
+          "wave": 31,
+          "type": "LaserTurret",
+          "x": 3,
+          "y": 12
+        },
+        {
+          "wave": 31,
+          "type": "LaserTurret",
+          "x": 5,
+          "y": 5
+        },
+        {
+          "wave": 31,
+          "type": "LaserTurret",
+          "x": 3,
+          "y": 10
+        },
+        {
+          "wave": 32,
+          "type": "LaserTurret",
+          "x": 3,
+          "y": 2
+        },
+        {
+          "wave": 32,
+          "type": "LaserTurret",
+          "x": 6,
+          "y": 12
+        },
+        {
+          "wave": 33,
+          "type": "LaserTurret",
+          "x": 5,
+          "y": 6
+        },
+        {
+          "wave": 33,
+          "type": "LaserTurret",
+          "x": 9,
+          "y": 6
+        },
+        {
+          "wave": 33,
+          "type": "LaserTurret",
+          "x": 3,
+          "y": 9
+        },
+        {
+          "wave": 33,
+          "type": "LaserTurret",
+          "x": 13,
+          "y": 3
+        },
+        {
+          "wave": 34,
+          "type": "LaserTurret",
+          "x": 4,
+          "y": 8
+        },
+        {
+          "wave": 34,
+          "type": "LaserTurret",
+          "x": 3,
+          "y": 11
+        },
+        {
+          "wave": 35,
+          "type": "LaserTurret",
+          "x": 5,
+          "y": 3
+        },
+        {
+          "wave": 35,
+          "type": "LaserTurret",
+          "x": 1,
+          "y": 6
+        },
+        {
+          "wave": 36,
+          "type": "LaserTurret",
+          "x": 9,
+          "y": 2
+        },
+        {
+          "wave": 36,
+          "type": "LaserTurret",
+          "x": 4,
+          "y": 2
+        },
+        {
+          "wave": 36,
+          "type": "LaserTurret",
+          "x": 4,
+          "y": 12
+        },
+        {
+          "wave": 36,
+          "type": "LaserTurret",
+          "x": 14,
+          "y": 7
+        },
+        {
+          "wave": 37,
+          "type": "LaserTurret",
+          "x": 8,
+          "y": 7
+        },
+        {
+          "wave": 37,
+          "type": "LaserTurret",
+          "x": 9,
+          "y": 3
+        },
+        {
+          "wave": 37,
+          "type": "LaserTurret",
+          "x": 7,
+          "y": 8
+        },
+        {
+          "wave": 37,
+          "type": "LaserTurret",
+          "x": 6,
+          "y": 11
+        },
+        {
+          "wave": 37,
+          "type": "LaserTurret",
+          "x": 14,
+          "y": 5
+        },
+        {
+          "wave": 38,
+          "type": "LaserTurret",
+          "x": 13,
+          "y": 10
+        },
+        {
+          "wave": 38,
+          "type": "LaserTurret",
+          "x": 5,
+          "y": 12
+        },
+        {
+          "wave": 38,
+          "type": "LaserTurret",
+          "x": 1,
+          "y": 5
+        },
+        {
+          "wave": 39,
+          "type": "LaserTurret",
+          "x": 4,
+          "y": 11
+        },
+        {
+          "wave": 39,
+          "type": "LaserTurret",
+          "x": 4,
+          "y": 10
+        },
+        {
+          "wave": 39,
+          "type": "LaserTurret",
+          "x": 9,
+          "y": 4
+        },
+        {
+          "wave": 39,
+          "type": "LaserTurret",
+          "x": 4,
+          "y": 9
+        },
+        {
+          "wave": 39,
+          "type": "LaserTurret",
+          "x": 5,
+          "y": 2
+        }
+      ],
+      "score": {
+        "challenge": 18.799999999999997,
+        "spendPressure": 20,
+        "diversity": 5.8,
+        "antiHoarding": 8,
+        "stability": 7,
+        "total": 59.599999999999994
+      },
+      "averageSpendRatio": 0.9958783295169955,
+      "totalTicks": 56290
+    },
+    {
+      "policy": "mixed",
+      "seed": 368823665,
+      "finalWave": 40,
+      "victory": true,
+      "baseHealthRemaining": 5,
+      "moneyEarned": 16261,
+      "moneySpent": 16313,
+      "moneyHoardedPeak": 149,
+      "towerBuildCounts": {
+        "BulletShooter": 7,
+        "NuclearLauncher": 45
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 84,
+        "NuclearLauncher": 534
+      },
+      "leakCounts": {
+        "bomberPlane": 3,
+        "lightHovercraft": 3
+      },
+      "damageByType": {
+        "bullet": 6644.939377000063,
+        "explosive": 17271.27294199998
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 11
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 8
+        },
+        {
+          "wave": 6,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 11
+        },
+        {
+          "wave": 15,
+          "type": "NuclearLauncher",
+          "x": 9,
+          "y": 12
+        },
+        {
+          "wave": 16,
+          "type": "NuclearLauncher",
+          "x": 11,
+          "y": 5
+        },
+        {
+          "wave": 17,
+          "type": "NuclearLauncher",
+          "x": 13,
+          "y": 7
+        },
+        {
+          "wave": 18,
+          "type": "NuclearLauncher",
+          "x": 8,
+          "y": 11
+        },
+        {
+          "wave": 19,
+          "type": "NuclearLauncher",
+          "x": 8,
+          "y": 12
+        },
+        {
+          "wave": 20,
+          "type": "NuclearLauncher",
+          "x": 13,
+          "y": 8
+        },
+        {
+          "wave": 20,
+          "type": "NuclearLauncher",
+          "x": 11,
+          "y": 4
+        },
+        {
+          "wave": 21,
+          "type": "NuclearLauncher",
+          "x": 9,
+          "y": 7
+        },
+        {
+          "wave": 22,
+          "type": "NuclearLauncher",
+          "x": 8,
+          "y": 9
+        },
+        {
+          "wave": 23,
+          "type": "NuclearLauncher",
+          "x": 13,
+          "y": 5
+        },
+        {
+          "wave": 23,
+          "type": "NuclearLauncher",
+          "x": 3,
+          "y": 5
+        },
+        {
+          "wave": 24,
+          "type": "NuclearLauncher",
+          "x": 3,
+          "y": 6
+        },
+        {
+          "wave": 25,
+          "type": "NuclearLauncher",
+          "x": 11,
+          "y": 3
+        },
+        {
+          "wave": 25,
+          "type": "NuclearLauncher",
+          "x": 4,
+          "y": 5
+        },
+        {
+          "wave": 25,
+          "type": "NuclearLauncher",
+          "x": 7,
+          "y": 12
+        },
+        {
+          "wave": 27,
+          "type": "NuclearLauncher",
+          "x": 4,
+          "y": 6
+        },
+        {
+          "wave": 27,
+          "type": "NuclearLauncher",
+          "x": 7,
+          "y": 11
+        },
+        {
+          "wave": 28,
+          "type": "NuclearLauncher",
+          "x": 2,
+          "y": 6
+        },
+        {
+          "wave": 28,
+          "type": "NuclearLauncher",
+          "x": 11,
+          "y": 12
+        },
+        {
+          "wave": 29,
+          "type": "NuclearLauncher",
+          "x": 13,
+          "y": 9
+        },
+        {
+          "wave": 29,
+          "type": "NuclearLauncher",
+          "x": 10,
+          "y": 5
+        },
+        {
+          "wave": 30,
+          "type": "NuclearLauncher",
+          "x": 2,
+          "y": 5
+        },
+        {
+          "wave": 31,
+          "type": "NuclearLauncher",
+          "x": 8,
+          "y": 8
+        },
+        {
+          "wave": 31,
+          "type": "NuclearLauncher",
+          "x": 13,
+          "y": 4
+        },
+        {
+          "wave": 32,
+          "type": "NuclearLauncher",
+          "x": 10,
+          "y": 4
+        },
+        {
+          "wave": 32,
+          "type": "NuclearLauncher",
+          "x": 7,
+          "y": 10
+        },
+        {
+          "wave": 33,
+          "type": "NuclearLauncher",
+          "x": 3,
+          "y": 3
+        },
+        {
+          "wave": 33,
+          "type": "NuclearLauncher",
+          "x": 2,
+          "y": 8
+        },
+        {
+          "wave": 34,
+          "type": "NuclearLauncher",
+          "x": 11,
+          "y": 2
+        },
+        {
+          "wave": 34,
+          "type": "NuclearLauncher",
+          "x": 10,
+          "y": 3
+        },
+        {
+          "wave": 35,
+          "type": "NuclearLauncher",
+          "x": 12,
+          "y": 11
+        },
+        {
+          "wave": 35,
+          "type": "NuclearLauncher",
+          "x": 2,
+          "y": 10
+        },
+        {
+          "wave": 35,
+          "type": "NuclearLauncher",
+          "x": 3,
+          "y": 8
+        },
+        {
+          "wave": 36,
+          "type": "NuclearLauncher",
+          "x": 2,
+          "y": 12
+        },
+        {
+          "wave": 36,
+          "type": "NuclearLauncher",
+          "x": 2,
+          "y": 9
+        },
+        {
+          "wave": 37,
+          "type": "NuclearLauncher",
+          "x": 4,
+          "y": 3
+        },
+        {
+          "wave": 37,
+          "type": "NuclearLauncher",
+          "x": 10,
+          "y": 2
+        },
+        {
+          "wave": 38,
+          "type": "NuclearLauncher",
+          "x": 2,
+          "y": 11
+        },
+        {
+          "wave": 38,
+          "type": "NuclearLauncher",
+          "x": 3,
+          "y": 12
+        },
+        {
+          "wave": 38,
+          "type": "NuclearLauncher",
+          "x": 5,
+          "y": 5
+        },
+        {
+          "wave": 39,
+          "type": "NuclearLauncher",
+          "x": 3,
+          "y": 10
+        },
+        {
+          "wave": 39,
+          "type": "NuclearLauncher",
+          "x": 3,
+          "y": 2
+        },
+        {
+          "wave": 40,
+          "type": "NuclearLauncher",
+          "x": 6,
+          "y": 12
+        },
+        {
+          "wave": 40,
+          "type": "NuclearLauncher",
+          "x": 5,
+          "y": 6
+        },
+        {
+          "wave": 40,
+          "type": "NuclearLauncher",
+          "x": 9,
+          "y": 6
+        }
+      ],
+      "score": {
+        "challenge": 18.799999999999997,
+        "spendPressure": 20,
+        "diversity": 5.8,
+        "antiHoarding": 6.55,
+        "stability": 1.75,
+        "total": 52.89999999999999
+      },
+      "averageSpendRatio": 0.9931663197065818,
+      "totalTicks": 64466
+    },
+    {
+      "policy": "conservative",
+      "seed": 368823665,
+      "finalWave": 40,
+      "victory": true,
+      "baseHealthRemaining": 20,
+      "moneyEarned": 16620,
+      "moneySpent": 15905,
+      "moneyHoardedPeak": 815,
+      "towerBuildCounts": {
+        "BulletShooter": 31,
+        "NuclearLauncher": 135
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 211,
+        "NuclearLauncher": 409
+      },
+      "leakCounts": {},
+      "damageByType": {
+        "bullet": 7778.501422999993,
+        "explosive": 16204.498577000018
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 11
+        },
+        {
+          "wave": 2,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 8
+        },
+        {
+          "wave": 3,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 11
+        },
+        {
+          "wave": 3,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 12
+        },
+        {
+          "wave": 4,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 5
+        },
+        {
+          "wave": 4,
+          "type": "BulletShooter",
+          "x": 13,
+          "y": 7
+        },
+        {
+          "wave": 4,
+          "type": "BulletShooter",
+          "x": 8,
+          "y": 11
+        },
+        {
+          "wave": 5,
+          "type": "BulletShooter",
+          "x": 8,
+          "y": 12
+        },
+        {
+          "wave": 5,
+          "type": "BulletShooter",
+          "x": 13,
+          "y": 8
+        },
+        {
+          "wave": 5,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 4
+        },
+        {
+          "wave": 5,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 7
+        },
+        {
+          "wave": 6,
+          "type": "BulletShooter",
+          "x": 8,
+          "y": 9
+        },
+        {
+          "wave": 6,
+          "type": "BulletShooter",
+          "x": 13,
+          "y": 5
+        },
+        {
+          "wave": 6,
+          "type": "BulletShooter",
+          "x": 3,
+          "y": 5
+        },
+        {
+          "wave": 6,
+          "type": "BulletShooter",
+          "x": 3,
+          "y": 6
+        },
+        {
+          "wave": 6,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 3
+        },
+        {
+          "wave": 7,
+          "type": "BulletShooter",
+          "x": 4,
+          "y": 5
+        },
+        {
+          "wave": 7,
+          "type": "BulletShooter",
+          "x": 7,
+          "y": 12
+        },
+        {
+          "wave": 7,
+          "type": "BulletShooter",
+          "x": 4,
+          "y": 6
+        },
+        {
+          "wave": 7,
+          "type": "BulletShooter",
+          "x": 7,
+          "y": 11
+        },
+        {
+          "wave": 7,
+          "type": "BulletShooter",
+          "x": 2,
+          "y": 6
+        },
+        {
+          "wave": 7,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 12
+        },
+        {
+          "wave": 8,
+          "type": "BulletShooter",
+          "x": 13,
+          "y": 9
+        },
+        {
+          "wave": 8,
+          "type": "BulletShooter",
+          "x": 10,
+          "y": 5
+        },
+        {
+          "wave": 8,
+          "type": "BulletShooter",
+          "x": 2,
+          "y": 5
+        },
+        {
+          "wave": 8,
+          "type": "BulletShooter",
+          "x": 8,
+          "y": 8
+        },
+        {
+          "wave": 8,
+          "type": "BulletShooter",
+          "x": 13,
+          "y": 4
+        },
+        {
+          "wave": 9,
+          "type": "NuclearLauncher",
+          "x": 10,
+          "y": 4
+        },
+        {
+          "wave": 9,
+          "type": "NuclearLauncher",
+          "x": 7,
+          "y": 10
+        },
+        {
+          "wave": 9,
+          "type": "NuclearLauncher",
+          "x": 3,
+          "y": 3
+        },
+        {
+          "wave": 10,
+          "type": "NuclearLauncher",
+          "x": 2,
+          "y": 8
+        },
+        {
+          "wave": 10,
+          "type": "NuclearLauncher",
+          "x": 11,
+          "y": 2
+        },
+        {
+          "wave": 10,
+          "type": "NuclearLauncher",
+          "x": 10,
+          "y": 3
+        },
+        {
+          "wave": 11,
+          "type": "NuclearLauncher",
+          "x": 12,
+          "y": 11
+        },
+        {
+          "wave": 11,
+          "type": "NuclearLauncher",
+          "x": 2,
+          "y": 10
+        },
+        {
+          "wave": 11,
+          "type": "NuclearLauncher",
+          "x": 3,
+          "y": 8
+        },
+        {
+          "wave": 11,
+          "type": "NuclearLauncher",
+          "x": 2,
+          "y": 12
+        },
+        {
+          "wave": 12,
+          "type": "NuclearLauncher",
+          "x": 2,
+          "y": 9
+        },
+        {
+          "wave": 12,
+          "type": "NuclearLauncher",
+          "x": 4,
+          "y": 3
+        },
+        {
+          "wave": 12,
+          "type": "NuclearLauncher",
+          "x": 10,
+          "y": 2
+        },
+        {
+          "wave": 12,
+          "type": "NuclearLauncher",
+          "x": 2,
+          "y": 11
+        },
+        {
+          "wave": 13,
+          "type": "NuclearLauncher",
+          "x": 3,
+          "y": 12
+        },
+        {
+          "wave": 13,
+          "type": "NuclearLauncher",
+          "x": 5,
+          "y": 5
+        },
+        {
+          "wave": 13,
+          "type": "NuclearLauncher",
+          "x": 3,
+          "y": 10
+        },
+        {
+          "wave": 13,
+          "type": "NuclearLauncher",
+          "x": 3,
+          "y": 2
+        },
+        {
+          "wave": 13,
+          "type": "NuclearLauncher",
+          "x": 6,
+          "y": 12
+        },
+        {
+          "wave": 14,
+          "type": "NuclearLauncher",
+          "x": 5,
+          "y": 6
+        },
+        {
+          "wave": 14,
+          "type": "NuclearLauncher",
+          "x": 9,
+          "y": 6
+        },
+        {
+          "wave": 14,
+          "type": "NuclearLauncher",
+          "x": 3,
+          "y": 9
+        },
+        {
+          "wave": 14,
+          "type": "NuclearLauncher",
+          "x": 13,
+          "y": 3
+        },
+        {
+          "wave": 14,
+          "type": "NuclearLauncher",
+          "x": 4,
+          "y": 8
+        },
+        {
+          "wave": 15,
+          "type": "NuclearLauncher",
+          "x": 3,
+          "y": 11
+        },
+        {
+          "wave": 15,
+          "type": "NuclearLauncher",
+          "x": 5,
+          "y": 3
+        },
+        {
+          "wave": 15,
+          "type": "NuclearLauncher",
+          "x": 1,
+          "y": 6
+        },
+        {
+          "wave": 15,
+          "type": "NuclearLauncher",
+          "x": 9,
+          "y": 2
+        },
+        {
+          "wave": 15,
+          "type": "NuclearLauncher",
+          "x": 4,
+          "y": 2
+        },
+        {
+          "wave": 16,
+          "type": "NuclearLauncher",
+          "x": 4,
+          "y": 12
+        },
+        {
+          "wave": 16,
+          "type": "NuclearLauncher",
+          "x": 14,
+          "y": 7
+        },
+        {
+          "wave": 16,
+          "type": "NuclearLauncher",
+          "x": 8,
+          "y": 7
+        },
+        {
+          "wave": 16,
+          "type": "NuclearLauncher",
+          "x": 9,
+          "y": 3
+        },
+        {
+          "wave": 16,
+          "type": "NuclearLauncher",
+          "x": 7,
+          "y": 8
+        },
+        {
+          "wave": 17,
+          "type": "NuclearLauncher",
+          "x": 6,
+          "y": 11
+        },
+        {
+          "wave": 17,
+          "type": "NuclearLauncher",
+          "x": 14,
+          "y": 5
+        },
+        {
+          "wave": 17,
+          "type": "NuclearLauncher",
+          "x": 13,
+          "y": 10
+        },
+        {
+          "wave": 17,
+          "type": "NuclearLauncher",
+          "x": 5,
+          "y": 12
+        },
+        {
+          "wave": 17,
+          "type": "NuclearLauncher",
+          "x": 1,
+          "y": 5
+        },
+        {
+          "wave": 17,
+          "type": "NuclearLauncher",
+          "x": 4,
+          "y": 11
+        },
+        {
+          "wave": 18,
+          "type": "NuclearLauncher",
+          "x": 4,
+          "y": 10
+        },
+        {
+          "wave": 18,
+          "type": "NuclearLauncher",
+          "x": 9,
+          "y": 4
+        },
+        {
+          "wave": 18,
+          "type": "NuclearLauncher",
+          "x": 4,
+          "y": 9
+        },
+        {
+          "wave": 18,
+          "type": "NuclearLauncher",
+          "x": 5,
+          "y": 2
+        },
+        {
+          "wave": 18,
+          "type": "NuclearLauncher",
+          "x": 8,
+          "y": 14
+        },
+        {
+          "wave": 18,
+          "type": "NuclearLauncher",
+          "x": 1,
+          "y": 4
+        },
+        {
+          "wave": 18,
+          "type": "NuclearLauncher",
+          "x": 11,
+          "y": 13
+        },
+        {
+          "wave": 19,
+          "type": "NuclearLauncher",
+          "x": 0,
+          "y": 10
+        },
+        {
+          "wave": 19,
+          "type": "NuclearLauncher",
+          "x": 6,
+          "y": 10
+        },
+        {
+          "wave": 19,
+          "type": "NuclearLauncher",
+          "x": 7,
+          "y": 7
+        },
+        {
+          "wave": 19,
+          "type": "NuclearLauncher",
+          "x": 5,
+          "y": 8
+        },
+        {
+          "wave": 19,
+          "type": "NuclearLauncher",
+          "x": 9,
+          "y": 5
+        },
+        {
+          "wave": 19,
+          "type": "NuclearLauncher",
+          "x": 7,
+          "y": 14
+        },
+        {
+          "wave": 19,
+          "type": "NuclearLauncher",
+          "x": 6,
+          "y": 7
+        },
+        {
+          "wave": 20,
+          "type": "NuclearLauncher",
+          "x": 0,
+          "y": 11
+        },
+        {
+          "wave": 20,
+          "type": "NuclearLauncher",
+          "x": 0,
+          "y": 9
+        },
+        {
+          "wave": 20,
+          "type": "NuclearLauncher",
+          "x": 3,
+          "y": 14
+        },
+        {
+          "wave": 20,
+          "type": "NuclearLauncher",
+          "x": 14,
+          "y": 8
+        },
+        {
+          "wave": 20,
+          "type": "NuclearLauncher",
+          "x": 12,
+          "y": 12
+        },
+        {
+          "wave": 20,
+          "type": "NuclearLauncher",
+          "x": 9,
+          "y": 14
+        },
+        {
+          "wave": 20,
+          "type": "NuclearLauncher",
+          "x": 13,
+          "y": 2
+        },
+        {
+          "wave": 20,
+          "type": "NuclearLauncher",
+          "x": 4,
+          "y": 14
+        },
+        {
+          "wave": 21,
+          "type": "NuclearLauncher",
+          "x": 3,
+          "y": 1
+        },
+        {
+          "wave": 21,
+          "type": "NuclearLauncher",
+          "x": 5,
+          "y": 11
+        },
+        {
+          "wave": 21,
+          "type": "NuclearLauncher",
+          "x": 1,
+          "y": 3
+        },
+        {
+          "wave": 21,
+          "type": "NuclearLauncher",
+          "x": 8,
+          "y": 2
+        },
+        {
+          "wave": 21,
+          "type": "NuclearLauncher",
+          "x": 6,
+          "y": 6
+        },
+        {
+          "wave": 21,
+          "type": "NuclearLauncher",
+          "x": 6,
+          "y": 4
+        },
+        {
+          "wave": 21,
+          "type": "NuclearLauncher",
+          "x": 10,
+          "y": 0
+        },
+        {
+          "wave": 21,
+          "type": "NuclearLauncher",
+          "x": 14,
+          "y": 4
+        },
+        {
+          "wave": 22,
+          "type": "NuclearLauncher",
+          "x": 0,
+          "y": 8
+        },
+        {
+          "wave": 22,
+          "type": "NuclearLauncher",
+          "x": 0,
+          "y": 12
+        },
+        {
+          "wave": 22,
+          "type": "NuclearLauncher",
+          "x": 2,
+          "y": 14
+        },
+        {
+          "wave": 22,
+          "type": "NuclearLauncher",
+          "x": 5,
+          "y": 14
+        },
+        {
+          "wave": 22,
+          "type": "NuclearLauncher",
+          "x": 6,
+          "y": 14
+        },
+        {
+          "wave": 22,
+          "type": "NuclearLauncher",
+          "x": 6,
+          "y": 5
+        },
+        {
+          "wave": 22,
+          "type": "NuclearLauncher",
+          "x": 6,
+          "y": 9
+        },
+        {
+          "wave": 22,
+          "type": "NuclearLauncher",
+          "x": 11,
+          "y": 0
+        },
+        {
+          "wave": 22,
+          "type": "NuclearLauncher",
+          "x": 5,
+          "y": 10
+        },
+        {
+          "wave": 23,
+          "type": "NuclearLauncher",
+          "x": 1,
+          "y": 2
+        },
+        {
+          "wave": 23,
+          "type": "NuclearLauncher",
+          "x": 6,
+          "y": 2
+        },
+        {
+          "wave": 23,
+          "type": "NuclearLauncher",
+          "x": 4,
+          "y": 1
+        },
+        {
+          "wave": 23,
+          "type": "NuclearLauncher",
+          "x": 8,
+          "y": 6
+        },
+        {
+          "wave": 23,
+          "type": "NuclearLauncher",
+          "x": 5,
+          "y": 9
+        },
+        {
+          "wave": 23,
+          "type": "NuclearLauncher",
+          "x": 8,
+          "y": 3
+        },
+        {
+          "wave": 23,
+          "type": "NuclearLauncher",
+          "x": 9,
+          "y": 0
+        },
+        {
+          "wave": 23,
+          "type": "NuclearLauncher",
+          "x": 7,
+          "y": 6
+        },
+        {
+          "wave": 23,
+          "type": "NuclearLauncher",
+          "x": 0,
+          "y": 7
+        },
+        {
+          "wave": 24,
+          "type": "NuclearLauncher",
+          "x": 7,
+          "y": 3
+        },
+        {
+          "wave": 24,
+          "type": "NuclearLauncher",
+          "x": 10,
+          "y": 14
+        },
+        {
+          "wave": 24,
+          "type": "NuclearLauncher",
+          "x": 13,
+          "y": 11
+        },
+        {
+          "wave": 24,
+          "type": "NuclearLauncher",
+          "x": 0,
+          "y": 13
+        },
+        {
+          "wave": 24,
+          "type": "NuclearLauncher",
+          "x": 12,
+          "y": 0
+        },
+        {
+          "wave": 24,
+          "type": "NuclearLauncher",
+          "x": 1,
+          "y": 14
+        },
+        {
+          "wave": 24,
+          "type": "NuclearLauncher",
+          "x": 13,
+          "y": 1
+        },
+        {
+          "wave": 24,
+          "type": "NuclearLauncher",
+          "x": 7,
+          "y": 1
+        },
+        {
+          "wave": 24,
+          "type": "NuclearLauncher",
+          "x": 5,
+          "y": 1
+        },
+        {
+          "wave": 25,
+          "type": "NuclearLauncher",
+          "x": 14,
+          "y": 3
+        },
+        {
+          "wave": 25,
+          "type": "NuclearLauncher",
+          "x": 7,
+          "y": 4
+        },
+        {
+          "wave": 25,
+          "type": "NuclearLauncher",
+          "x": 14,
+          "y": 9
+        },
+        {
+          "wave": 25,
+          "type": "NuclearLauncher",
+          "x": 1,
+          "y": 1
+        },
+        {
+          "wave": 25,
+          "type": "NuclearLauncher",
+          "x": 7,
+          "y": 5
+        },
+        {
+          "wave": 25,
+          "type": "NuclearLauncher",
+          "x": 8,
+          "y": 4
+        },
+        {
+          "wave": 25,
+          "type": "NuclearLauncher",
+          "x": 0,
+          "y": 6
+        },
+        {
+          "wave": 25,
+          "type": "NuclearLauncher",
+          "x": 8,
+          "y": 5
+        },
+        {
+          "wave": 25,
+          "type": "NuclearLauncher",
+          "x": 8,
+          "y": 0
+        },
+        {
+          "wave": 25,
+          "type": "NuclearLauncher",
+          "x": 6,
+          "y": 1
+        },
+        {
+          "wave": 26,
+          "type": "NuclearLauncher",
+          "x": 0,
+          "y": 5
+        },
+        {
+          "wave": 26,
+          "type": "NuclearLauncher",
+          "x": 12,
+          "y": 13
+        },
+        {
+          "wave": 26,
+          "type": "NuclearLauncher",
+          "x": 14,
+          "y": 2
+        },
+        {
+          "wave": 26,
+          "type": "NuclearLauncher",
+          "x": 0,
+          "y": 4
+        },
+        {
+          "wave": 26,
+          "type": "NuclearLauncher",
+          "x": 11,
+          "y": 14
+        },
+        {
+          "wave": 26,
+          "type": "NuclearLauncher",
+          "x": 3,
+          "y": 0
+        },
+        {
+          "wave": 26,
+          "type": "NuclearLauncher",
+          "x": 0,
+          "y": 3
+        },
+        {
+          "wave": 26,
+          "type": "NuclearLauncher",
+          "x": 0,
+          "y": 2
+        },
+        {
+          "wave": 26,
+          "type": "NuclearLauncher",
+          "x": 0,
+          "y": 14
+        },
+        {
+          "wave": 26,
+          "type": "NuclearLauncher",
+          "x": 13,
+          "y": 0
+        },
+        {
+          "wave": 27,
+          "type": "NuclearLauncher",
+          "x": 7,
+          "y": 0
+        },
+        {
+          "wave": 27,
+          "type": "NuclearLauncher",
+          "x": 13,
+          "y": 12
+        },
+        {
+          "wave": 27,
+          "type": "NuclearLauncher",
+          "x": 1,
+          "y": 0
+        },
+        {
+          "wave": 27,
+          "type": "NuclearLauncher",
+          "x": 14,
+          "y": 10
+        },
+        {
+          "wave": 27,
+          "type": "NuclearLauncher",
+          "x": 4,
+          "y": 0
+        },
+        {
+          "wave": 27,
+          "type": "NuclearLauncher",
+          "x": 0,
+          "y": 1
+        },
+        {
+          "wave": 27,
+          "type": "NuclearLauncher",
+          "x": 14,
+          "y": 1
+        },
+        {
+          "wave": 27,
+          "type": "NuclearLauncher",
+          "x": 5,
+          "y": 0
+        },
+        {
+          "wave": 27,
+          "type": "NuclearLauncher",
+          "x": 6,
+          "y": 0
+        },
+        {
+          "wave": 27,
+          "type": "NuclearLauncher",
+          "x": 0,
+          "y": 0
+        },
+        {
+          "wave": 28,
+          "type": "NuclearLauncher",
+          "x": 14,
+          "y": 11
+        },
+        {
+          "wave": 28,
+          "type": "NuclearLauncher",
+          "x": 12,
+          "y": 14
+        },
+        {
+          "wave": 28,
+          "type": "NuclearLauncher",
+          "x": 13,
+          "y": 13
+        },
+        {
+          "wave": 28,
+          "type": "NuclearLauncher",
+          "x": 14,
+          "y": 0
+        },
+        {
+          "wave": 28,
+          "type": "NuclearLauncher",
+          "x": 14,
+          "y": 12
+        },
+        {
+          "wave": 28,
+          "type": "NuclearLauncher",
+          "x": 13,
+          "y": 14
+        },
+        {
+          "wave": 28,
+          "type": "NuclearLauncher",
+          "x": 14,
+          "y": 13
+        },
+        {
+          "wave": 28,
+          "type": "NuclearLauncher",
+          "x": 14,
+          "y": 14
+        }
+      ],
+      "score": {
+        "challenge": 18.799999999999997,
+        "spendPressure": 20,
+        "diversity": 5.8,
+        "antiHoarding": 0,
+        "stability": 7,
+        "total": 51.599999999999994
+      },
+      "averageSpendRatio": 0.9687187308296925,
+      "totalTicks": 58003
+    },
+    {
+      "policy": "hoarder",
+      "seed": 368823665,
+      "finalWave": 40,
+      "victory": true,
+      "baseHealthRemaining": 20,
+      "moneyEarned": 16459,
+      "moneySpent": 15749,
+      "moneyHoardedPeak": 810,
+      "towerBuildCounts": {
+        "BulletShooter": 25,
+        "NuclearLauncher": 141
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 190,
+        "NuclearLauncher": 423
+      },
+      "leakCounts": {},
+      "damageByType": {
+        "bullet": 6068.111951000022,
+        "explosive": 17726.888049000005
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 9
+        },
+        {
+          "wave": 3,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 11
+        },
+        {
+          "wave": 4,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 8
+        },
+        {
+          "wave": 4,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 11
+        },
+        {
+          "wave": 5,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 12
+        },
+        {
+          "wave": 5,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 5
+        },
+        {
+          "wave": 5,
+          "type": "BulletShooter",
+          "x": 13,
+          "y": 7
+        },
+        {
+          "wave": 6,
+          "type": "BulletShooter",
+          "x": 8,
+          "y": 11
+        },
+        {
+          "wave": 6,
+          "type": "BulletShooter",
+          "x": 8,
+          "y": 12
+        },
+        {
+          "wave": 6,
+          "type": "BulletShooter",
+          "x": 13,
+          "y": 8
+        },
+        {
+          "wave": 6,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 4
+        },
+        {
+          "wave": 7,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 7
+        },
+        {
+          "wave": 7,
+          "type": "BulletShooter",
+          "x": 8,
+          "y": 9
+        },
+        {
+          "wave": 7,
+          "type": "BulletShooter",
+          "x": 13,
+          "y": 5
+        },
+        {
+          "wave": 7,
+          "type": "BulletShooter",
+          "x": 3,
+          "y": 5
+        },
+        {
+          "wave": 7,
+          "type": "BulletShooter",
+          "x": 3,
+          "y": 6
+        },
+        {
+          "wave": 8,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 3
+        },
+        {
+          "wave": 8,
+          "type": "BulletShooter",
+          "x": 4,
+          "y": 5
+        },
+        {
+          "wave": 8,
+          "type": "BulletShooter",
+          "x": 7,
+          "y": 12
+        },
+        {
+          "wave": 8,
+          "type": "BulletShooter",
+          "x": 4,
+          "y": 6
+        },
+        {
+          "wave": 8,
+          "type": "BulletShooter",
+          "x": 7,
+          "y": 11
+        },
+        {
+          "wave": 8,
+          "type": "BulletShooter",
+          "x": 2,
+          "y": 6
+        },
+        {
+          "wave": 9,
+          "type": "NuclearLauncher",
+          "x": 11,
+          "y": 12
+        },
+        {
+          "wave": 9,
+          "type": "NuclearLauncher",
+          "x": 13,
+          "y": 9
+        },
+        {
+          "wave": 9,
+          "type": "NuclearLauncher",
+          "x": 10,
+          "y": 5
+        },
+        {
+          "wave": 10,
+          "type": "NuclearLauncher",
+          "x": 2,
+          "y": 5
+        },
+        {
+          "wave": 10,
+          "type": "NuclearLauncher",
+          "x": 8,
+          "y": 8
+        },
+        {
+          "wave": 10,
+          "type": "NuclearLauncher",
+          "x": 13,
+          "y": 4
+        },
+        {
+          "wave": 10,
+          "type": "NuclearLauncher",
+          "x": 10,
+          "y": 4
+        },
+        {
+          "wave": 11,
+          "type": "NuclearLauncher",
+          "x": 7,
+          "y": 10
+        },
+        {
+          "wave": 11,
+          "type": "NuclearLauncher",
+          "x": 3,
+          "y": 3
+        },
+        {
+          "wave": 11,
+          "type": "NuclearLauncher",
+          "x": 2,
+          "y": 8
+        },
+        {
+          "wave": 11,
+          "type": "NuclearLauncher",
+          "x": 11,
+          "y": 2
+        },
+        {
+          "wave": 12,
+          "type": "NuclearLauncher",
+          "x": 10,
+          "y": 3
+        },
+        {
+          "wave": 12,
+          "type": "NuclearLauncher",
+          "x": 12,
+          "y": 11
+        },
+        {
+          "wave": 12,
+          "type": "NuclearLauncher",
+          "x": 2,
+          "y": 10
+        },
+        {
+          "wave": 12,
+          "type": "NuclearLauncher",
+          "x": 3,
+          "y": 8
+        },
+        {
+          "wave": 13,
+          "type": "NuclearLauncher",
+          "x": 2,
+          "y": 12
+        },
+        {
+          "wave": 13,
+          "type": "NuclearLauncher",
+          "x": 2,
+          "y": 9
+        },
+        {
+          "wave": 13,
+          "type": "NuclearLauncher",
+          "x": 4,
+          "y": 3
+        },
+        {
+          "wave": 13,
+          "type": "NuclearLauncher",
+          "x": 10,
+          "y": 2
+        },
+        {
+          "wave": 13,
+          "type": "NuclearLauncher",
+          "x": 2,
+          "y": 11
+        },
+        {
+          "wave": 14,
+          "type": "NuclearLauncher",
+          "x": 3,
+          "y": 12
+        },
+        {
+          "wave": 14,
+          "type": "NuclearLauncher",
+          "x": 5,
+          "y": 5
+        },
+        {
+          "wave": 14,
+          "type": "NuclearLauncher",
+          "x": 3,
+          "y": 10
+        },
+        {
+          "wave": 14,
+          "type": "NuclearLauncher",
+          "x": 3,
+          "y": 2
+        },
+        {
+          "wave": 14,
+          "type": "NuclearLauncher",
+          "x": 6,
+          "y": 12
+        },
+        {
+          "wave": 15,
+          "type": "NuclearLauncher",
+          "x": 5,
+          "y": 6
+        },
+        {
+          "wave": 15,
+          "type": "NuclearLauncher",
+          "x": 9,
+          "y": 6
+        },
+        {
+          "wave": 15,
+          "type": "NuclearLauncher",
+          "x": 3,
+          "y": 9
+        },
+        {
+          "wave": 15,
+          "type": "NuclearLauncher",
+          "x": 13,
+          "y": 3
+        },
+        {
+          "wave": 15,
+          "type": "NuclearLauncher",
+          "x": 4,
+          "y": 8
+        },
+        {
+          "wave": 15,
+          "type": "NuclearLauncher",
+          "x": 3,
+          "y": 11
+        },
+        {
+          "wave": 16,
+          "type": "NuclearLauncher",
+          "x": 5,
+          "y": 3
+        },
+        {
+          "wave": 16,
+          "type": "NuclearLauncher",
+          "x": 1,
+          "y": 6
+        },
+        {
+          "wave": 16,
+          "type": "NuclearLauncher",
+          "x": 9,
+          "y": 2
+        },
+        {
+          "wave": 16,
+          "type": "NuclearLauncher",
+          "x": 4,
+          "y": 2
+        },
+        {
+          "wave": 16,
+          "type": "NuclearLauncher",
+          "x": 4,
+          "y": 12
+        },
+        {
+          "wave": 16,
+          "type": "NuclearLauncher",
+          "x": 14,
+          "y": 7
+        },
+        {
+          "wave": 17,
+          "type": "NuclearLauncher",
+          "x": 8,
+          "y": 7
+        },
+        {
+          "wave": 17,
+          "type": "NuclearLauncher",
+          "x": 9,
+          "y": 3
+        },
+        {
+          "wave": 17,
+          "type": "NuclearLauncher",
+          "x": 7,
+          "y": 8
+        },
+        {
+          "wave": 17,
+          "type": "NuclearLauncher",
+          "x": 6,
+          "y": 11
+        },
+        {
+          "wave": 17,
+          "type": "NuclearLauncher",
+          "x": 14,
+          "y": 5
+        },
+        {
+          "wave": 17,
+          "type": "NuclearLauncher",
+          "x": 13,
+          "y": 10
+        },
+        {
+          "wave": 18,
+          "type": "NuclearLauncher",
+          "x": 5,
+          "y": 12
+        },
+        {
+          "wave": 18,
+          "type": "NuclearLauncher",
+          "x": 1,
+          "y": 5
+        },
+        {
+          "wave": 18,
+          "type": "NuclearLauncher",
+          "x": 4,
+          "y": 11
+        },
+        {
+          "wave": 18,
+          "type": "NuclearLauncher",
+          "x": 4,
+          "y": 10
+        },
+        {
+          "wave": 18,
+          "type": "NuclearLauncher",
+          "x": 9,
+          "y": 4
+        },
+        {
+          "wave": 18,
+          "type": "NuclearLauncher",
+          "x": 4,
+          "y": 9
+        },
+        {
+          "wave": 18,
+          "type": "NuclearLauncher",
+          "x": 5,
+          "y": 2
+        },
+        {
+          "wave": 19,
+          "type": "NuclearLauncher",
+          "x": 8,
+          "y": 14
+        },
+        {
+          "wave": 19,
+          "type": "NuclearLauncher",
+          "x": 1,
+          "y": 4
+        },
+        {
+          "wave": 19,
+          "type": "NuclearLauncher",
+          "x": 11,
+          "y": 13
+        },
+        {
+          "wave": 19,
+          "type": "NuclearLauncher",
+          "x": 0,
+          "y": 10
+        },
+        {
+          "wave": 19,
+          "type": "NuclearLauncher",
+          "x": 6,
+          "y": 10
+        },
+        {
+          "wave": 19,
+          "type": "NuclearLauncher",
+          "x": 7,
+          "y": 7
+        },
+        {
+          "wave": 19,
+          "type": "NuclearLauncher",
+          "x": 5,
+          "y": 8
+        },
+        {
+          "wave": 20,
+          "type": "NuclearLauncher",
+          "x": 9,
+          "y": 5
+        },
+        {
+          "wave": 20,
+          "type": "NuclearLauncher",
+          "x": 7,
+          "y": 14
+        },
+        {
+          "wave": 20,
+          "type": "NuclearLauncher",
+          "x": 6,
+          "y": 7
+        },
+        {
+          "wave": 20,
+          "type": "NuclearLauncher",
+          "x": 0,
+          "y": 11
+        },
+        {
+          "wave": 20,
+          "type": "NuclearLauncher",
+          "x": 0,
+          "y": 9
+        },
+        {
+          "wave": 20,
+          "type": "NuclearLauncher",
+          "x": 3,
+          "y": 14
+        },
+        {
+          "wave": 20,
+          "type": "NuclearLauncher",
+          "x": 14,
+          "y": 8
+        },
+        {
+          "wave": 20,
+          "type": "NuclearLauncher",
+          "x": 12,
+          "y": 12
+        },
+        {
+          "wave": 21,
+          "type": "NuclearLauncher",
+          "x": 9,
+          "y": 14
+        },
+        {
+          "wave": 21,
+          "type": "NuclearLauncher",
+          "x": 13,
+          "y": 2
+        },
+        {
+          "wave": 21,
+          "type": "NuclearLauncher",
+          "x": 4,
+          "y": 14
+        },
+        {
+          "wave": 21,
+          "type": "NuclearLauncher",
+          "x": 3,
+          "y": 1
+        },
+        {
+          "wave": 21,
+          "type": "NuclearLauncher",
+          "x": 5,
+          "y": 11
+        },
+        {
+          "wave": 21,
+          "type": "NuclearLauncher",
+          "x": 1,
+          "y": 3
+        },
+        {
+          "wave": 21,
+          "type": "NuclearLauncher",
+          "x": 8,
+          "y": 2
+        },
+        {
+          "wave": 21,
+          "type": "NuclearLauncher",
+          "x": 6,
+          "y": 6
+        },
+        {
+          "wave": 21,
+          "type": "NuclearLauncher",
+          "x": 6,
+          "y": 4
+        },
+        {
+          "wave": 22,
+          "type": "NuclearLauncher",
+          "x": 10,
+          "y": 0
+        },
+        {
+          "wave": 22,
+          "type": "NuclearLauncher",
+          "x": 14,
+          "y": 4
+        },
+        {
+          "wave": 22,
+          "type": "NuclearLauncher",
+          "x": 0,
+          "y": 8
+        },
+        {
+          "wave": 22,
+          "type": "NuclearLauncher",
+          "x": 0,
+          "y": 12
+        },
+        {
+          "wave": 22,
+          "type": "NuclearLauncher",
+          "x": 2,
+          "y": 14
+        },
+        {
+          "wave": 22,
+          "type": "NuclearLauncher",
+          "x": 5,
+          "y": 14
+        },
+        {
+          "wave": 22,
+          "type": "NuclearLauncher",
+          "x": 6,
+          "y": 14
+        },
+        {
+          "wave": 22,
+          "type": "NuclearLauncher",
+          "x": 6,
+          "y": 5
+        },
+        {
+          "wave": 22,
+          "type": "NuclearLauncher",
+          "x": 6,
+          "y": 9
+        },
+        {
+          "wave": 23,
+          "type": "NuclearLauncher",
+          "x": 11,
+          "y": 0
+        },
+        {
+          "wave": 23,
+          "type": "NuclearLauncher",
+          "x": 5,
+          "y": 10
+        },
+        {
+          "wave": 23,
+          "type": "NuclearLauncher",
+          "x": 1,
+          "y": 2
+        },
+        {
+          "wave": 23,
+          "type": "NuclearLauncher",
+          "x": 6,
+          "y": 2
+        },
+        {
+          "wave": 23,
+          "type": "NuclearLauncher",
+          "x": 4,
+          "y": 1
+        },
+        {
+          "wave": 23,
+          "type": "NuclearLauncher",
+          "x": 8,
+          "y": 6
+        },
+        {
+          "wave": 23,
+          "type": "NuclearLauncher",
+          "x": 5,
+          "y": 9
+        },
+        {
+          "wave": 23,
+          "type": "NuclearLauncher",
+          "x": 8,
+          "y": 3
+        },
+        {
+          "wave": 23,
+          "type": "NuclearLauncher",
+          "x": 9,
+          "y": 0
+        },
+        {
+          "wave": 23,
+          "type": "NuclearLauncher",
+          "x": 7,
+          "y": 6
+        },
+        {
+          "wave": 24,
+          "type": "NuclearLauncher",
+          "x": 0,
+          "y": 7
+        },
+        {
+          "wave": 24,
+          "type": "NuclearLauncher",
+          "x": 7,
+          "y": 3
+        },
+        {
+          "wave": 24,
+          "type": "NuclearLauncher",
+          "x": 10,
+          "y": 14
+        },
+        {
+          "wave": 24,
+          "type": "NuclearLauncher",
+          "x": 13,
+          "y": 11
+        },
+        {
+          "wave": 24,
+          "type": "NuclearLauncher",
+          "x": 0,
+          "y": 13
+        },
+        {
+          "wave": 24,
+          "type": "NuclearLauncher",
+          "x": 12,
+          "y": 0
+        },
+        {
+          "wave": 24,
+          "type": "NuclearLauncher",
+          "x": 1,
+          "y": 14
+        },
+        {
+          "wave": 24,
+          "type": "NuclearLauncher",
+          "x": 13,
+          "y": 1
+        },
+        {
+          "wave": 24,
+          "type": "NuclearLauncher",
+          "x": 7,
+          "y": 1
+        },
+        {
+          "wave": 24,
+          "type": "NuclearLauncher",
+          "x": 5,
+          "y": 1
+        },
+        {
+          "wave": 25,
+          "type": "NuclearLauncher",
+          "x": 14,
+          "y": 3
+        },
+        {
+          "wave": 25,
+          "type": "NuclearLauncher",
+          "x": 7,
+          "y": 4
+        },
+        {
+          "wave": 25,
+          "type": "NuclearLauncher",
+          "x": 14,
+          "y": 9
+        },
+        {
+          "wave": 25,
+          "type": "NuclearLauncher",
+          "x": 1,
+          "y": 1
+        },
+        {
+          "wave": 25,
+          "type": "NuclearLauncher",
+          "x": 7,
+          "y": 5
+        },
+        {
+          "wave": 25,
+          "type": "NuclearLauncher",
+          "x": 8,
+          "y": 4
+        },
+        {
+          "wave": 25,
+          "type": "NuclearLauncher",
+          "x": 0,
+          "y": 6
+        },
+        {
+          "wave": 25,
+          "type": "NuclearLauncher",
+          "x": 8,
+          "y": 5
+        },
+        {
+          "wave": 25,
+          "type": "NuclearLauncher",
+          "x": 8,
+          "y": 0
+        },
+        {
+          "wave": 25,
+          "type": "NuclearLauncher",
+          "x": 6,
+          "y": 1
+        },
+        {
+          "wave": 26,
+          "type": "NuclearLauncher",
+          "x": 0,
+          "y": 5
+        },
+        {
+          "wave": 26,
+          "type": "NuclearLauncher",
+          "x": 12,
+          "y": 13
+        },
+        {
+          "wave": 26,
+          "type": "NuclearLauncher",
+          "x": 14,
+          "y": 2
+        },
+        {
+          "wave": 26,
+          "type": "NuclearLauncher",
+          "x": 0,
+          "y": 4
+        },
+        {
+          "wave": 26,
+          "type": "NuclearLauncher",
+          "x": 11,
+          "y": 14
+        },
+        {
+          "wave": 26,
+          "type": "NuclearLauncher",
+          "x": 3,
+          "y": 0
+        },
+        {
+          "wave": 26,
+          "type": "NuclearLauncher",
+          "x": 0,
+          "y": 3
+        },
+        {
+          "wave": 26,
+          "type": "NuclearLauncher",
+          "x": 0,
+          "y": 2
+        },
+        {
+          "wave": 26,
+          "type": "NuclearLauncher",
+          "x": 0,
+          "y": 14
+        },
+        {
+          "wave": 26,
+          "type": "NuclearLauncher",
+          "x": 13,
+          "y": 0
+        },
+        {
+          "wave": 26,
+          "type": "NuclearLauncher",
+          "x": 7,
+          "y": 0
+        },
+        {
+          "wave": 27,
+          "type": "NuclearLauncher",
+          "x": 13,
+          "y": 12
+        },
+        {
+          "wave": 27,
+          "type": "NuclearLauncher",
+          "x": 1,
+          "y": 0
+        },
+        {
+          "wave": 27,
+          "type": "NuclearLauncher",
+          "x": 14,
+          "y": 10
+        },
+        {
+          "wave": 27,
+          "type": "NuclearLauncher",
+          "x": 4,
+          "y": 0
+        },
+        {
+          "wave": 27,
+          "type": "NuclearLauncher",
+          "x": 0,
+          "y": 1
+        },
+        {
+          "wave": 27,
+          "type": "NuclearLauncher",
+          "x": 14,
+          "y": 1
+        },
+        {
+          "wave": 27,
+          "type": "NuclearLauncher",
+          "x": 5,
+          "y": 0
+        },
+        {
+          "wave": 27,
+          "type": "NuclearLauncher",
+          "x": 6,
+          "y": 0
+        },
+        {
+          "wave": 27,
+          "type": "NuclearLauncher",
+          "x": 0,
+          "y": 0
+        },
+        {
+          "wave": 27,
+          "type": "NuclearLauncher",
+          "x": 14,
+          "y": 11
+        },
+        {
+          "wave": 27,
+          "type": "NuclearLauncher",
+          "x": 12,
+          "y": 14
+        },
+        {
+          "wave": 28,
+          "type": "NuclearLauncher",
+          "x": 13,
+          "y": 13
+        },
+        {
+          "wave": 28,
+          "type": "NuclearLauncher",
+          "x": 14,
+          "y": 0
+        },
+        {
+          "wave": 28,
+          "type": "NuclearLauncher",
+          "x": 14,
+          "y": 12
+        },
+        {
+          "wave": 28,
+          "type": "NuclearLauncher",
+          "x": 13,
+          "y": 14
+        },
+        {
+          "wave": 28,
+          "type": "NuclearLauncher",
+          "x": 14,
+          "y": 13
+        },
+        {
+          "wave": 28,
+          "type": "NuclearLauncher",
+          "x": 14,
+          "y": 14
+        }
+      ],
+      "score": {
+        "challenge": 18.799999999999997,
+        "spendPressure": 20,
+        "diversity": 5.8,
+        "antiHoarding": -40,
+        "stability": 7,
+        "total": 11.599999999999994
+      },
+      "averageSpendRatio": 0.9655861226448363,
+      "totalTicks": 58513
+    }
+  ]
+}

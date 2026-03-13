@@ -7,7 +7,10 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "build:trainer": "tsc -p tsconfig.trainer.json",
+    "train:balance": "npm run build:trainer && node dist/trainer/tools/trainer/cli.js",
+    "test:simulation": "npm run build:trainer && node --test dist/trainer/tools/trainer/tests/*.test.js"
   },
   "private": true,
   "dependencies": {

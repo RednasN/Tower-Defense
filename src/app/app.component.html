@@ -15,6 +15,7 @@
     <img src="./assets/heart.svg" width="12" height="12" alt="Base health" style="float: left; margin-top: 3px" />
   </div>
   <div id="base-health" style="float: left; margin-left: 3px">{{ baseHealth$ | async }}</div>
+  <div class="ai-status" *ngIf="aiPlayEnabled$ | async">AI: ON</div>
 </div>
 
 <div class="menu" style="background: rgba(0, 0, 0, 0.5)">
@@ -29,6 +30,9 @@
 <div *ngIf="isMenuOpen" class="menu-backdrop" (click)="closeMenu()"></div>
 <div *ngIf="isMenuOpen" class="menu-dropdown">
   <div class="menu-dropdown-title">Menu</div>
+  <button type="button" class="menu-action-button" (click)="toggleAiPlay()">
+    {{ (aiPlayEnabled$ | async) ? 'Stop AI' : 'AI Play' }}
+  </button>
   <button type="button" class="menu-action-button" (click)="openLevelBuilder()">Level builder</button>
 </div>
 

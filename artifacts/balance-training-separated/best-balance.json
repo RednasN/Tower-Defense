@@ -1,0 +1,763 @@
+{
+  "economy": {
+    "startingMoney": 100,
+    "startingBaseHealth": 20,
+    "hoardPenaltyThresholdMultiplier": 1.5
+  },
+  "damageMultipliers": {
+    "bullet": {
+      "light": 1.2,
+      "armored": 0.7,
+      "swarm": 0.95,
+      "shielded": 0.8
+    },
+    "explosive": {
+      "light": 0.95,
+      "armored": 1.1,
+      "swarm": 1.35,
+      "shielded": 0.9
+    },
+    "energy": {
+      "light": 0.95,
+      "armored": 1.35,
+      "swarm": 0.9,
+      "shielded": 1.25
+    },
+    "slowExplosive": {
+      "light": 1,
+      "armored": 1.1,
+      "swarm": 1.15,
+      "shielded": 1
+    }
+  },
+  "towers": [
+    {
+      "type": "BulletShooter",
+      "imageSrc": "./assets/turrets/turret.png",
+      "cost": 17,
+      "projectileType": "Bullet",
+      "projectileSpeed": 250,
+      "upgrades": [
+        {
+          "type": "range",
+          "details": [
+            {
+              "level": 1,
+              "cost": 7,
+              "value": 113
+            },
+            {
+              "level": 2,
+              "cost": 12,
+              "value": 125
+            },
+            {
+              "level": 3,
+              "cost": 17,
+              "value": 173
+            },
+            {
+              "level": 4,
+              "cost": 24,
+              "value": 212
+            },
+            {
+              "level": 5,
+              "cost": 33,
+              "value": 212
+            }
+          ]
+        },
+        {
+          "type": "damage",
+          "details": [
+            {
+              "level": 1,
+              "cost": 4,
+              "value": 1.3091
+            },
+            {
+              "level": 2,
+              "cost": 8,
+              "value": 1.7947
+            },
+            {
+              "level": 3,
+              "cost": 10,
+              "value": 2.1112
+            },
+            {
+              "level": 4,
+              "cost": 18,
+              "value": 2.6316
+            },
+            {
+              "level": 5,
+              "cost": 20,
+              "value": 3.1907
+            }
+          ]
+        },
+        {
+          "type": "speed",
+          "details": [
+            {
+              "level": 1,
+              "cost": 6,
+              "value": 1354
+            },
+            {
+              "level": 2,
+              "cost": 10,
+              "value": 1354
+            },
+            {
+              "level": 3,
+              "cost": 20,
+              "value": 969
+            },
+            {
+              "level": 4,
+              "cost": 21,
+              "value": 964
+            },
+            {
+              "level": 5,
+              "cost": 36,
+              "value": 875
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "RocketLauncher",
+      "imageSrc": "./assets/turrets/rocket-launcher-basic.png",
+      "cost": 50,
+      "projectileType": "Rocket",
+      "projectileSpeed": 125,
+      "upgrades": [
+        {
+          "type": "range",
+          "details": [
+            {
+              "level": 1,
+              "cost": 10,
+              "value": 153
+            },
+            {
+              "level": 2,
+              "cost": 15,
+              "value": 190
+            },
+            {
+              "level": 3,
+              "cost": 20,
+              "value": 233
+            },
+            {
+              "level": 4,
+              "cost": 29,
+              "value": 261
+            },
+            {
+              "level": 5,
+              "cost": 45,
+              "value": 300
+            }
+          ]
+        },
+        {
+          "type": "damage",
+          "details": [
+            {
+              "level": 1,
+              "cost": 13,
+              "value": 4.2918
+            },
+            {
+              "level": 2,
+              "cost": 14,
+              "value": 5.1088
+            },
+            {
+              "level": 3,
+              "cost": 24,
+              "value": 7.9956
+            },
+            {
+              "level": 4,
+              "cost": 36,
+              "value": 9.0084
+            },
+            {
+              "level": 5,
+              "cost": 42,
+              "value": 10.061
+            }
+          ]
+        },
+        {
+          "type": "speed",
+          "details": [
+            {
+              "level": 1,
+              "cost": 10,
+              "value": 2045
+            },
+            {
+              "level": 2,
+              "cost": 21,
+              "value": 1507
+            },
+            {
+              "level": 3,
+              "cost": 36,
+              "value": 1507
+            },
+            {
+              "level": 4,
+              "cost": 37,
+              "value": 1424
+            },
+            {
+              "level": 5,
+              "cost": 66,
+              "value": 1424
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "LaserTurret",
+      "imageSrc": "./assets/turrets/laser-shooter.png",
+      "cost": 73,
+      "projectileType": "Laser",
+      "projectileSpeed": null,
+      "upgrades": [
+        {
+          "type": "range",
+          "details": [
+            {
+              "level": 1,
+              "cost": 8,
+              "value": 144
+            },
+            {
+              "level": 2,
+              "cost": 19,
+              "value": 144
+            },
+            {
+              "level": 3,
+              "cost": 24,
+              "value": 148
+            },
+            {
+              "level": 4,
+              "cost": 33,
+              "value": 192
+            },
+            {
+              "level": 5,
+              "cost": 46,
+              "value": 231
+            }
+          ]
+        },
+        {
+          "type": "damage",
+          "details": [
+            {
+              "level": 1,
+              "cost": 12,
+              "value": 3.0185
+            },
+            {
+              "level": 2,
+              "cost": 20,
+              "value": 3.383
+            },
+            {
+              "level": 3,
+              "cost": 29,
+              "value": 5.1766
+            },
+            {
+              "level": 4,
+              "cost": 37,
+              "value": 5.9274
+            },
+            {
+              "level": 5,
+              "cost": 56,
+              "value": 7.9692
+            }
+          ]
+        },
+        {
+          "type": "speed",
+          "details": [
+            {
+              "level": 1,
+              "cost": 16,
+              "value": 1228
+            },
+            {
+              "level": 2,
+              "cost": 22,
+              "value": 1190
+            },
+            {
+              "level": 3,
+              "cost": 36,
+              "value": 1104
+            },
+            {
+              "level": 4,
+              "cost": 53,
+              "value": 848
+            },
+            {
+              "level": 5,
+              "cost": 55,
+              "value": 848
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "NuclearLauncher",
+      "imageSrc": "./assets/turrets/nuclear-turret.png",
+      "cost": 87,
+      "projectileType": "NuclearBullet",
+      "projectileSpeed": 500,
+      "upgrades": [
+        {
+          "type": "range",
+          "details": [
+            {
+              "level": 1,
+              "cost": 11,
+              "value": 166
+            },
+            {
+              "level": 2,
+              "cost": 20,
+              "value": 166
+            },
+            {
+              "level": 3,
+              "cost": 26,
+              "value": 225
+            },
+            {
+              "level": 4,
+              "cost": 44,
+              "value": 230
+            },
+            {
+              "level": 5,
+              "cost": 53,
+              "value": 246
+            }
+          ]
+        },
+        {
+          "type": "damage",
+          "details": [
+            {
+              "level": 1,
+              "cost": 18,
+              "value": 6.993
+            },
+            {
+              "level": 2,
+              "cost": 20,
+              "value": 7.1517
+            },
+            {
+              "level": 3,
+              "cost": 48,
+              "value": 11.4612
+            },
+            {
+              "level": 4,
+              "cost": 69,
+              "value": 14.409
+            },
+            {
+              "level": 5,
+              "cost": 70,
+              "value": 16.9908
+            }
+          ]
+        },
+        {
+          "type": "speed",
+          "details": [
+            {
+              "level": 1,
+              "cost": 23,
+              "value": 2057
+            },
+            {
+              "level": 2,
+              "cost": 38,
+              "value": 1872
+            },
+            {
+              "level": 3,
+              "cost": 49,
+              "value": 1872
+            },
+            {
+              "level": 4,
+              "cost": 58,
+              "value": 1872
+            },
+            {
+              "level": 5,
+              "cost": 63,
+              "value": 1811
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "SlowRocketLauncher",
+      "imageSrc": "./assets/turrets/slow-turret.png",
+      "cost": 43,
+      "projectileType": "SlowRocket",
+      "projectileSpeed": 250,
+      "upgrades": [
+        {
+          "type": "range",
+          "details": [
+            {
+              "level": 1,
+              "cost": 8,
+              "value": 207
+            },
+            {
+              "level": 2,
+              "cost": 15,
+              "value": 222
+            },
+            {
+              "level": 3,
+              "cost": 19,
+              "value": 280
+            },
+            {
+              "level": 4,
+              "cost": 24,
+              "value": 287
+            },
+            {
+              "level": 5,
+              "cost": 38,
+              "value": 352
+            }
+          ]
+        },
+        {
+          "type": "damage",
+          "details": [
+            {
+              "level": 1,
+              "cost": 8,
+              "value": 1.566
+            },
+            {
+              "level": 2,
+              "cost": 16,
+              "value": 1.9464
+            },
+            {
+              "level": 3,
+              "cost": 19,
+              "value": 2.6258
+            },
+            {
+              "level": 4,
+              "cost": 26,
+              "value": 2.9653
+            },
+            {
+              "level": 5,
+              "cost": 38,
+              "value": 3.912
+            }
+          ]
+        },
+        {
+          "type": "speed",
+          "details": [
+            {
+              "level": 1,
+              "cost": 8,
+              "value": 1658
+            },
+            {
+              "level": 2,
+              "cost": 10,
+              "value": 1300
+            },
+            {
+              "level": 3,
+              "cost": 22,
+              "value": 1156
+            },
+            {
+              "level": 4,
+              "cost": 32,
+              "value": 1071
+            },
+            {
+              "level": 5,
+              "cost": 39,
+              "value": 890
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "GrenadeThrower",
+      "imageSrc": "./assets/turrets/grenade-thrower.png",
+      "cost": 31,
+      "projectileType": "GrenadeMine",
+      "projectileSpeed": null,
+      "upgrades": [
+        {
+          "type": "range",
+          "details": [
+            {
+              "level": 1,
+              "cost": 9,
+              "value": 124
+            },
+            {
+              "level": 2,
+              "cost": 10,
+              "value": 130
+            },
+            {
+              "level": 3,
+              "cost": 16,
+              "value": 166
+            },
+            {
+              "level": 4,
+              "cost": 17,
+              "value": 177
+            },
+            {
+              "level": 5,
+              "cost": 28,
+              "value": 199
+            }
+          ]
+        },
+        {
+          "type": "damage",
+          "details": [
+            {
+              "level": 1,
+              "cost": 8,
+              "value": 2.3708
+            },
+            {
+              "level": 2,
+              "cost": 14,
+              "value": 3.3393
+            },
+            {
+              "level": 3,
+              "cost": 19,
+              "value": 4.3772
+            },
+            {
+              "level": 4,
+              "cost": 32,
+              "value": 5.0107
+            },
+            {
+              "level": 5,
+              "cost": 53,
+              "value": 6.7091
+            }
+          ]
+        },
+        {
+          "type": "speed",
+          "details": [
+            {
+              "level": 1,
+              "cost": 8,
+              "value": 1755
+            },
+            {
+              "level": 2,
+              "cost": 10,
+              "value": 1755
+            },
+            {
+              "level": 3,
+              "cost": 18,
+              "value": 1436
+            },
+            {
+              "level": 4,
+              "cost": 34,
+              "value": 1343
+            },
+            {
+              "level": 5,
+              "cost": 43,
+              "value": 1211
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "enemies": [
+    {
+      "type": "basic",
+      "health": 8,
+      "speed": 151,
+      "reward": 9,
+      "imageName": "BasicEnemy",
+      "armorClass": "light",
+      "threat": 1.2004,
+      "unlockWave": 1,
+      "weight": 1.4495,
+      "baseDamageToBase": 1
+    },
+    {
+      "type": "fastAndWeak",
+      "health": 13,
+      "speed": 139,
+      "reward": 12,
+      "imageName": "FastAndWeakEnemy",
+      "armorClass": "swarm",
+      "threat": 1.2201,
+      "unlockWave": 2,
+      "weight": 1.3609,
+      "baseDamageToBase": 1
+    },
+    {
+      "type": "slowAndStrong",
+      "health": 30,
+      "speed": 109,
+      "reward": 18,
+      "imageName": "SlowAndStrongEnemy",
+      "armorClass": "armored",
+      "threat": 2.5203,
+      "unlockWave": 3,
+      "weight": 0.6647,
+      "baseDamageToBase": 1
+    },
+    {
+      "type": "boss",
+      "health": 47,
+      "speed": 103,
+      "reward": 30,
+      "imageName": "BossEnemy",
+      "armorClass": "shielded",
+      "threat": 2.9116,
+      "unlockWave": 5,
+      "weight": 0.4828,
+      "baseDamageToBase": 3
+    },
+    {
+      "type": "scoutTank",
+      "health": 53,
+      "speed": 155,
+      "reward": 29,
+      "imageName": "ScoutTankEnemy",
+      "armorClass": "light",
+      "threat": 2.7794,
+      "unlockWave": 5,
+      "weight": 0.7947,
+      "baseDamageToBase": 2
+    },
+    {
+      "type": "siegeTank",
+      "health": 85,
+      "speed": 113,
+      "reward": 39,
+      "imageName": "SiegeTankEnemy",
+      "armorClass": "armored",
+      "threat": 5.2854,
+      "unlockWave": 7,
+      "weight": 0.5299,
+      "baseDamageToBase": 2
+    },
+    {
+      "type": "lightHovercraft",
+      "health": 66,
+      "speed": 169,
+      "reward": 39,
+      "imageName": "LightHovercraftEnemy",
+      "armorClass": "swarm",
+      "threat": 3.4678,
+      "unlockWave": 7,
+      "weight": 0.8633,
+      "baseDamageToBase": 2
+    },
+    {
+      "type": "heavyHovercraft",
+      "health": 63,
+      "speed": 138,
+      "reward": 36,
+      "imageName": "HeavyHovercraftEnemy",
+      "armorClass": "armored",
+      "threat": 4.0749,
+      "unlockWave": 8,
+      "weight": 0.5857,
+      "baseDamageToBase": 2
+    },
+    {
+      "type": "fighterPlane",
+      "health": 58,
+      "speed": 161,
+      "reward": 54,
+      "imageName": "FighterPlaneEnemy",
+      "armorClass": "swarm",
+      "threat": 6.6639,
+      "unlockWave": 9,
+      "weight": 0.4085,
+      "baseDamageToBase": 3
+    },
+    {
+      "type": "bomberPlane",
+      "health": 106,
+      "speed": 138,
+      "reward": 46,
+      "imageName": "BomberPlaneEnemy",
+      "armorClass": "shielded",
+      "threat": 8.9705,
+      "unlockWave": 15,
+      "weight": 0.3444,
+      "baseDamageToBase": 3
+    }
+  ],
+  "waves": {
+    "intermissionMs": 10000,
+    "spawnIntervalMs": 1542,
+    "spawnIntervalDecayPerWave": 34,
+    "minSpawnIntervalMs": 517,
+    "budgetBase": 3.7335,
+    "budgetGrowthLinear": 1.2254,
+    "budgetGrowthPower": 1.302,
+    "budgetGrowthFactor": 0.5643,
+    "eliteWeightBoostPerWave": 0.0199,
+    "maxEnemiesPerWave": 52
+  }
+}

@@ -11,6 +11,7 @@ export type WaveState = {
   spawnedEnemies: number;
   aliveEnemies: number;
   unlockedEnemyTypes: EnemyType[];
+  adaptivePressure: number;
 };
 
 export type WaveEnemySpawnPlan = {

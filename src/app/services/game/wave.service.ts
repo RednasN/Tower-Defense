@@ -2,17 +2,28 @@ import { Injectable, inject } from '@angular/core';
 
 import { BehaviorSubject } from 'rxjs';
 
-import { EnemyConfig, EnemyType, enemyConfigs } from '../../models/configs/turret-config.model';
+import { EnemyType, getActiveBalanceConfig } from '../../models/configs/turret-config.model';
 import { EnemyTank } from '../../models/enemies/enemy-tank.model';
 import { EnemyEscapedEvent, WaveEnemySpawnPlan, WaveState } from '../../models/game/wave.model';
+import {
+  createWaveSpawnPlan,
+  getSpawnIntervalMs,
+  getUnlockedEnemyConfigs,
+} from '../../simulation/wave-generation';
+import { createSeededRandom } from '../../simulation/random';
+import {
+  WavePerformanceMetrics,
+  calculateAdaptivePressure,
+  createWavePerformanceMetrics,
+  recordResolvedEnemyProgress,
+  updateWaveMetricsForAliveEnemies,
+} from '../../simulation/adaptive-pressure';
 import { EnemyService } from '../enemies/enemy.service';
 
 import { ImageService } from './image.service';
 
-const EASY_SPAWN_INTERVAL_MS = 1600;
-
 type WaveQueueEntry = {
-  enemyConfig: EnemyConfig;
+  enemyConfig: ReturnType<typeof getActiveBalanceConfig>['enemies'][number];
   waveNumber: number;
 };
 
@@ -31,6 +42,7 @@ export class WaveService {
     spawnedEnemies: 0,
     aliveEnemies: 0,
     unlockedEnemyTypes: [],
+    adaptivePressure: 0,
   });
   public readonly waveState$ = this.waveState.asObservable();
 
@@ -42,6 +54,10 @@ export class WaveService {
   private readonly enemyTypeByEnemy = new Map<EnemyTank, EnemyType>();
   private readonly waveNumberByEnemy = new Map<EnemyTank, number>();
   private readonly reportedEscapes = new Set<EnemyTank>();
+  private readonly resolvedEnemies = new Set<EnemyTank>();
+  private readonly random = createSeededRandom(Date.now());
+  private adaptivePressure = 0;
+  private waveMetrics: WavePerformanceMetrics = createWavePerformanceMetrics();
 
   public initialize(): void {
     this.currentSpawnPlan = [];
@@ -50,6 +66,9 @@ export class WaveService {
     this.enemyTypeByEnemy.clear();
     this.waveNumberByEnemy.clear();
     this.reportedEscapes.clear();
+    this.resolvedEnemies.clear();
+    this.adaptivePressure = 0;
+    this.waveMetrics = createWavePerformanceMetrics();
 
     this.waveState.next({
       waveNumber: 1,
@@ -59,14 +78,17 @@ export class WaveService {
       spawnedEnemies: 0,
       aliveEnemies: 0,
       unlockedEnemyTypes: this.getUnlockedEnemyConfigs(1).map(config => config.type),
+      adaptivePressure: 0,
     });
   }
 
   public tick(dtMs: number): void {
     this.processEscapedEnemies();
+    this.processResolvedEnemies();
 
     const state = this.waveState.value;
     const aliveEnemies = this.enemyService.enemies.filter(enemy => enemy.lives > 0).length;
+    updateWaveMetricsForAliveEnemies(this.waveMetrics, this.enemyService.enemies, dtMs);
 
     if (state.phase === 'intermission') {
       const remainingMs = Math.max(0, state.intermissionRemainingMs - dtMs);
@@ -80,6 +102,7 @@ export class WaveService {
         ...state,
         intermissionRemainingMs: remainingMs,
         aliveEnemies,
+        adaptivePressure: this.adaptivePressure,
       });
       return;
     }
@@ -104,6 +127,7 @@ export class WaveService {
           phase: 'cleanup',
           spawnedEnemies,
           aliveEnemies,
+          adaptivePressure: this.adaptivePressure,
         });
         return;
       }
@@ -112,6 +136,7 @@ export class WaveService {
         ...state,
         spawnedEnemies,
         aliveEnemies,
+        adaptivePressure: this.adaptivePressure,
       });
       return;
     }
@@ -119,6 +144,8 @@ export class WaveService {
     if (state.phase === 'cleanup') {
       if (aliveEnemies === 0) {
         const nextWave = state.waveNumber + 1;
+        this.adaptivePressure = calculateAdaptivePressure(this.adaptivePressure, state.waveNumber, this.waveMetrics);
+        this.waveMetrics = createWavePerformanceMetrics();
         this.waveState.next({
           waveNumber: nextWave,
           phase: 'intermission',
@@ -127,6 +154,7 @@ export class WaveService {
           spawnedEnemies: 0,
           aliveEnemies: 0,
           unlockedEnemyTypes: this.getUnlockedEnemyConfigs(nextWave).map(config => config.type),
+          adaptivePressure: this.adaptivePressure,
         });
         return;
       }
@@ -134,6 +162,7 @@ export class WaveService {
       this.waveState.next({
         ...state,
         aliveEnemies,
+        adaptivePressure: this.adaptivePressure,
       });
     }
   }
@@ -166,6 +195,7 @@ export class WaveService {
     this.currentSpawnPlan = this.createWaveSpawnPlan(waveNumber);
     this.spawnQueue = this.createWaveQueueEntries(this.currentSpawnPlan, waveNumber);
     this.spawnTimerMs = 0;
+    this.waveMetrics = createWavePerformanceMetrics();
 
     this.waveState.next({
       waveNumber,
@@ -175,6 +205,7 @@ export class WaveService {
       spawnedEnemies: 0,
       aliveEnemies: this.enemyService.enemies.filter(enemy => enemy.lives > 0).length,
       unlockedEnemyTypes: this.getUnlockedEnemyConfigs(waveNumber).map(config => config.type),
+      adaptivePressure: this.adaptivePressure,
     });
   }
 
@@ -191,6 +222,7 @@ export class WaveService {
       plannedEnemies: state.plannedEnemies + additionalEntries.length,
       aliveEnemies: this.enemyService.enemies.filter(enemy => enemy.lives > 0).length,
       unlockedEnemyTypes: this.getUnlockedEnemyConfigs(waveNumber).map(config => config.type),
+      adaptivePressure: this.adaptivePressure,
     });
   }
 
@@ -204,25 +236,8 @@ export class WaveService {
   }
 
   private createWaveSpawnPlan(waveNumber: number): WaveEnemySpawnPlan[] {
-    const unlockedEnemyConfigs = this.getUnlockedEnemyConfigs(waveNumber);
-    const quantities = new Map<EnemyType, number>();
-
-    for (let pick = 0; pick < 2; pick++) {
-      const pickedEnemy = this.pickRandomEnemy(unlockedEnemyConfigs);
-      quantities.set(pickedEnemy.type, (quantities.get(pickedEnemy.type) ?? 0) + 1);
-    }
-
-    return unlockedEnemyConfigs
-      .filter(config => (quantities.get(config.type) ?? 0) > 0)
-      .map(config => ({
-        enemyConfig: config,
-        quantity: quantities.get(config.type)!,
-      }));
-  }
-
-  private pickRandomEnemy(unlockedEnemyConfigs: typeof enemyConfigs) {
-    const index = Math.floor(Math.random() * unlockedEnemyConfigs.length);
-    return unlockedEnemyConfigs[index] ?? enemyConfigs[0];
+    const balance = getActiveBalanceConfig();
+    return createWaveSpawnPlan(waveNumber, balance.enemies, balance.waves, this.random, this.adaptivePressure);
   }
 
   private spawnNextEnemy(): number | null {
@@ -230,9 +245,10 @@ export class WaveService {
       return null;
     }
 
-    const queueIndex = Math.floor(Math.random() * this.spawnQueue.length);
-    const queuedEnemy = this.spawnQueue[queueIndex];
-    this.spawnQueue.splice(queueIndex, 1);
+    const queuedEnemy = this.spawnQueue.shift();
+    if (!queuedEnemy) {
+      return null;
+    }
     const { enemyConfig, waveNumber } = queuedEnemy;
 
     const spawnHealth = enemyConfig.health;
@@ -253,15 +269,13 @@ export class WaveService {
   }
 
   private getSpawnIntervalMs(waveNumber: number): number {
-    return EASY_SPAWN_INTERVAL_MS;
+    const balance = getActiveBalanceConfig();
+    return getSpawnIntervalMs(waveNumber, balance.waves, this.adaptivePressure);
   }
 
-  private getWaveEnemyCount(waveNumber: number): number {
-    return 2;
-  }
-
-  private getUnlockedEnemyConfigs(waveNumber: number): typeof enemyConfigs {
-    return enemyConfigs;
+  private getUnlockedEnemyConfigs(waveNumber: number) {
+    const balance = getActiveBalanceConfig();
+    return getUnlockedEnemyConfigs(balance.enemies, waveNumber);
   }
 
   private processEscapedEnemies(): void {
@@ -272,11 +286,24 @@ export class WaveService {
       }
 
       this.reportedEscapes.add(enemy);
+      this.resolvedEnemies.add(enemy);
+      recordResolvedEnemyProgress(this.waveMetrics, enemy);
       this.escapedHandler?.({
         waveNumber: this.waveNumberByEnemy.get(enemy) ?? state.waveNumber,
         enemyType: this.enemyTypeByEnemy.get(enemy) ?? EnemyType.Basic,
         timestamp: Date.now(),
       });
+    }
+  }
+
+  private processResolvedEnemies(): void {
+    for (const enemy of this.enemyService.enemies) {
+      if (enemy.lives > 0 || enemy.escaped || this.resolvedEnemies.has(enemy)) {
+        continue;
+      }
+
+      this.resolvedEnemies.add(enemy);
+      recordResolvedEnemyProgress(this.waveMetrics, enemy);
     }
   }
 }

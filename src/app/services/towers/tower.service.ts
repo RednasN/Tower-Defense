@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 
+import { UpgradeType } from '../../models/configs/turret-config.model';
 import {
   Weapon,
   WeaponType,
@@ -10,6 +11,7 @@ import {
   isRocketLauncher,
   isSlowRocketLauncher,
 } from '../../models/weapons/weapon.model';
+import { canBuildTowerAtCell } from '../../simulation/placement';
 import { CanvasService } from '../game/canvas.service';
 import { GridService } from '../game/grid.service';
 import { ImageService } from '../game/image.service';
@@ -110,6 +112,27 @@ export class TowerService {
     return this.weapons;
   }
 
+  public canPlaceTowerAtCell(x: number, y: number): boolean {
+    return canBuildTowerAtCell(x, y) && this.getWeaponAtCell(x, y) === null;
+  }
+
+  public getTowerBuildCost(type: WeaponType): number {
+    return this.turretConfigService.getTurretConfig(type).cost;
+  }
+
+  public getUpgradeCost(
+    weapon: Weapon,
+    levels: { speedLevel: number; powerLevel: number; rangeLevel: number }
+  ): number {
+    const turretConfig = this.turretConfigService.getTurretConfig(weapon.type);
+
+    return (
+      this.getIncrementalUpgradeCost(turretConfig.upgrades.find(upgrade => upgrade.type === UpgradeType.Speed)?.details, weapon.speedLevel, levels.speedLevel) +
+      this.getIncrementalUpgradeCost(turretConfig.upgrades.find(upgrade => upgrade.type === UpgradeType.Damage)?.details, weapon.powerLevel, levels.powerLevel) +
+      this.getIncrementalUpgradeCost(turretConfig.upgrades.find(upgrade => upgrade.type === UpgradeType.Range)?.details, weapon.rangeLevel, levels.rangeLevel)
+    );
+  }
+
   public upgradeTower(weapon: Weapon, levels: { speedLevel: number; powerLevel: number; rangeLevel: number }): void {
     const existingWeapon = this.weapons.find(w => w === weapon);
     if (!existingWeapon) {
@@ -188,5 +211,17 @@ export class TowerService {
     weapon.damage = stats.damage;
     weapon.speed = stats.speed;
     weapon.range = stats.range;
+  }
+
+  private getIncrementalUpgradeCost(
+    details: Array<{ level: number; cost: number }> | undefined,
+    currentLevel: number,
+    targetLevel: number
+  ): number {
+    if (!details || targetLevel <= currentLevel) {
+      return 0;
+    }
+
+    return details.filter(detail => detail.level > currentLevel && detail.level <= targetLevel).reduce((total, detail) => total + detail.cost, 0);
   }
 }

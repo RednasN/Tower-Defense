@@ -1,0 +1,558 @@
+{
+  "bestAverageScore": -22.274400000000007,
+  "bestAverageWave": 7.4,
+  "buildableCells": 166,
+  "results": [
+    {
+      "policy": "aggressive-expansion",
+      "seed": 534221872,
+      "finalWave": 7,
+      "victory": false,
+      "baseHealthRemaining": 0,
+      "moneyEarned": 376,
+      "moneySpent": 475,
+      "moneyHoardedPeak": 100,
+      "towerBuildCounts": {
+        "BulletShooter": 6
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 32
+      },
+      "leakCounts": {
+        "slowAndStrong": 2,
+        "scoutTank": 6,
+        "fastAndWeak": 1,
+        "lightHovercraft": 3
+      },
+      "damageByType": {
+        "bullet": 680.5757899999987
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 11
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 8
+        }
+      ],
+      "score": {
+        "challenge": 15.599999999999994,
+        "spendPressure": 20,
+        "diversity": 2.9,
+        "antiHoarding": 8,
+        "stability": -8,
+        "total": 38.49999999999999
+      },
+      "averageSpendRatio": 0.9885229197329141,
+      "totalTicks": 13643
+    },
+    {
+      "policy": "upgrade-first",
+      "seed": 534221872,
+      "finalWave": 7,
+      "victory": false,
+      "baseHealthRemaining": 0,
+      "moneyEarned": 362,
+      "moneySpent": 448,
+      "moneyHoardedPeak": 100,
+      "towerBuildCounts": {
+        "BulletShooter": 6
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 31
+      },
+      "leakCounts": {
+        "slowAndStrong": 2,
+        "scoutTank": 6,
+        "fastAndWeak": 2,
+        "lightHovercraft": 2
+      },
+      "damageByType": {
+        "bullet": 701.7381009999988
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 11
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 8
+        }
+      ],
+      "score": {
+        "challenge": 15.599999999999994,
+        "spendPressure": 20,
+        "diversity": 2.9,
+        "antiHoarding": 8,
+        "stability": -8,
+        "total": 38.49999999999999
+      },
+      "averageSpendRatio": 0.9913675274799063,
+      "totalTicks": 13498
+    },
+    {
+      "policy": "mixed",
+      "seed": 534221872,
+      "finalWave": 7,
+      "victory": false,
+      "baseHealthRemaining": 0,
+      "moneyEarned": 390,
+      "moneySpent": 489,
+      "moneyHoardedPeak": 100,
+      "towerBuildCounts": {
+        "BulletShooter": 6
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 33
+      },
+      "leakCounts": {
+        "slowAndStrong": 2,
+        "scoutTank": 6,
+        "lightHovercraft": 3
+      },
+      "damageByType": {
+        "bullet": 708.071857999999
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 11
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 8
+        }
+      ],
+      "score": {
+        "challenge": 15.599999999999994,
+        "spendPressure": 20,
+        "diversity": 2.9,
+        "antiHoarding": 8,
+        "stability": -8,
+        "total": 38.49999999999999
+      },
+      "averageSpendRatio": 0.9899224858885474,
+      "totalTicks": 13643
+    },
+    {
+      "policy": "conservative",
+      "seed": 534221872,
+      "finalWave": 9,
+      "victory": false,
+      "baseHealthRemaining": 0,
+      "moneyEarned": 821,
+      "moneySpent": 807,
+      "moneyHoardedPeak": 174,
+      "towerBuildCounts": {
+        "BulletShooter": 29,
+        "NuclearLauncher": 1
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 16,
+        "NuclearLauncher": 1
+      },
+      "leakCounts": {
+        "slowAndStrong": 1,
+        "scoutTank": 7,
+        "siegeTank": 3
+      },
+      "damageByType": {
+        "bullet": 1454.459142000007,
+        "explosive": 57.63173999999998
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 11
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 8
+        },
+        {
+          "wave": 2,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 11
+        },
+        {
+          "wave": 3,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 12
+        },
+        {
+          "wave": 3,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 5
+        },
+        {
+          "wave": 3,
+          "type": "BulletShooter",
+          "x": 13,
+          "y": 7
+        },
+        {
+          "wave": 4,
+          "type": "BulletShooter",
+          "x": 8,
+          "y": 11
+        },
+        {
+          "wave": 5,
+          "type": "BulletShooter",
+          "x": 8,
+          "y": 12
+        },
+        {
+          "wave": 5,
+          "type": "BulletShooter",
+          "x": 13,
+          "y": 8
+        },
+        {
+          "wave": 5,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 4
+        },
+        {
+          "wave": 5,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 7
+        },
+        {
+          "wave": 5,
+          "type": "BulletShooter",
+          "x": 8,
+          "y": 9
+        },
+        {
+          "wave": 6,
+          "type": "BulletShooter",
+          "x": 13,
+          "y": 5
+        },
+        {
+          "wave": 6,
+          "type": "BulletShooter",
+          "x": 3,
+          "y": 5
+        },
+        {
+          "wave": 6,
+          "type": "BulletShooter",
+          "x": 3,
+          "y": 6
+        },
+        {
+          "wave": 6,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 3
+        },
+        {
+          "wave": 7,
+          "type": "BulletShooter",
+          "x": 4,
+          "y": 5
+        },
+        {
+          "wave": 8,
+          "type": "BulletShooter",
+          "x": 7,
+          "y": 12
+        },
+        {
+          "wave": 8,
+          "type": "BulletShooter",
+          "x": 4,
+          "y": 6
+        },
+        {
+          "wave": 8,
+          "type": "BulletShooter",
+          "x": 7,
+          "y": 11
+        },
+        {
+          "wave": 8,
+          "type": "BulletShooter",
+          "x": 2,
+          "y": 6
+        },
+        {
+          "wave": 8,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 12
+        },
+        {
+          "wave": 8,
+          "type": "BulletShooter",
+          "x": 13,
+          "y": 9
+        },
+        {
+          "wave": 8,
+          "type": "BulletShooter",
+          "x": 10,
+          "y": 5
+        },
+        {
+          "wave": 8,
+          "type": "BulletShooter",
+          "x": 2,
+          "y": 5
+        },
+        {
+          "wave": 9,
+          "type": "NuclearLauncher",
+          "x": 8,
+          "y": 8
+        }
+      ],
+      "score": {
+        "challenge": 22,
+        "spendPressure": 20,
+        "diversity": 5.8,
+        "antiHoarding": 5.3,
+        "stability": -8,
+        "total": 45.099999999999994
+      },
+      "averageSpendRatio": 0.9217651328173044,
+      "totalTicks": 18722
+    },
+    {
+      "policy": "hoarder",
+      "seed": 534221872,
+      "finalWave": 7,
+      "victory": false,
+      "baseHealthRemaining": 0,
+      "moneyEarned": 400,
+      "moneySpent": 422,
+      "moneyHoardedPeak": 100,
+      "towerBuildCounts": {
+        "BulletShooter": 13
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 14
+      },
+      "leakCounts": {
+        "fastAndWeak": 3,
+        "slowAndStrong": 4,
+        "scoutTank": 7
+      },
+      "damageByType": {
+        "bullet": 753.0980330000014
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 9
+        },
+        {
+          "wave": 3,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 11
+        },
+        {
+          "wave": 3,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 8
+        },
+        {
+          "wave": 5,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 11
+        },
+        {
+          "wave": 5,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 12
+        },
+        {
+          "wave": 5,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 5
+        },
+        {
+          "wave": 6,
+          "type": "BulletShooter",
+          "x": 13,
+          "y": 7
+        },
+        {
+          "wave": 6,
+          "type": "BulletShooter",
+          "x": 8,
+          "y": 11
+        },
+        {
+          "wave": 7,
+          "type": "BulletShooter",
+          "x": 8,
+          "y": 12
+        },
+        {
+          "wave": 7,
+          "type": "BulletShooter",
+          "x": 13,
+          "y": 8
+        }
+      ],
+      "score": {
+        "challenge": 15.599999999999994,
+        "spendPressure": 20,
+        "diversity": 2.9,
+        "antiHoarding": -22.472,
+        "stability": -8,
+        "total": 8.027999999999992
+      },
+      "averageSpendRatio": 0.9023114532746658,
+      "totalTicks": 15778
+    }
+  ]
+}

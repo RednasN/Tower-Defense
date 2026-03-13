@@ -1,15 +1,17 @@
 import { Injectable } from '@angular/core';
 
 import { BehaviorSubject } from 'rxjs';
+import { getActiveBalanceConfig } from '../../models/configs/turret-config.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GameStateService {
-  private money = 100;
-  private readonly moneyChanged = new BehaviorSubject<number>(Math.round(100));
-  private baseHealth = 20;
-  private readonly baseHealthChanged = new BehaviorSubject<number>(20);
+  private readonly balance = getActiveBalanceConfig();
+  private money = this.balance.economy.startingMoney;
+  private readonly moneyChanged = new BehaviorSubject<number>(Math.round(this.balance.economy.startingMoney));
+  private baseHealth = this.balance.economy.startingBaseHealth;
+  private readonly baseHealthChanged = new BehaviorSubject<number>(this.balance.economy.startingBaseHealth);
   public moneyChanged$ = this.moneyChanged.asObservable();
   public baseHealthChanged$ = this.baseHealthChanged.asObservable();
 

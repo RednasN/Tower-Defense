@@ -1,0 +1,24 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "CommonJS",
+    "target": "ES2022",
+    "outDir": "./dist/trainer",
+    "rootDir": ".",
+    "types": [
+      "node"
+    ],
+    "lib": [
+      "ES2022",
+      "dom"
+    ]
+  },
+  "include": [
+    "src/app/models/**/*.ts",
+    "src/app/simulation/**/*.ts",
+    "tools/trainer/**/*.ts"
+  ],
+  "exclude": [
+    "src/**/*.spec.ts"
+  ]
+}

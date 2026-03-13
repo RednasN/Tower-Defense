@@ -8,6 +8,7 @@ import { BuildTowerDialogComponent } from './components/build-tower-dialog/build
 import { GameCanvasComponent } from './components/game-canvas/game-canvas.component';
 import { LevelBuilderComponent } from './components/level-builder/level-builder.component';
 import { EnemyType } from './models/configs/turret-config.model';
+import { AiPlayService } from './services/game/ai-play.service';
 import { CanvasService } from './services/game/canvas.service';
 import { GameLoopService } from './services/game/game-loop.service';
 import { GameStateService } from './services/game/game-state.service';
@@ -33,10 +34,12 @@ export class AppComponent implements OnInit {
   private readonly waveService = inject(WaveService);
   private readonly towerService = inject(TowerService);
   private readonly canvasService = inject(CanvasService);
+  private readonly aiPlayService = inject(AiPlayService);
   private readonly dialog = inject(MatDialog);
 
   private readonly gameState = inject(GameStateService);
   public readonly waveLabel$ = this.waveService.waveState$.pipe(map(state => state.waveNumber.toString().padStart(3, '0')));
+  public readonly aiPlayEnabled$ = this.aiPlayService.isEnabled$;
   public isMenuOpen = false;
   public isLevelBuilderOpen = false;
 
@@ -130,12 +133,27 @@ export class AppComponent implements OnInit {
   }
 
   public openLevelBuilder(): void {
+    this.aiPlayService.setBlocked(true, 'level-builder');
     this.isLevelBuilderOpen = true;
     this.isMenuOpen = false;
   }
 
   public closeLevelBuilder(): void {
     this.isLevelBuilderOpen = false;
+    this.aiPlayService.setBlocked(false);
+  }
+
+  public toggleAiPlay(): void {
+    if (this.isLevelBuilderOpen) {
+      return;
+    }
+
+    this.aiPlayService.toggle();
+    this.isMenuOpen = false;
+  }
+
+  public isAiPlayEnabled(): boolean {
+    return this.aiPlayService.isEnabled();
   }
 
   private registerWorldSize(): void {

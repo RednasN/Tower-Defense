@@ -15,6 +15,7 @@ import { GridService } from '../../services/game/grid.service';
 import { GameStateService } from '../../services/game/game-state.service';
 import { TowerService } from '../../services/towers/tower.service';
 import { ProgressionCircleComponent } from '../progression-circle/progression-circle.component';
+import { canBuildTowerAtCell } from '../../simulation/placement';
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 type UpgradeDetails = {
@@ -93,6 +94,13 @@ export class BuildTowerDialogComponent implements OnInit {
 
     if (this.isUpgradeMode && !this.selectedWeapon) {
       return false;
+    }
+
+    if (!this.isUpgradeMode) {
+      const selectedCell = this.gridService.selectedCell;
+      if (!selectedCell || !canBuildTowerAtCell(selectedCell.x, selectedCell.y)) {
+        return false;
+      }
     }
 
     return this.gameState.getMoney() >= this.totalCost;
