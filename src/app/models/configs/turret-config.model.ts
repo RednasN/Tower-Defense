@@ -352,7 +352,7 @@ export const slowRocketLauncherConfig: TurretConfig = {
   imageSrc: './assets/turrets/slow-turret.png',
   cost: 33,
   projectileType: ProjectileType.SlowRocket,
-  projectileSpeed: 125,
+  projectileSpeed: 250,
   upgrades: [
     {
       type: UpgradeType.Range,
