@@ -30,8 +30,6 @@
 <div *ngIf="isMenuOpen" class="menu-dropdown">
   <div class="menu-dropdown-title">Menu</div>
   <button type="button" class="menu-action-button" (click)="openLevelBuilder()">Level builder</button>
-  <button type="button" class="menu-action-button" (click)="openBalanceSimulator()">Balance simulator</button>
 </div>
 
 <app-level-builder *ngIf="isLevelBuilderOpen" (closeBuilder)="closeLevelBuilder()"></app-level-builder>
-<app-balance-simulator *ngIf="isBalanceSimulatorOpen" (closeSimulator)="closeBalanceSimulator()"></app-balance-simulator>

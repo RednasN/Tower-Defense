@@ -5,23 +5,21 @@ import { MatDialog } from '@angular/material/dialog';
 import { Observable, map } from 'rxjs';
 
 import { BuildTowerDialogComponent } from './components/build-tower-dialog/build-tower-dialog.component';
-import { BalanceSimulatorComponent } from './components/balance-simulator/balance-simulator.component';
 import { GameCanvasComponent } from './components/game-canvas/game-canvas.component';
 import { LevelBuilderComponent } from './components/level-builder/level-builder.component';
 import { EnemyType } from './models/configs/turret-config.model';
+import { CanvasService } from './services/game/canvas.service';
 import { GameLoopService } from './services/game/game-loop.service';
 import { GameStateService } from './services/game/game-state.service';
 import { GridService } from './services/game/grid.service';
 import { ImageService } from './services/game/image.service';
-import { TowerService } from './services/towers/tower.service';
 import { WaveService } from './services/game/wave.service';
-import { CanvasService } from './services/game/canvas.service';
-import { BalanceReplayService } from './services/simulation/balance-replay.service';
+import { TowerService } from './services/towers/tower.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, GameCanvasComponent, LevelBuilderComponent, BalanceSimulatorComponent],
+  imports: [CommonModule, GameCanvasComponent, LevelBuilderComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
@@ -35,14 +33,12 @@ export class AppComponent implements OnInit {
   private readonly waveService = inject(WaveService);
   private readonly towerService = inject(TowerService);
   private readonly canvasService = inject(CanvasService);
-  private readonly balanceReplayService = inject(BalanceReplayService);
   private readonly dialog = inject(MatDialog);
 
   private readonly gameState = inject(GameStateService);
   public readonly waveLabel$ = this.waveService.waveState$.pipe(map(state => state.waveNumber.toString().padStart(3, '0')));
   public isMenuOpen = false;
   public isLevelBuilderOpen = false;
-  public isBalanceSimulatorOpen = false;
 
   public ngOnInit(): void {
     this.imageService
@@ -57,10 +53,6 @@ export class AppComponent implements OnInit {
         this.registerWorldSize();
         this.waveService.initialize();
         this.waveService.setEnemyEscapedHandler(event => {
-          if (this.balanceReplayService.handleEnemyEscaped(event)) {
-            return;
-          }
-
           const damage = this.getBaseDamageForEnemyType(event.enemyType);
           this.gameState.damageBase(damage);
           if (this.gameState.getBaseHealth() === 0 && !this.gameLoopService.paused) {
@@ -74,26 +66,14 @@ export class AppComponent implements OnInit {
   }
 
   public togglePause(): void {
-    if (this.balanceReplayService.isReplayActive()) {
-      return;
-    }
-
     this.gameLoopService.changePause();
   }
 
   public changeSpeed(): void {
-    if (this.balanceReplayService.isReplayActive()) {
-      return;
-    }
-
     this.gameLoopService.changeSpeed();
   }
 
   public startNextWave(): void {
-    if (this.balanceReplayService.isReplayActive()) {
-      return;
-    }
-
     this.waveService.startWaveEarly();
   }
 
@@ -122,10 +102,6 @@ export class AppComponent implements OnInit {
   }
 
   public buildTower(): void {
-    if (this.balanceReplayService.isReplayActive()) {
-      return;
-    }
-
     const selectedCell = this.gridService.selectedCell;
     const selectedWeapon = selectedCell ? this.towerService.getWeaponAtCell(selectedCell.x, selectedCell.y) : null;
 
@@ -154,25 +130,12 @@ export class AppComponent implements OnInit {
   }
 
   public openLevelBuilder(): void {
-    if (this.balanceReplayService.isReplayActive()) {
-      return;
-    }
-
     this.isLevelBuilderOpen = true;
     this.isMenuOpen = false;
   }
 
   public closeLevelBuilder(): void {
     this.isLevelBuilderOpen = false;
-  }
-
-  public openBalanceSimulator(): void {
-    this.isBalanceSimulatorOpen = true;
-    this.isMenuOpen = false;
-  }
-
-  public closeBalanceSimulator(): void {
-    this.isBalanceSimulatorOpen = false;
   }
 
   private registerWorldSize(): void {
