@@ -7,10 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "lint": "ng lint",
-    "balance:sim": "node scripts/balance-sim.cjs",
-    "balance:train": "node scripts/balance-train.cjs",
-    "balance:apply": "node scripts/balance-apply.cjs"
+    "lint": "ng lint"
   },
   "private": true,
   "dependencies": {
