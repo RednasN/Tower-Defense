@@ -31,6 +31,7 @@ export class AiPlayService {
   private tickHandle: ReturnType<typeof setInterval> | null = null;
   private waveStateSubscription: Subscription | null = null;
   private readonly recentWaveActionCounts = new Map<number, number>();
+  private observedWaveNumber = 1;
 
   public readonly isEnabled$ = this.enabledSubject.asObservable();
 
@@ -54,9 +55,11 @@ export class AiPlayService {
 
     this.enabledSubject.next(true);
     this.recentWaveActionCounts.clear();
+    this.observedWaveNumber = this.waveService.getCurrentState().waveNumber;
     this.waveStateSubscription?.unsubscribe();
     this.waveStateSubscription = this.waveService.waveState$.subscribe(state => {
-      if (state.phase === 'intermission') {
+      if (state.waveNumber !== this.observedWaveNumber) {
+        this.observedWaveNumber = state.waveNumber;
         this.recentWaveActionCounts.set(state.waveNumber, 0);
       }
 
@@ -81,6 +84,7 @@ export class AiPlayService {
     this.waveStateSubscription?.unsubscribe();
     this.waveStateSubscription = null;
     this.recentWaveActionCounts.clear();
+    this.observedWaveNumber = 1;
   }
 
   public setBlocked(blocked: boolean, reason: string | null = null): void {
@@ -103,7 +107,8 @@ export class AiPlayService {
     }
 
     const waveState = this.waveService.getCurrentState();
-    const maxActions = waveState.phase === 'intermission' ? 3 : 1;
+    const planningWindow = waveState.phase === 'waiting' || waveState.timeUntilNextWaveMs > 0;
+    const maxActions = planningWindow ? 3 : 1;
     const actions = getPolicyActions(
       {
         balance: getActiveBalanceConfig(),
@@ -134,7 +139,7 @@ export class AiPlayService {
       this.recentWaveActionCounts.set(waveState.waveNumber, (this.recentWaveActionCounts.get(waveState.waveNumber) ?? 0) + 1);
     }
 
-    if (waveState.phase === 'intermission' && this.shouldStartWaveEarly(waveState.waveNumber, executed)) {
+    if (waveState.phase === 'waiting' && waveState.waveNumber === 1 && this.shouldStartWaveEarly(waveState.waveNumber, executed)) {
       this.waveService.startWaveEarly();
     }
   }

@@ -1,0 +1,62 @@
+[
+  {
+    "averageScore": 56.52126477182733,
+    "minScore": 85.04128440366972,
+    "maxScore": 126.69999999999999,
+    "averageWave": 11.3
+  },
+  {
+    "averageScore": 54.19677980788754,
+    "minScore": 77.82091254752852,
+    "maxScore": 121.30000000000001,
+    "averageWave": 9.36
+  },
+  {
+    "averageScore": 49.76730004683237,
+    "minScore": 70.64913294797688,
+    "maxScore": 115.9,
+    "averageWave": 9.08
+  },
+  {
+    "averageScore": 49.666532586174256,
+    "minScore": 77.78387096774193,
+    "maxScore": 126.69999999999999,
+    "averageWave": 9.88
+  },
+  {
+    "averageScore": 31.75331935075998,
+    "minScore": 70.4620253164557,
+    "maxScore": 115.9,
+    "averageWave": 7.78
+  },
+  {
+    "averageScore": 25.9583954315859,
+    "minScore": 77.80889679715303,
+    "maxScore": 126.69999999999999,
+    "averageWave": 8.42
+  },
+  {
+    "averageScore": 20.2018606569212,
+    "minScore": 77.86363636363636,
+    "maxScore": 115.9,
+    "averageWave": 8.78
+  },
+  {
+    "averageScore": 14.289365844033782,
+    "minScore": -6.6,
+    "maxScore": 121.30000000000001,
+    "averageWave": 11.3
+  },
+  {
+    "averageScore": 6.850182931700374,
+    "minScore": -7.65,
+    "maxScore": 126.69999999999999,
+    "averageWave": 13.04
+  },
+  {
+    "averageScore": -2.8154646862374193,
+    "minScore": 59.358823529411765,
+    "maxScore": 110.5,
+    "averageWave": 5.84
+  }
+]

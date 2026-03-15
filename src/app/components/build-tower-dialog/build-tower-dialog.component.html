@@ -18,10 +18,18 @@
             </div>
           }
         </div>
+        <div class="selected-tower-name">
+          {{ selectedTowerName ?? 'No tower selected' }}
+        </div>
       </div>
     }
     <div class="upgrades">
       <p>Upgrade Options</p>
+      @if (isUpgradeMode && selectedTowerName) {
+        <div class="selected-tower-name">
+          {{ selectedTowerName }}
+        </div>
+      }
       <div class="upgrade-options">
         <div class="upgrade-item" *ngFor="let option of upgradeOptions">
           <app-progression-circle [image]="option.icon" [progression]="20 * option.level" style="height: 35px; width: 35px">

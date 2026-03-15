@@ -3,10 +3,13 @@ import { WeaponType } from '../weapons/weapon.model';
 import {
   ArmorClass,
   BalanceConfig,
+  ChainLightningConfig,
   DamageMultiplierMatrix,
   DamageType,
   EnemyConfig,
   EnemyType,
+  FlameBubbleConfig,
+  SplitRocketConfig,
   TurretConfig,
   UpgradeDetails,
   UpgradeLevelDetails,
@@ -23,10 +26,13 @@ const EASY_DAMAGE_TYPE_EFFECTIVENESS = {
 export {
   ArmorClass,
   BalanceConfig,
+  ChainLightningConfig,
   DamageMultiplierMatrix,
   DamageType,
   EnemyConfig,
   EnemyType,
+  FlameBubbleConfig,
+  SplitRocketConfig,
   TurretConfig,
   UpgradeDetails,
   UpgradeLevelDetails,
@@ -49,11 +55,14 @@ export function getDamageTypeForWeaponType(weaponType: WeaponType): DamageType {
     case WeaponType.BulletShooter:
       return DamageType.Bullet;
     case WeaponType.RocketLauncher:
+    case WeaponType.MultiRocketLauncher:
     case WeaponType.NuclearLauncher:
     case WeaponType.GrenadeThrower:
+    case WeaponType.FlameThrower:
       return DamageType.Explosive;
     case WeaponType.SlowRocketLauncher:
       return DamageType.SlowExplosive;
+    case WeaponType.ChainLightningTower:
     case WeaponType.LaserTurret:
       return DamageType.Energy;
     default:
@@ -73,9 +82,14 @@ export const lightHovercraftEnemyConfig = enemyConfigs.find(config => config.typ
 export const heavyHovercraftEnemyConfig = enemyConfigs.find(config => config.type === EnemyType.HeavyHovercraft)!;
 export const fighterPlaneEnemyConfig = enemyConfigs.find(config => config.type === EnemyType.FighterPlane)!;
 export const bomberPlaneEnemyConfig = enemyConfigs.find(config => config.type === EnemyType.BomberPlane)!;
+export const interceptorDroneEnemyConfig = enemyConfigs.find(config => config.type === EnemyType.InterceptorDrone)!;
+export const juggernautMechEnemyConfig = enemyConfigs.find(config => config.type === EnemyType.JuggernautMech)!;
 
 export const bulletShooterConfig = generatedBalanceConfig.towers.find(config => config.type === WeaponType.BulletShooter)!;
+export const flameThrowerConfig = generatedBalanceConfig.towers.find(config => config.type === WeaponType.FlameThrower)!;
 export const rocketLauncherConfig = generatedBalanceConfig.towers.find(config => config.type === WeaponType.RocketLauncher)!;
+export const multiRocketLauncherConfig = generatedBalanceConfig.towers.find(config => config.type === WeaponType.MultiRocketLauncher)!;
+export const chainLightningTowerConfig = generatedBalanceConfig.towers.find(config => config.type === WeaponType.ChainLightningTower)!;
 export const laserTurretConfig = generatedBalanceConfig.towers.find(config => config.type === WeaponType.LaserTurret)!;
 export const nuclearLauncherConfig = generatedBalanceConfig.towers.find(config => config.type === WeaponType.NuclearLauncher)!;
 export const slowRocketLauncherConfig = generatedBalanceConfig.towers.find(config => config.type === WeaponType.SlowRocketLauncher)!;

@@ -72,6 +72,37 @@ export class CanvasService {
     this.mainCtx.restore();
   }
 
+  public strokeLine(x1: number, y1: number, x2: number, y2: number, strokeStyle: string, lineWidth: number): void {
+    this.mainCtx.save();
+    this.mainCtx.strokeStyle = strokeStyle;
+    this.mainCtx.lineWidth = lineWidth;
+    this.mainCtx.lineCap = 'round';
+    this.mainCtx.beginPath();
+    this.mainCtx.moveTo(x1, y1);
+    this.mainCtx.lineTo(x2, y2);
+    this.mainCtx.stroke();
+    this.mainCtx.restore();
+  }
+
+  public strokePolyline(points: Array<{ x: number; y: number }>, strokeStyle: string, lineWidth: number): void {
+    if (points.length < 2) {
+      return;
+    }
+
+    this.mainCtx.save();
+    this.mainCtx.strokeStyle = strokeStyle;
+    this.mainCtx.lineWidth = lineWidth;
+    this.mainCtx.lineCap = 'round';
+    this.mainCtx.lineJoin = 'round';
+    this.mainCtx.beginPath();
+    this.mainCtx.moveTo(points[0].x, points[0].y);
+    for (let index = 1; index < points.length; index++) {
+      this.mainCtx.lineTo(points[index].x, points[index].y);
+    }
+    this.mainCtx.stroke();
+    this.mainCtx.restore();
+  }
+
   public move(x: number, y: number): void {
     const diffY = y / this.scaleToFit - this.mainCanvasYCurrent;
     this.mainCanvasYCurrent += diffY;

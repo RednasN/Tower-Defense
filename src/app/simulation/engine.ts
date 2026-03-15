@@ -4,21 +4,27 @@ import {
   DamageType,
   EnemyConfig,
   EnemyType,
+  FlameBubbleConfig,
+  SplitRocketConfig,
   UpgradeDetails,
   UpgradeType,
   getDamageTypeForWeaponType,
 } from '../models/configs/turret-config.model';
 import { EnemyTank } from '../models/enemies/enemy-tank.model';
 import { Cell } from '../models/grid/grid';
-import { Projectile, Grenade, Laser, Rocket } from '../models/projectiles/projectile.model';
+import { Projectile, ChainLightning, FlameBubble, Grenade, Laser, Rocket } from '../models/projectiles/projectile.model';
 import { ProjectileType } from '../models/projectiles/projectile-type.model';
 import { Weapon } from '../models/weapons/weapon.model';
 import { WeaponType } from '../models/weapons/weapon.model';
 import { LEVEL_ONE_ROUTE, getLevelOneBuildableCells } from '../models/levels/level-one-layout';
+import { WavePhase } from '../models/game/wave.model';
+import { resolveChainLightningShot } from './chain-lightning';
+import { getFlameBubbleAngles } from './flame-bubble';
+import { selectSplitRocketTargets } from './split-rocket';
 import { calculatePlacementScore, getRankedPlacementCandidates } from './placement';
 import { SimulationPolicy, SimulationPolicyName, applyWeaponUpgradeLevel, getPolicyActions, getPolicyProfiles } from './policy';
 import { RandomSource, createSeededRandom } from './random';
-import { WaveEnemySpawnPlan, createWaveSpawnPlan, getSpawnIntervalMs } from './wave-generation';
+import { TimedWaveEnemySpawn, WaveEnemySpawnPlan, createTimedWaveSpawnSchedule, createWaveSpawnPlan } from './wave-generation';
 import {
   WavePerformanceMetrics,
   calculateAdaptivePressure,
@@ -63,8 +69,6 @@ export type SoloTowerProbeResult = {
   baseHealthRemaining: number;
 };
 
-type WavePhase = 'intermission' | 'spawning' | 'cleanup';
-
 type EconomyState = {
   money: number;
   moneyEarned: number;
@@ -76,11 +80,18 @@ type EconomyState = {
 type WaveState = {
   waveNumber: number;
   phase: WavePhase;
-  intermissionRemainingMs: number;
-  spawnQueue: Array<{ enemyConfig: EnemyConfig; waveNumber: number }>;
-  spawnTimerMs: number;
+  timeUntilNextWaveMs: number;
+  activeWindows: Array<{
+    waveNumber: number;
+    spawns: TimedWaveEnemySpawn[];
+    elapsedMs: number;
+    spawnedCount: number;
+    metrics: WavePerformanceMetrics;
+  }>;
+  nextWaveNumber: number;
+  lastPressureEvaluatedWave: number;
   adaptivePressure: number;
-  metrics: WavePerformanceMetrics;
+  maxWaveLimit: number | null;
 };
 
 type SimulationState = {
@@ -121,12 +132,13 @@ export function createInitialSimulationState(balance: BalanceConfig, seed: numbe
     },
     wave: {
       waveNumber: 1,
-      phase: 'intermission',
-      intermissionRemainingMs: balance.waves.intermissionMs,
-      spawnQueue: [],
-      spawnTimerMs: 0,
+      phase: 'waiting',
+      timeUntilNextWaveMs: balance.waves.initialWaveCountdownMs,
+      activeWindows: [],
+      nextWaveNumber: 1,
+      lastPressureEvaluatedWave: 0,
       adaptivePressure: 0,
-      metrics: createWavePerformanceMetrics(),
+      maxWaveLimit: null,
     },
     enemies: [],
     projectiles: [],
@@ -144,22 +156,18 @@ export function createInitialSimulationState(balance: BalanceConfig, seed: numbe
 
 export function simulateBalance(balance: BalanceConfig, policy: SimulationPolicy, seed: number, maxWave = DEFAULT_MAX_SIMULATION_WAVE): SimulationResult {
   const state = createInitialSimulationState(balance, seed);
+  state.wave.maxWaveLimit = maxWave;
 
-  while (state.economy.baseHealth > 0 && state.wave.waveNumber <= maxWave) {
-    if (state.wave.phase === 'intermission' || policy.allowWaveBuilds) {
+  while (state.economy.baseHealth > 0) {
+    if (state.wave.nextWaveNumber > maxWave && state.wave.activeWindows.length === 0 && state.enemies.every(enemy => enemy.lives <= 0)) {
+      break;
+    }
+
+    if (isPlanningWindow(state) || policy.allowWaveBuilds) {
       applyPolicy(state, policy);
     }
 
     tickSimulation(state);
-
-    if (
-      state.wave.waveNumber > maxWave &&
-      state.wave.phase === 'intermission' &&
-      state.enemies.every(enemy => enemy.lives <= 0) &&
-      state.wave.spawnQueue.length === 0
-    ) {
-      break;
-    }
   }
 
   const averageSpendRatio =
@@ -171,8 +179,8 @@ export function simulateBalance(balance: BalanceConfig, policy: SimulationPolicy
   return {
     policy: policy.name,
     seed,
-    finalWave: Math.max(1, state.wave.waveNumber - (state.wave.phase === 'intermission' ? 1 : 0)),
-    victory: state.economy.baseHealth > 0 && state.wave.waveNumber > maxWave,
+    finalWave: Math.max(1, state.wave.nextWaveNumber - 1),
+    victory: state.economy.baseHealth > 0 && state.wave.nextWaveNumber > maxWave,
     baseHealthRemaining: state.economy.baseHealth,
     moneyEarned: state.economy.moneyEarned,
     moneySpent: state.economy.moneySpent,
@@ -205,63 +213,83 @@ export function tickSimulation(state: SimulationState): void {
 function tickWave(state: SimulationState, dtMs: number): void {
   const waveState = state.wave;
   const aliveEnemies = state.enemies.filter(enemy => enemy.lives > 0).length;
-  updateWaveMetricsForAliveEnemies(waveState.metrics, state.enemies, dtMs);
+  updateActiveWaveMetrics(state, dtMs);
 
-  if (waveState.phase === 'intermission') {
-    waveState.intermissionRemainingMs = Math.max(0, waveState.intermissionRemainingMs - dtMs);
-    if (waveState.intermissionRemainingMs === 0) {
-      const plan = createWaveSpawnPlan(
-        waveState.waveNumber,
-        state.balance.enemies,
-        state.balance.waves,
-        state.random,
-        waveState.adaptivePressure
-      );
-      waveState.spawnQueue = createSpawnQueueEntries(plan, waveState.waveNumber);
-      waveState.phase = 'spawning';
-      waveState.spawnTimerMs = 0;
-      waveState.metrics = createWavePerformanceMetrics();
+  waveState.timeUntilNextWaveMs -= dtMs;
+  while (waveState.timeUntilNextWaveMs <= 0) {
+    if (waveState.maxWaveLimit !== null && waveState.nextWaveNumber > waveState.maxWaveLimit) {
+      waveState.timeUntilNextWaveMs = 0;
+      break;
     }
+    startScheduledWave(state);
+    waveState.timeUntilNextWaveMs += state.balance.waves.waveDurationMs;
+  }
+
+  advanceWaveWindows(state, dtMs);
+
+  if (waveState.activeWindows.some(window => window.spawnedCount < window.spawns.length)) {
+    waveState.phase = 'spawning';
+    waveState.waveNumber = waveState.nextWaveNumber - 1;
     return;
   }
 
-  if (waveState.phase === 'spawning') {
-    waveState.spawnTimerMs -= dtMs;
-    while (waveState.spawnTimerMs <= 0 && waveState.spawnQueue.length > 0) {
-      const queuedEnemy = waveState.spawnQueue.shift();
-      if (!queuedEnemy) {
-        break;
-      }
-      spawnEnemy(state, queuedEnemy.enemyConfig);
-      waveState.spawnTimerMs += getSpawnIntervalMs(queuedEnemy.waveNumber, state.balance.waves, waveState.adaptivePressure);
-    }
-
-    if (waveState.spawnQueue.length === 0) {
-      waveState.phase = 'cleanup';
-    }
-
-    return;
-  }
-
-  if (waveState.phase === 'cleanup' && aliveEnemies === 0) {
-    waveState.adaptivePressure = calculateAdaptivePressure(waveState.adaptivePressure, waveState.waveNumber, waveState.metrics);
-    waveState.waveNumber++;
-    waveState.phase = 'intermission';
-    waveState.intermissionRemainingMs = state.balance.waves.intermissionMs;
-    waveState.metrics = createWavePerformanceMetrics();
-  }
+  waveState.phase = aliveEnemies > 0 ? 'cleanup' : 'waiting';
+  waveState.waveNumber = waveState.nextWaveNumber === 1 ? 1 : waveState.nextWaveNumber - 1;
 }
 
-function createSpawnQueueEntries(plan: WaveEnemySpawnPlan[], waveNumber: number): Array<{ enemyConfig: EnemyConfig; waveNumber: number }> {
-  return plan.flatMap(entry =>
-    Array.from({ length: entry.quantity }, () => ({
-      enemyConfig: entry.enemyConfig,
-      waveNumber,
-    }))
+function startScheduledWave(state: SimulationState): void {
+  const waveNumber = state.wave.nextWaveNumber;
+  if (waveNumber > 1 && state.wave.lastPressureEvaluatedWave < waveNumber - 1) {
+    const previousWindow = state.wave.activeWindows.find(window => window.waveNumber === waveNumber - 1);
+    if (previousWindow) {
+      state.wave.adaptivePressure = calculateAdaptivePressure(state.wave.adaptivePressure, previousWindow.waveNumber, previousWindow.metrics);
+      state.wave.lastPressureEvaluatedWave = previousWindow.waveNumber;
+    }
+  }
+
+  const plan = createWaveSpawnPlan(waveNumber, state.balance.enemies, state.balance.waves, state.random, state.wave.adaptivePressure);
+  state.wave.activeWindows.push({
+    waveNumber,
+    spawns: createTimedWaveSpawnSchedule(plan, waveNumber, state.balance.waves.waveDurationMs),
+    elapsedMs: 0,
+    spawnedCount: 0,
+    metrics: createWavePerformanceMetrics(),
+  });
+  state.wave.waveNumber = waveNumber;
+  state.wave.nextWaveNumber++;
+}
+
+function advanceWaveWindows(state: SimulationState, dtMs: number): void {
+  for (const window of state.wave.activeWindows) {
+    window.elapsedMs += dtMs;
+
+    while (window.spawnedCount < window.spawns.length && window.spawns[window.spawnedCount].spawnOffsetMs <= window.elapsedMs) {
+      spawnEnemy(state, window.spawns[window.spawnedCount].enemyConfig, window.waveNumber);
+      window.spawnedCount++;
+    }
+  }
+
+  state.wave.activeWindows = state.wave.activeWindows.filter(
+    window =>
+      window.spawnedCount < window.spawns.length ||
+      hasAliveEnemiesForWave(state, window.waveNumber) ||
+      (window.waveNumber > state.wave.lastPressureEvaluatedWave &&
+        (state.wave.maxWaveLimit === null || window.waveNumber < state.wave.maxWaveLimit))
   );
 }
 
-function spawnEnemy(state: SimulationState, enemyConfig: EnemyConfig): void {
+function updateActiveWaveMetrics(state: SimulationState, dtMs: number): void {
+  for (const window of state.wave.activeWindows) {
+    const aliveEnemies = state.enemies.filter(enemy => enemy.lives > 0 && getWaveNumberForEnemy(enemy) === window.waveNumber);
+    updateWaveMetricsForAliveEnemies(window.metrics, aliveEnemies, dtMs);
+  }
+}
+
+function hasAliveEnemiesForWave(state: SimulationState, waveNumber: number): boolean {
+  return state.enemies.some(enemy => enemy.lives > 0 && getWaveNumberForEnemy(enemy) === waveNumber);
+}
+
+function spawnEnemy(state: SimulationState, enemyConfig: EnemyConfig, waveNumber: number): void {
   const routeEntry = LEVEL_ONE_ROUTE[LEVEL_ONE_ROUTE.length - 1];
   state.enemies.push({
     reward: enemyConfig.reward,
@@ -284,7 +312,8 @@ function spawnEnemy(state: SimulationState, enemyConfig: EnemyConfig): void {
     escaped: false,
     speed: enemyConfig.speed,
     docurve: false,
-  });
+    waveNumber,
+  } as EnemyTank & { waveNumber: number });
 }
 
 function calculateEnemies(state: SimulationState): void {
@@ -292,14 +321,20 @@ function calculateEnemies(state: SimulationState): void {
 
   for (const enemy of state.enemies) {
     if (enemy.lives <= 0 && !enemy.died && !enemy.escaped) {
-      recordResolvedEnemyProgress(state.wave.metrics, enemy);
+      const metrics = getMetricsForWave(state, getWaveNumberForEnemy(enemy));
+      if (metrics) {
+        recordResolvedEnemyProgress(metrics, enemy);
+      }
       enemy.died = true;
       state.economy.money += enemy.reward;
       state.economy.moneyEarned += enemy.reward;
     }
 
     if (enemy.escaped && !enemy.died) {
-      recordResolvedEnemyProgress(state.wave.metrics, enemy);
+      const metrics = getMetricsForWave(state, getWaveNumberForEnemy(enemy));
+      if (metrics) {
+        recordResolvedEnemyProgress(metrics, enemy);
+      }
       enemy.died = true;
       const enemyType = getEnemyTypeForEnemyStats(state.balance.enemies, enemy);
       if (enemyType) {
@@ -309,6 +344,14 @@ function calculateEnemies(state: SimulationState): void {
       }
     }
   }
+}
+
+function getWaveNumberForEnemy(enemy: EnemyTank): number {
+  return (enemy as EnemyTank & { waveNumber?: number }).waveNumber ?? 0;
+}
+
+function getMetricsForWave(state: SimulationState, waveNumber: number): WavePerformanceMetrics | null {
+  return state.wave.activeWindows.find(window => window.waveNumber === waveNumber)?.metrics ?? null;
 }
 
 function calculateEnemy(enemyTank: EnemyTank): void {
@@ -444,10 +487,17 @@ function calculateWeapons(state: SimulationState): void {
     weapon.startx = cell.drawx;
     weapon.starty = cell.drawy;
 
-    if (weapon.type === WeaponType.RocketLauncher) {
+    if (weapon.type === WeaponType.RocketLauncher || weapon.type === WeaponType.MultiRocketLauncher) {
       weapon.angle += 35 * delta;
       if (weapon.angle > 359) {
         weapon.angle = 0;
+      }
+
+      const canons = (weapon as Weapon & { canons?: number[] }).canons;
+      if (canons) {
+        for (let i = 0; i < canons.length; i++) {
+          canons[i] = (canons[i] + 1) % 360;
+        }
       }
     }
 
@@ -462,6 +512,27 @@ function calculateWeapons(state: SimulationState): void {
       weapon.lastFired += delta * 1000;
       if (weapon.lastFired > weapon.speed) {
         shootGrenade(state, weapon);
+        weapon.lastFired = 0;
+      }
+      continue;
+    }
+
+    if (weapon.type === WeaponType.ChainLightningTower) {
+      weapon.angle = 0;
+      findClosestTarget(state, weapon);
+
+      if (weapon.focusedIndex !== -1 && !isInRange(state, weapon, weapon.focusedIndex)) {
+        weapon.focusedIndex = -1;
+      }
+
+      if (weapon.focusedIndex === -1) {
+        continue;
+      }
+
+      weapon.locked = true;
+      weapon.lastFired += delta * 1000;
+      if (weapon.lastFired > weapon.speed) {
+        shootWeapon(state, weapon);
         weapon.lastFired = 0;
       }
       continue;
@@ -543,8 +614,17 @@ function shootWeapon(state: SimulationState, weapon: Weapon): void {
     case WeaponType.NuclearLauncher:
       state.projectiles.push(createBulletProjectile(state, weapon, weapon.focusedIndex));
       return;
+    case WeaponType.FlameThrower:
+      state.projectiles.push(...createFlameBubbleProjectiles(state, weapon));
+      return;
     case WeaponType.RocketLauncher:
       state.projectiles.push(createRocketProjectile(state, weapon, weapon.focusedIndex));
+      return;
+    case WeaponType.MultiRocketLauncher:
+      state.projectiles.push(createMultiRocketProjectile(state, weapon, weapon.focusedIndex));
+      return;
+    case WeaponType.ChainLightningTower:
+      state.projectiles.push(createChainLightningProjectile(state, weapon, weapon.focusedIndex));
       return;
     case WeaponType.LaserTurret:
       state.projectiles.push(createLaserProjectile(state, weapon, weapon.focusedIndex));
@@ -631,7 +711,8 @@ function createBulletProjectile(state: SimulationState, weapon: Weapon, enemyInd
 }
 
 function createRocketProjectile(state: SimulationState, weapon: Weapon, enemyIndex: number): Rocket {
-  const angle = state.random.nextInt(4) * 90;
+  const canons = (weapon as Weapon & { canons?: number[] }).canons;
+  const angle = canons ? canons[state.random.nextInt(canons.length)] : state.random.nextInt(4) * 90;
   const centerX = weapon.gridX * 50 + 25;
   const centerY = weapon.gridY * 50 + 25;
   return {
@@ -649,6 +730,27 @@ function createRocketProjectile(state: SimulationState, weapon: Weapon, enemyInd
     plusrotation: null,
     steps: 0,
     speed: getProjectileSpeed(state.balance, weapon.type),
+    isChild: false,
+    hasSplit: true,
+    splitDelayRemainingMs: null,
+    childRocketCount: 0,
+    childSearchRadius: 0,
+    childDamageMultiplier: 1,
+    childSpeedMultiplier: 1,
+  };
+}
+
+function createMultiRocketProjectile(state: SimulationState, weapon: Weapon, enemyIndex: number): Rocket {
+  const rocket = createRocketProjectile(state, weapon, enemyIndex);
+  const splitRocket = getSplitRocketConfig(state.balance, weapon.type);
+  return {
+    ...rocket,
+    splitDelayRemainingMs: splitRocket.splitDelayMs,
+    hasSplit: false,
+    childRocketCount: splitRocket.childRocketCount,
+    childSearchRadius: splitRocket.childSearchRadius,
+    childDamageMultiplier: splitRocket.childDamageMultiplier,
+    childSpeedMultiplier: splitRocket.childSpeedMultiplier,
   };
 }
 
@@ -676,6 +778,64 @@ function createLaserProjectile(_state: SimulationState, weapon: Weapon, enemyInd
   };
 }
 
+function createChainLightningProjectile(state: SimulationState, weapon: Weapon, enemyIndex: number): ChainLightning {
+  const chainLightning = getChainLightningConfig(state.balance, weapon.type);
+  const sourceX = weapon.gridX * 50 + 25;
+  const sourceY = weapon.gridY * 50 + 25;
+  const hits = resolveChainLightningShot(state.enemies, sourceX, sourceY, enemyIndex, chainLightning);
+
+  return {
+    type: ProjectileType.ChainLightning,
+    gridX: weapon.gridX,
+    gridY: weapon.gridY,
+    x: sourceX,
+    y: sourceY,
+    enemyIndex,
+    needdraw: hits.length > 0,
+    damage: weapon.damage,
+    damageType: getDamageTypeForWeaponType(weapon.type),
+    duration: chainLightning.durationTicks,
+    applied: false,
+    segments: hits.map(hit => ({
+      fromX: hit.fromX,
+      fromY: hit.fromY,
+      toX: hit.toX,
+      toY: hit.toY,
+    })),
+    hits: hits.map(hit => ({
+      enemyIndex: hit.enemyIndex,
+      damageMultiplier: hit.damageMultiplier,
+    })),
+  };
+}
+
+function createFlameBubbleProjectiles(state: SimulationState, weapon: Weapon): FlameBubble[] {
+  const flameBubbleConfig = getFlameBubbleConfig(state.balance, weapon.type);
+  const centerX = weapon.gridX * 50 + 25;
+  const centerY = weapon.gridY * 50 + 25;
+  const angles = getFlameBubbleAngles(weapon.angle, flameBubbleConfig.bubblesPerShot, flameBubbleConfig.spreadDegrees);
+
+  return angles.map(angle => {
+    const radians = (angle * Math.PI) / 180;
+    return {
+      type: ProjectileType.FlameBubble,
+      gridX: weapon.gridX,
+      gridY: weapon.gridY,
+      x: centerX + Math.cos(radians) * 18,
+      y: centerY + Math.sin(radians) * 18,
+      needdraw: true,
+      damage: weapon.damage,
+      damageType: getDamageTypeForWeaponType(weapon.type),
+      angle,
+      speed: getProjectileSpeed(state.balance, weapon.type),
+      remainingMs: flameBubbleConfig.lifetimeMs,
+      hitRadius: flameBubbleConfig.hitRadius,
+      scale: flameBubbleConfig.visualScale,
+      hitEnemyIndexes: [],
+    };
+  });
+}
+
 function calculateProjectiles(state: SimulationState): void {
   for (const projectile of state.projectiles) {
     if (projectile.type === ProjectileType.Rocket) {
@@ -694,6 +854,16 @@ function calculateProjectiles(state: SimulationState): void {
 
     if (projectile.type === ProjectileType.Laser) {
       calculateLaser(state, projectile);
+      continue;
+    }
+
+    if (projectile.type === ProjectileType.FlameBubble) {
+      calculateFlameBubble(state, projectile);
+      continue;
+    }
+
+    if (projectile.type === ProjectileType.ChainLightning) {
+      calculateChainLightning(state, projectile);
       continue;
     }
 
@@ -777,10 +947,56 @@ function calculateRocket(state: SimulationState, rocket: Rocket): void {
   rocket.x += delta * speed * Math.cos(radians);
   rocket.y += delta * speed * Math.sin(radians);
 
+  const splitChildren = splitRocketIfReady(state, rocket);
+  if (splitChildren.length > 0) {
+    rocket.hasSplit = true;
+    rocket.needdraw = false;
+    state.projectiles.push(...splitChildren);
+    return;
+  }
+
   if (Math.abs(rocket.x - centerEnemyX) < 10 && Math.abs(rocket.y - centerEnemyY) < 10) {
     rocket.needdraw = false;
     applyDamage(state, rocket.enemyIndex, rocket.damage, rocket.damageType);
   }
+}
+
+function splitRocketIfReady(state: SimulationState, rocket: Rocket): Rocket[] {
+  if (rocket.isChild || rocket.hasSplit || rocket.splitDelayRemainingMs === null) {
+    return [];
+  }
+
+  const enemy = state.enemies[rocket.enemyIndex];
+  if (!enemy || enemy.lives <= 0) {
+    rocket.hasSplit = true;
+    return [];
+  }
+
+  rocket.splitDelayRemainingMs -= delta * 1000;
+  const distanceToPrimary = Math.hypot(enemy.drawx + 25 - rocket.x, enemy.drawy + 25 - rocket.y);
+  const shouldSplit = rocket.splitDelayRemainingMs <= 0 || distanceToPrimary <= Math.max(60, rocket.childSearchRadius * 0.55);
+  if (!shouldSplit) {
+    return [];
+  }
+
+  const targetIndexes = selectSplitRocketTargets(state.enemies, rocket.x, rocket.y, rocket.enemyIndex, {
+    childRocketCount: rocket.childRocketCount,
+    childSearchRadius: rocket.childSearchRadius,
+  });
+
+  return targetIndexes.map((enemyIndex, childIndex) => ({
+    ...rocket,
+    enemyIndex,
+    angle: (rocket.angle + (childIndex - (targetIndexes.length - 1) / 2) * 26 + 360) % 360,
+    locked: false,
+    plusrotation: null,
+    steps: 0,
+    damage: rocket.damage * rocket.childDamageMultiplier,
+    speed: rocket.speed * rocket.childSpeedMultiplier,
+    isChild: true,
+    hasSplit: true,
+    splitDelayRemainingMs: null,
+  }));
 }
 
 function calculateLaser(state: SimulationState, laser: Laser): void {
@@ -796,6 +1012,52 @@ function calculateLaser(state: SimulationState, laser: Laser): void {
   }
 
   applyDamage(state, laser.enemyIndex, laser.damage, laser.damageType);
+}
+
+function calculateFlameBubble(state: SimulationState, flameBubble: FlameBubble): void {
+  if (!flameBubble.needdraw) {
+    return;
+  }
+
+  const radians = (flameBubble.angle * Math.PI) / 180;
+  flameBubble.x += Math.cos(radians) * flameBubble.speed * delta;
+  flameBubble.y += Math.sin(radians) * flameBubble.speed * delta;
+  flameBubble.remainingMs -= delta * 1000;
+
+  for (let enemyIndex = 0; enemyIndex < state.enemies.length; enemyIndex++) {
+    if (flameBubble.hitEnemyIndexes.includes(enemyIndex)) {
+      continue;
+    }
+
+    const enemy = state.enemies[enemyIndex];
+    if (!enemy || enemy.lives <= 0) {
+      continue;
+    }
+
+    const distance = Math.hypot(enemy.drawx + 25 - flameBubble.x, enemy.drawy + 25 - flameBubble.y);
+    if (distance <= flameBubble.hitRadius + 18) {
+      flameBubble.hitEnemyIndexes.push(enemyIndex);
+      applyDamage(state, enemyIndex, flameBubble.damage, flameBubble.damageType);
+    }
+  }
+
+  if (flameBubble.remainingMs <= 0) {
+    flameBubble.needdraw = false;
+  }
+}
+
+function calculateChainLightning(state: SimulationState, chainLightning: ChainLightning): void {
+  if (!chainLightning.applied) {
+    chainLightning.applied = true;
+    for (const hit of chainLightning.hits) {
+      applyDamage(state, hit.enemyIndex, chainLightning.damage * hit.damageMultiplier, chainLightning.damageType);
+    }
+  }
+
+  chainLightning.duration--;
+  if (chainLightning.duration <= 0) {
+    chainLightning.needdraw = false;
+  }
 }
 
 function calculateGrenade(state: SimulationState, grenade: Grenade): void {
@@ -875,7 +1137,7 @@ function applyDamage(state: SimulationState, enemyIndex: number, rawDamage: numb
 }
 
 function applyPolicy(state: SimulationState, policy: SimulationPolicy): void {
-  const attempts = state.wave.phase === 'intermission' ? 3 : 1;
+  const attempts = isPlanningWindow(state) ? 3 : 1;
   const actions = getPolicyActions(
     {
       balance: state.balance,
@@ -912,8 +1174,12 @@ function applyPolicy(state: SimulationState, policy: SimulationPolicy): void {
   }
 }
 
+function isPlanningWindow(state: SimulationState): boolean {
+  return state.wave.phase === 'waiting' || state.wave.timeUntilNextWaveMs > 0;
+}
+
 function scoreSimulation(state: SimulationState, policy: SimulationPolicy, averageSpendRatio: number, maxWave: number): SimulationScoreBreakdown {
-  const finalWave = Math.max(1, state.wave.waveNumber - (state.wave.phase === 'intermission' ? 1 : 0));
+  const finalWave = Math.max(1, state.wave.nextWaveNumber - 1);
   const targetWave = getTargetChallengeWave(maxWave);
   const belowTargetPenalty = Math.max(0, targetWave - finalWave) * 5.4;
   const aboveTargetPenalty = Math.max(0, finalWave - targetWave) * 3.2;
@@ -972,6 +1238,14 @@ function createWeaponFromTowerConfig(
 
   if (type === WeaponType.RocketLauncher) {
     (weapon as Weapon & { canons: number[] }).canons = [0, 90, 180, 270];
+  }
+
+  if (type === WeaponType.MultiRocketLauncher) {
+    (weapon as Weapon & { canons: number[] }).canons = [45, 135, 225, 315];
+  }
+
+  if (type === WeaponType.ChainLightningTower) {
+    weapon.angle = 0;
   }
 
   if (type === WeaponType.LaserTurret) {
@@ -1065,6 +1339,30 @@ function getProjectileSpeed(balance: BalanceConfig, type: WeaponType): number {
   return towerConfig.projectileSpeed;
 }
 
+function getChainLightningConfig(balance: BalanceConfig, type: WeaponType) {
+  const towerConfig = balance.towers.find(tower => tower.type === type);
+  if (!towerConfig?.chainLightning) {
+    throw new Error(`Missing chain lightning config for ${type}`);
+  }
+  return towerConfig.chainLightning;
+}
+
+function getFlameBubbleConfig(balance: BalanceConfig, type: WeaponType): FlameBubbleConfig {
+  const towerConfig = balance.towers.find(tower => tower.type === type);
+  if (!towerConfig?.flameBubble) {
+    throw new Error(`Missing flame bubble config for ${type}`);
+  }
+  return towerConfig.flameBubble;
+}
+
+function getSplitRocketConfig(balance: BalanceConfig, type: WeaponType): SplitRocketConfig {
+  const towerConfig = balance.towers.find(tower => tower.type === type);
+  if (!towerConfig?.splitRocket) {
+    throw new Error(`Missing split rocket config for ${type}`);
+  }
+  return towerConfig.splitRocket;
+}
+
 function getEnemyTypeForEnemyStats(enemyConfigs: EnemyConfig[], enemy: EnemyTank): EnemyType | null {
   const match = enemyConfigs.find(
     config => config.health === enemy.maxLives && config.reward === enemy.reward && config.armorClass === enemy.armorClass
@@ -1077,6 +1375,26 @@ export function mutateBalanceConfig(balance: BalanceConfig, random: RandomSource
 
   for (const tower of mutated.towers) {
     tower.cost = clampNumber(mutateNumber(tower.cost, 0.15, random), 12, 120, true);
+    if (tower.chainLightning) {
+      tower.chainLightning.chainCount = clampNumber(mutateNumber(tower.chainLightning.chainCount, 0.2, random), 1, 5, true);
+      tower.chainLightning.chainRadius = clampNumber(mutateNumber(tower.chainLightning.chainRadius, 0.16, random), 45, 140, true);
+      tower.chainLightning.damageFalloff = clampNumber(mutateNumber(tower.chainLightning.damageFalloff, 0.12, random), 0.45, 0.9);
+      tower.chainLightning.durationTicks = clampNumber(mutateNumber(tower.chainLightning.durationTicks, 0.12, random), 3, 10, true);
+    }
+    if (tower.flameBubble) {
+      tower.flameBubble.lifetimeMs = clampNumber(mutateNumber(tower.flameBubble.lifetimeMs, 0.14, random), 180, 650, true);
+      tower.flameBubble.hitRadius = clampNumber(mutateNumber(tower.flameBubble.hitRadius, 0.14, random), 8, 22, true);
+      tower.flameBubble.visualScale = clampNumber(mutateNumber(tower.flameBubble.visualScale, 0.08, random), 0.7, 1.4);
+      tower.flameBubble.bubblesPerShot = clampNumber(mutateNumber(tower.flameBubble.bubblesPerShot, 0.16, random), 1, 5, true);
+      tower.flameBubble.spreadDegrees = clampNumber(mutateNumber(tower.flameBubble.spreadDegrees, 0.16, random), 4, 28, true);
+    }
+    if (tower.splitRocket) {
+      tower.splitRocket.splitDelayMs = clampNumber(mutateNumber(tower.splitRocket.splitDelayMs, 0.14, random), 120, 520, true);
+      tower.splitRocket.childRocketCount = clampNumber(mutateNumber(tower.splitRocket.childRocketCount, 0.15, random), 1, 5, true);
+      tower.splitRocket.childSearchRadius = clampNumber(mutateNumber(tower.splitRocket.childSearchRadius, 0.16, random), 60, 200, true);
+      tower.splitRocket.childDamageMultiplier = clampNumber(mutateNumber(tower.splitRocket.childDamageMultiplier, 0.14, random), 0.3, 0.9);
+      tower.splitRocket.childSpeedMultiplier = clampNumber(mutateNumber(tower.splitRocket.childSpeedMultiplier, 0.12, random), 0.8, 1.6);
+    }
     for (const upgrade of tower.upgrades) {
       for (const detail of upgrade.details) {
         detail.cost = clampNumber(mutateNumber(detail.cost, 0.18, random), 4, 110, true);
@@ -1096,9 +1414,8 @@ export function mutateBalanceConfig(balance: BalanceConfig, random: RandomSource
     enemy.baseDamageToBase = clampNumber(mutateNumber(enemy.baseDamageToBase, 0.15, random), 1, 5, true);
   }
 
-  mutated.waves.spawnIntervalMs = clampNumber(mutateNumber(mutated.waves.spawnIntervalMs, 0.12, random), 700, 2200, true);
-  mutated.waves.spawnIntervalDecayPerWave = clampNumber(mutateNumber(mutated.waves.spawnIntervalDecayPerWave, 0.18, random), 10, 80, true);
-  mutated.waves.minSpawnIntervalMs = clampNumber(mutateNumber(mutated.waves.minSpawnIntervalMs, 0.15, random), 300, 1000, true);
+  mutated.waves.initialWaveCountdownMs = clampNumber(mutateNumber(mutated.waves.initialWaveCountdownMs, 0.12, random), 5000, 20000, true);
+  mutated.waves.waveDurationMs = clampNumber(mutateNumber(mutated.waves.waveDurationMs, 0.1, random), 18000, 45000, true);
   mutated.waves.budgetBase = clampNumber(mutateNumber(mutated.waves.budgetBase, 0.12, random), 1.5, 8);
   mutated.waves.budgetGrowthLinear = clampNumber(mutateNumber(mutated.waves.budgetGrowthLinear, 0.14, random), 0.8, 4.5);
   mutated.waves.budgetGrowthPower = clampNumber(mutateNumber(mutated.waves.budgetGrowthPower, 0.08, random), 1.05, 1.45);
@@ -1154,6 +1471,7 @@ export function getBuildableCellCount(): number {
 
 export function simulateSoloTowerProbe(balance: BalanceConfig, towerType: WeaponType, seed: number, maxWave = 12): SoloTowerProbeResult {
   const state = createInitialSimulationState(balance, seed);
+  state.wave.maxWaveLimit = maxWave;
   const bestPlacement = getRankedPlacementCandidates()
     .map(candidate => ({
       ...candidate,
@@ -1172,14 +1490,13 @@ export function simulateSoloTowerProbe(balance: BalanceConfig, towerType: Weapon
   state.economy.money = Math.max(0, state.economy.money - towerCost);
   state.economy.moneySpent += towerCost;
 
-  while (state.economy.baseHealth > 0 && state.wave.waveNumber <= maxWave) {
+  while (state.economy.baseHealth > 0 && state.wave.nextWaveNumber <= maxWave + 1) {
     tickSimulation(state);
 
     if (
-      state.wave.waveNumber > maxWave &&
-      state.wave.phase === 'intermission' &&
-      state.enemies.every(enemy => enemy.lives <= 0) &&
-      state.wave.spawnQueue.length === 0
+      state.wave.nextWaveNumber > maxWave &&
+      state.wave.activeWindows.length === 0 &&
+      state.enemies.every(enemy => enemy.lives <= 0)
     ) {
       break;
     }
@@ -1189,7 +1506,7 @@ export function simulateSoloTowerProbe(balance: BalanceConfig, towerType: Weapon
     towerType,
     x: bestPlacement.x,
     y: bestPlacement.y,
-    finalWave: Math.max(1, state.wave.waveNumber - (state.wave.phase === 'intermission' ? 1 : 0)),
+    finalWave: Math.max(1, state.wave.nextWaveNumber - 1),
     baseHealthRemaining: state.economy.baseHealth,
   };
 }

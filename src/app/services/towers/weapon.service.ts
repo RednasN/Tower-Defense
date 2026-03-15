@@ -133,13 +133,13 @@ export abstract class WeaponService {
           diff += 360;
         }
         if (diff > 180) {
-          weapon.angle += -(150 * delta);
+          weapon.angle += -(250 * delta);
 
           if (weapon.angle < 0) {
             weapon.angle = 359;
           }
         } else {
-          weapon.angle += 150 * delta;
+          weapon.angle += 250 * delta;
           if (weapon.angle > 359) {
             weapon.angle = 0;
           }

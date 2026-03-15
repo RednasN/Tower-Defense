@@ -17,6 +17,8 @@ export class ImageService {
     [WeaponType.Base]: [],
     [WeaponType.RocketLauncher]: [],
     [WeaponType.BulletShooter]: [],
+    [WeaponType.FlameThrower]: [],
+    [WeaponType.ChainLightningTower]: [],
     [WeaponType.NuclearLauncher]: [],
     [WeaponType.MultiRocketLauncher]: [],
     [WeaponType.LaserTurret]: [],
@@ -28,7 +30,9 @@ export class ImageService {
     [ProjectileType.Base]: [],
     [ProjectileType.Rocket]: [],
     [ProjectileType.Bullet]: [],
+    [ProjectileType.FlameBubble]: [],
     [ProjectileType.Laser]: [],
+    [ProjectileType.ChainLightning]: [],
     [ProjectileType.NuclearBullet]: [],
     [ProjectileType.SlowRocket]: [],
     [ProjectileType.GrenadeMine]: [],
@@ -46,6 +50,8 @@ export class ImageService {
     const towerConfigs = [
       { type: WeaponType.BulletShooter, path: './assets/turrets/turret.png' },
       { type: WeaponType.RocketLauncher, path: './assets/turrets/rocket-launcher-basic.png' },
+      { type: WeaponType.FlameThrower, path: './assets/turrets/flame-thrower.png' },
+      { type: WeaponType.ChainLightningTower, path: './assets/turrets/chain-lightning-tower.png' },
       { type: WeaponType.NuclearLauncher, path: './assets/turrets/nuclear-turret.png' },
       { type: WeaponType.MultiRocketLauncher, path: './assets/turrets/multi-rocket-launcher.png' },
       { type: WeaponType.LaserTurret, path: './assets/turrets/laser-shooter.png' },
@@ -80,6 +86,8 @@ export class ImageService {
       { type: EnemyType.HeavyHovercraft, name: 'HeavyHovercraftEnemy', path: 'assets/enemies/heavy-hovercraft-enemy.png' },
       { type: EnemyType.FighterPlane, name: 'FighterPlaneEnemy', path: 'assets/enemies/fighter-plane-enemy.png' },
       { type: EnemyType.BomberPlane, name: 'BomberPlaneEnemy', path: 'assets/enemies/bomber-plane-enemy.png' },
+      { type: EnemyType.InterceptorDrone, name: 'InterceptorDroneEnemy', path: 'assets/enemies/fighter-plane-enemy.png' },
+      { type: EnemyType.JuggernautMech, name: 'JuggernautMechEnemy', path: 'assets/enemies/siege-tank-enemy.png' },
     ];
 
     this.enemies = [];

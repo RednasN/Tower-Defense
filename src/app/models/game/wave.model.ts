@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
 import { EnemyConfig, EnemyType } from '../configs/turret-config.model';
 
-export type WavePhase = 'intermission' | 'spawning' | 'cleanup';
+export type WavePhase = 'waiting' | 'spawning' | 'cleanup';
 
 export type WaveState = {
   waveNumber: number;
   phase: WavePhase;
-  intermissionRemainingMs: number;
+  timeUntilNextWaveMs: number;
   plannedEnemies: number;
   spawnedEnemies: number;
   aliveEnemies: number;
@@ -17,6 +17,12 @@ export type WaveState = {
 export type WaveEnemySpawnPlan = {
   enemyConfig: EnemyConfig;
   quantity: number;
+};
+
+export type TimedWaveEnemySpawn = {
+  enemyConfig: EnemyConfig;
+  waveNumber: number;
+  spawnOffsetMs: number;
 };
 
 export type EnemyEscapedEvent = {

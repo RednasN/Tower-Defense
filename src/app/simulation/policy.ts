@@ -102,6 +102,12 @@ export function shouldBuildTower(context: PolicyContext, policy: SimulationPolic
     return true;
   }
 
+  const minimumEarlyTowerCount =
+    context.waveNumber <= 2 ? 3 : context.waveNumber <= 4 ? 4 : 0;
+  if (context.weapons.length < minimumEarlyTowerCount) {
+    return true;
+  }
+
   const cheapestTower = Math.min(...context.balance.towers.map(tower => tower.cost));
   const reserve = cheapestTower * policy.reserveMultiplier;
   const pressureBudget = getUnlockedEnemyConfigs(context.balance.enemies, context.waveNumber).length * policy.waveStartPressure * 8;
@@ -172,7 +178,8 @@ export function getBestUpgradeAction(context: PolicyContext, policy: SimulationP
           score:
             evaluateUpgradeGain(upgrade, currentLevel) * policy.upgradeBias +
             calculatePlacementScore(weapon.gridX, weapon.gridY, weapon.type) * 0.15 -
-            calculateUpgradeSpamPenalty(weapon.type, towerCounts, currentLevel, context.waveNumber),
+            calculateUpgradeSpamPenalty(weapon.type, towerCounts, currentLevel, context.waveNumber) -
+            calculateEarlyExpansionUpgradePenalty(context),
         },
       ];
     });
@@ -186,8 +193,14 @@ export function calculateTowerPreferenceScore(type: WeaponType, waveNumber: numb
   switch (type) {
     case WeaponType.BulletShooter:
       return waveNumber <= 3 ? 4.2 : 2.4;
+    case WeaponType.FlameThrower:
+      return waveNumber >= 4 ? 4.4 * policy.buildBias : 1.8;
     case WeaponType.RocketLauncher:
       return waveNumber >= 5 ? 3.3 * policy.buildBias : 1.8;
+    case WeaponType.MultiRocketLauncher:
+      return waveNumber >= 9 ? 3.9 * policy.buildBias : 0.6;
+    case WeaponType.ChainLightningTower:
+      return waveNumber >= 6 ? 4 * policy.buildBias : 1.2;
     case WeaponType.LaserTurret:
       return waveNumber >= 8 ? 2.7 * policy.upgradeBias : 0.8;
     case WeaponType.SlowRocketLauncher:
@@ -292,19 +305,28 @@ function calculateTowerCompositionScore(
   towerCounts: Partial<Record<WeaponType, number>>
 ): number {
   const hasBullet = (towerCounts[WeaponType.BulletShooter] ?? 0) > 0;
+  const hasFlame = (towerCounts[WeaponType.FlameThrower] ?? 0) > 0;
   const hasArea = (towerCounts[WeaponType.GrenadeThrower] ?? 0) > 0;
+  const hasChain = (towerCounts[WeaponType.ChainLightningTower] ?? 0) > 0;
   const hasSlow = (towerCounts[WeaponType.SlowRocketLauncher] ?? 0) > 0;
   const hasAntiArmor = (towerCounts[WeaponType.RocketLauncher] ?? 0) + (towerCounts[WeaponType.NuclearLauncher] ?? 0) > 0;
-  const hasEnergy = (towerCounts[WeaponType.LaserTurret] ?? 0) > 0;
+  const hasSplit = (towerCounts[WeaponType.MultiRocketLauncher] ?? 0) > 0;
+  const hasEnergy = (towerCounts[WeaponType.LaserTurret] ?? 0) + (towerCounts[WeaponType.ChainLightningTower] ?? 0) > 0;
 
   let score = 0;
   if (!hasBullet && towerType === WeaponType.BulletShooter) score += 1.6;
+  if (context.waveNumber >= 4 && !hasFlame && towerType === WeaponType.FlameThrower) score += 2.6;
   if (!hasArea && towerType === WeaponType.GrenadeThrower) score += 2.2;
+  if (context.waveNumber >= 9 && !hasSplit && towerType === WeaponType.MultiRocketLauncher) score += 2.2;
+  if (context.waveNumber >= 6 && !hasChain && towerType === WeaponType.ChainLightningTower) score += 2.5;
   if (!hasSlow && towerType === WeaponType.SlowRocketLauncher) score += 2.4;
   if (!hasAntiArmor && (towerType === WeaponType.RocketLauncher || towerType === WeaponType.NuclearLauncher)) score += 1.8;
   if (context.waveNumber >= 8 && !hasEnergy && towerType === WeaponType.LaserTurret) score += 1.1;
 
   if (context.waveNumber >= 6 && towerType === WeaponType.GrenadeThrower) score += 0.6;
+  if (context.waveNumber >= 5 && towerType === WeaponType.FlameThrower) score += 0.9;
+  if (context.waveNumber >= 10 && towerType === WeaponType.MultiRocketLauncher) score += 0.9;
+  if (context.waveNumber >= 8 && towerType === WeaponType.ChainLightningTower) score += 0.8;
   if (context.waveNumber >= 6 && towerType === WeaponType.SlowRocketLauncher) score += 0.8;
 
   return score;
@@ -323,7 +345,11 @@ function calculateTowerSpamPenalty(
   const basePenalty =
     towerType === WeaponType.BulletShooter
       ? 1.8
-      : towerType === WeaponType.LaserTurret || towerType === WeaponType.NuclearLauncher
+      : towerType === WeaponType.FlameThrower
+        ? 1.6
+      : towerType === WeaponType.MultiRocketLauncher
+        ? 2
+      : towerType === WeaponType.LaserTurret || towerType === WeaponType.NuclearLauncher || towerType === WeaponType.ChainLightningTower
         ? 2.2
         : 1.4;
 
@@ -343,13 +369,35 @@ function calculateUpgradeSpamPenalty(
   waveNumber: number
 ): number {
   const sameTypeCount = towerCounts[towerType] ?? 0;
-  const premiumScalar = towerType === WeaponType.LaserTurret || towerType === WeaponType.NuclearLauncher ? 1.4 : 1;
+  const premiumScalar =
+    towerType === WeaponType.LaserTurret ||
+    towerType === WeaponType.NuclearLauncher ||
+    towerType === WeaponType.ChainLightningTower ||
+    towerType === WeaponType.MultiRocketLauncher
+      ? 1.4
+      : 1;
   const levelPenalty = currentLevel >= 2 ? (currentLevel - 1) * 0.9 : 0;
   const compositionPenalty = sameTypeCount > 2 ? (sameTypeCount - 2) * 0.85 : 0;
   const earlyPremiumPenalty =
-    waveNumber < 8 && (towerType === WeaponType.LaserTurret || towerType === WeaponType.NuclearLauncher || towerType === WeaponType.RocketLauncher)
+    waveNumber < 8 &&
+    (towerType === WeaponType.LaserTurret ||
+      towerType === WeaponType.NuclearLauncher ||
+      towerType === WeaponType.ChainLightningTower ||
+      towerType === WeaponType.MultiRocketLauncher ||
+      towerType === WeaponType.RocketLauncher)
       ? 1.6
       : 0;
 
   return (levelPenalty + compositionPenalty + earlyPremiumPenalty) * premiumScalar;
+}
+
+function calculateEarlyExpansionUpgradePenalty(context: PolicyContext): number {
+  const towerCount = context.weapons.length;
+  if (context.waveNumber <= 2 && towerCount < 3) {
+    return 1.2;
+  }
+  if (context.waveNumber <= 4 && towerCount < 4) {
+    return 0.7;
+  }
+  return 0;
 }

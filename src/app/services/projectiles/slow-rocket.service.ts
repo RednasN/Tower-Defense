@@ -39,6 +39,13 @@ export class SlowRocketService {
       plusrotation: null,
       steps: 0,
       speed: 100,
+      isChild: false,
+      hasSplit: true,
+      splitDelayRemainingMs: null,
+      childRocketCount: 0,
+      childSearchRadius: 0,
+      childDamageMultiplier: 1,
+      childSpeedMultiplier: 1,
     };
   }
 

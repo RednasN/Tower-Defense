@@ -1,13 +1,13 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, NgZone, inject } from '@angular/core';
 
 import { BehaviorSubject } from 'rxjs';
 
 import { EnemyType, getActiveBalanceConfig } from '../../models/configs/turret-config.model';
 import { EnemyTank } from '../../models/enemies/enemy-tank.model';
-import { EnemyEscapedEvent, WaveEnemySpawnPlan, WaveState } from '../../models/game/wave.model';
+import { EnemyEscapedEvent, TimedWaveEnemySpawn, WaveEnemySpawnPlan, WaveState } from '../../models/game/wave.model';
 import {
   createWaveSpawnPlan,
-  getSpawnIntervalMs,
+  createTimedWaveSpawnSchedule,
   getUnlockedEnemyConfigs,
 } from '../../simulation/wave-generation';
 import { createSeededRandom } from '../../simulation/random';
@@ -22,22 +22,26 @@ import { EnemyService } from '../enemies/enemy.service';
 
 import { ImageService } from './image.service';
 
-type WaveQueueEntry = {
-  enemyConfig: ReturnType<typeof getActiveBalanceConfig>['enemies'][number];
+type ActiveWaveWindow = {
   waveNumber: number;
+  spawns: TimedWaveEnemySpawn[];
+  elapsedMs: number;
+  spawnedCount: number;
+  metrics: WavePerformanceMetrics;
 };
 
 @Injectable({
   providedIn: 'root',
 })
 export class WaveService {
+  private readonly ngZone = inject(NgZone);
   private readonly enemyService = inject(EnemyService);
   private readonly imageService = inject(ImageService);
 
   private readonly waveState = new BehaviorSubject<WaveState>({
     waveNumber: 1,
-    phase: 'intermission',
-    intermissionRemainingMs: 10000,
+    phase: 'waiting',
+    timeUntilNextWaveMs: 15000,
     plannedEnemies: 0,
     spawnedEnemies: 0,
     aliveEnemies: 0,
@@ -47,8 +51,7 @@ export class WaveService {
   public readonly waveState$ = this.waveState.asObservable();
 
   private currentSpawnPlan: WaveEnemySpawnPlan[] = [];
-  private spawnQueue: WaveQueueEntry[] = [];
-  private spawnTimerMs = 0;
+  private activeWaveWindows: ActiveWaveWindow[] = [];
   private escapedHandler: ((event: EnemyEscapedEvent) => void) | null = null;
 
   private readonly enemyTypeByEnemy = new Map<EnemyTank, EnemyType>();
@@ -57,23 +60,25 @@ export class WaveService {
   private readonly resolvedEnemies = new Set<EnemyTank>();
   private readonly random = createSeededRandom(Date.now());
   private adaptivePressure = 0;
-  private waveMetrics: WavePerformanceMetrics = createWavePerformanceMetrics();
+  private nextWaveNumber = 1;
+  private lastPressureEvaluatedWave = 0;
 
   public initialize(): void {
     this.currentSpawnPlan = [];
-    this.spawnQueue = [];
-    this.spawnTimerMs = 0;
+    this.activeWaveWindows = [];
     this.enemyTypeByEnemy.clear();
     this.waveNumberByEnemy.clear();
     this.reportedEscapes.clear();
     this.resolvedEnemies.clear();
     this.adaptivePressure = 0;
-    this.waveMetrics = createWavePerformanceMetrics();
+    this.nextWaveNumber = 1;
+    this.lastPressureEvaluatedWave = 0;
+    const balance = getActiveBalanceConfig();
 
-    this.waveState.next({
+    this.emitWaveState({
       waveNumber: 1,
-      phase: 'intermission',
-      intermissionRemainingMs: 10000,
+      phase: 'waiting',
+      timeUntilNextWaveMs: balance.waves.initialWaveCountdownMs,
       plannedEnemies: 0,
       spawnedEnemies: 0,
       aliveEnemies: 0,
@@ -87,100 +92,44 @@ export class WaveService {
     this.processResolvedEnemies();
 
     const state = this.waveState.value;
+    this.updateActiveWaveMetrics(dtMs);
+
+    let nextWaveCountdownMs = state.timeUntilNextWaveMs - dtMs;
+    while (nextWaveCountdownMs <= 0) {
+      this.startScheduledWave();
+      nextWaveCountdownMs += this.getWaveDurationMs();
+    }
+
+    this.advanceActiveWaveWindows(dtMs);
     const aliveEnemies = this.enemyService.enemies.filter(enemy => enemy.lives > 0).length;
-    updateWaveMetricsForAliveEnemies(this.waveMetrics, this.enemyService.enemies, dtMs);
 
-    if (state.phase === 'intermission') {
-      const remainingMs = Math.max(0, state.intermissionRemainingMs - dtMs);
-
-      if (remainingMs === 0) {
-        this.startSpawningPhase(state.waveNumber);
-        return;
-      }
-
-      this.waveState.next({
-        ...state,
-        intermissionRemainingMs: remainingMs,
-        aliveEnemies,
-        adaptivePressure: this.adaptivePressure,
-      });
-      return;
-    }
-
-    if (state.phase === 'spawning') {
-      this.spawnTimerMs -= dtMs;
-      while (this.spawnTimerMs <= 0 && this.spawnQueue.length > 0) {
-        const spawnedWaveNumber = this.spawnNextEnemy();
-        if (spawnedWaveNumber === null) {
-          break;
-        }
-
-        this.spawnTimerMs += this.getSpawnIntervalMs(spawnedWaveNumber);
-      }
-
-      const spawnedEnemies = state.plannedEnemies - this.spawnQueue.length;
-      const hasFinishedSpawning = this.spawnQueue.length === 0;
-
-      if (hasFinishedSpawning) {
-        this.waveState.next({
-          ...state,
-          phase: 'cleanup',
-          spawnedEnemies,
-          aliveEnemies,
-          adaptivePressure: this.adaptivePressure,
-        });
-        return;
-      }
-
-      this.waveState.next({
-        ...state,
-        spawnedEnemies,
-        aliveEnemies,
-        adaptivePressure: this.adaptivePressure,
-      });
-      return;
-    }
-
-    if (state.phase === 'cleanup') {
-      if (aliveEnemies === 0) {
-        const nextWave = state.waveNumber + 1;
-        this.adaptivePressure = calculateAdaptivePressure(this.adaptivePressure, state.waveNumber, this.waveMetrics);
-        this.waveMetrics = createWavePerformanceMetrics();
-        this.waveState.next({
-          waveNumber: nextWave,
-          phase: 'intermission',
-          intermissionRemainingMs: 10000,
-          plannedEnemies: 0,
-          spawnedEnemies: 0,
-          aliveEnemies: 0,
-          unlockedEnemyTypes: this.getUnlockedEnemyConfigs(nextWave).map(config => config.type),
-          adaptivePressure: this.adaptivePressure,
-        });
-        return;
-      }
-
-      this.waveState.next({
-        ...state,
-        aliveEnemies,
-        adaptivePressure: this.adaptivePressure,
-      });
-    }
+    const latestWindow = this.activeWaveWindows[this.activeWaveWindows.length - 1] ?? null;
+    this.emitWaveState({
+      waveNumber: this.nextWaveNumber === 1 ? 1 : this.nextWaveNumber - 1,
+      phase: this.getPhase(aliveEnemies),
+      timeUntilNextWaveMs: Math.max(0, nextWaveCountdownMs),
+      plannedEnemies: latestWindow?.spawns.length ?? 0,
+      spawnedEnemies: latestWindow?.spawnedCount ?? 0,
+      aliveEnemies,
+      unlockedEnemyTypes: this.getUnlockedEnemyConfigs(this.nextWaveNumber).map(config => config.type),
+      adaptivePressure: this.adaptivePressure,
+    });
   }
 
   public startWaveEarly(): void {
-    const state = this.waveState.value;
-    if (state.phase === 'intermission') {
-      this.startSpawningPhase(state.waveNumber);
-      return;
-    }
-
-    const nextWaveNumber = state.waveNumber + 1;
-    if (state.phase === 'spawning') {
-      this.addWaveToSpawningPhase(nextWaveNumber);
-      return;
-    }
-
-    this.startSpawningPhase(nextWaveNumber);
+    this.startScheduledWave();
+    const aliveEnemies = this.enemyService.enemies.filter(enemy => enemy.lives > 0).length;
+    const latestWindow = this.activeWaveWindows[this.activeWaveWindows.length - 1] ?? null;
+    this.emitWaveState({
+      waveNumber: this.nextWaveNumber - 1,
+      phase: this.getPhase(aliveEnemies),
+      timeUntilNextWaveMs: this.getWaveDurationMs(),
+      plannedEnemies: latestWindow?.spawns.length ?? 0,
+      spawnedEnemies: latestWindow?.spawnedCount ?? 0,
+      aliveEnemies,
+      unlockedEnemyTypes: this.getUnlockedEnemyConfigs(this.nextWaveNumber).map(config => config.type),
+      adaptivePressure: this.adaptivePressure,
+    });
   }
 
   public setEnemyEscapedHandler(handler: (event: EnemyEscapedEvent) => void): void {
@@ -191,66 +140,12 @@ export class WaveService {
     return this.waveState.value;
   }
 
-  private startSpawningPhase(waveNumber: number): void {
-    this.currentSpawnPlan = this.createWaveSpawnPlan(waveNumber);
-    this.spawnQueue = this.createWaveQueueEntries(this.currentSpawnPlan, waveNumber);
-    this.spawnTimerMs = 0;
-    this.waveMetrics = createWavePerformanceMetrics();
-
-    this.waveState.next({
-      waveNumber,
-      phase: 'spawning',
-      intermissionRemainingMs: 0,
-      plannedEnemies: this.spawnQueue.length,
-      spawnedEnemies: 0,
-      aliveEnemies: this.enemyService.enemies.filter(enemy => enemy.lives > 0).length,
-      unlockedEnemyTypes: this.getUnlockedEnemyConfigs(waveNumber).map(config => config.type),
-      adaptivePressure: this.adaptivePressure,
-    });
-  }
-
-  private addWaveToSpawningPhase(waveNumber: number): void {
-    const additionalSpawnPlan = this.createWaveSpawnPlan(waveNumber);
-    const additionalEntries = this.createWaveQueueEntries(additionalSpawnPlan, waveNumber);
-    this.currentSpawnPlan = [...this.currentSpawnPlan, ...additionalSpawnPlan];
-    this.spawnQueue.push(...additionalEntries);
-
-    const state = this.waveState.value;
-    this.waveState.next({
-      ...state,
-      waveNumber,
-      plannedEnemies: state.plannedEnemies + additionalEntries.length,
-      aliveEnemies: this.enemyService.enemies.filter(enemy => enemy.lives > 0).length,
-      unlockedEnemyTypes: this.getUnlockedEnemyConfigs(waveNumber).map(config => config.type),
-      adaptivePressure: this.adaptivePressure,
-    });
-  }
-
-  private createWaveQueueEntries(spawnPlan: WaveEnemySpawnPlan[], waveNumber: number): WaveQueueEntry[] {
-    return spawnPlan.flatMap(plan =>
-      Array.from({ length: plan.quantity }, () => ({
-        enemyConfig: plan.enemyConfig,
-        waveNumber,
-      }))
-    );
-  }
-
   private createWaveSpawnPlan(waveNumber: number): WaveEnemySpawnPlan[] {
     const balance = getActiveBalanceConfig();
     return createWaveSpawnPlan(waveNumber, balance.enemies, balance.waves, this.random, this.adaptivePressure);
   }
 
-  private spawnNextEnemy(): number | null {
-    if (this.spawnQueue.length === 0) {
-      return null;
-    }
-
-    const queuedEnemy = this.spawnQueue.shift();
-    if (!queuedEnemy) {
-      return null;
-    }
-    const { enemyConfig, waveNumber } = queuedEnemy;
-
+  private spawnEnemy(enemyConfig: ReturnType<typeof getActiveBalanceConfig>['enemies'][number], waveNumber: number): void {
     const spawnHealth = enemyConfig.health;
     const spawnSpeed = enemyConfig.speed;
     const spawnReward = enemyConfig.reward;
@@ -264,18 +159,78 @@ export class WaveService {
       this.enemyTypeByEnemy.set(spawnedEnemy, enemyConfig.type);
       this.waveNumberByEnemy.set(spawnedEnemy, waveNumber);
     }
-
-    return waveNumber;
-  }
-
-  private getSpawnIntervalMs(waveNumber: number): number {
-    const balance = getActiveBalanceConfig();
-    return getSpawnIntervalMs(waveNumber, balance.waves, this.adaptivePressure);
   }
 
   private getUnlockedEnemyConfigs(waveNumber: number) {
     const balance = getActiveBalanceConfig();
     return getUnlockedEnemyConfigs(balance.enemies, waveNumber);
+  }
+
+  private getWaveDurationMs(): number {
+    return getActiveBalanceConfig().waves.waveDurationMs;
+  }
+
+  private startScheduledWave(): void {
+    const waveNumber = this.nextWaveNumber;
+    if (waveNumber > 1 && this.lastPressureEvaluatedWave < waveNumber - 1) {
+      const previousWindow = this.activeWaveWindows.find(window => window.waveNumber === waveNumber - 1);
+      if (previousWindow) {
+        this.adaptivePressure = calculateAdaptivePressure(this.adaptivePressure, previousWindow.waveNumber, previousWindow.metrics);
+        this.lastPressureEvaluatedWave = previousWindow.waveNumber;
+      }
+    }
+
+    this.currentSpawnPlan = this.createWaveSpawnPlan(waveNumber);
+    this.activeWaveWindows.push({
+      waveNumber,
+      spawns: createTimedWaveSpawnSchedule(this.currentSpawnPlan, waveNumber, this.getWaveDurationMs()),
+      elapsedMs: 0,
+      spawnedCount: 0,
+      metrics: createWavePerformanceMetrics(),
+    });
+    this.nextWaveNumber++;
+  }
+
+  private advanceActiveWaveWindows(dtMs: number): void {
+    for (const window of this.activeWaveWindows) {
+      window.elapsedMs += dtMs;
+
+      while (window.spawnedCount < window.spawns.length && window.spawns[window.spawnedCount].spawnOffsetMs <= window.elapsedMs) {
+        const spawn = window.spawns[window.spawnedCount];
+        this.spawnEnemy(spawn.enemyConfig, window.waveNumber);
+        window.spawnedCount++;
+      }
+    }
+
+    this.activeWaveWindows = this.activeWaveWindows.filter(
+      window =>
+        window.spawnedCount < window.spawns.length ||
+        this.hasAliveEnemiesForWave(window.waveNumber) ||
+        window.waveNumber > this.lastPressureEvaluatedWave
+    );
+  }
+
+  private hasAliveEnemiesForWave(waveNumber: number): boolean {
+    return this.enemyService.enemies.some(enemy => enemy.lives > 0 && (this.waveNumberByEnemy.get(enemy) ?? 0) === waveNumber);
+  }
+
+  private updateActiveWaveMetrics(dtMs: number): void {
+    for (const window of this.activeWaveWindows) {
+      const aliveEnemies = this.enemyService.enemies.filter(enemy => enemy.lives > 0 && (this.waveNumberByEnemy.get(enemy) ?? 0) === window.waveNumber);
+      updateWaveMetricsForAliveEnemies(window.metrics, aliveEnemies, dtMs);
+    }
+  }
+
+  private getPhase(aliveEnemies: number): WaveState['phase'] {
+    if (this.activeWaveWindows.some(window => window.spawnedCount < window.spawns.length)) {
+      return 'spawning';
+    }
+
+    if (aliveEnemies > 0) {
+      return 'cleanup';
+    }
+
+    return 'waiting';
   }
 
   private processEscapedEnemies(): void {
@@ -287,7 +242,10 @@ export class WaveService {
 
       this.reportedEscapes.add(enemy);
       this.resolvedEnemies.add(enemy);
-      recordResolvedEnemyProgress(this.waveMetrics, enemy);
+      const metrics = this.getMetricsForEnemy(enemy);
+      if (metrics) {
+        recordResolvedEnemyProgress(metrics, enemy);
+      }
       this.escapedHandler?.({
         waveNumber: this.waveNumberByEnemy.get(enemy) ?? state.waveNumber,
         enemyType: this.enemyTypeByEnemy.get(enemy) ?? EnemyType.Basic,
@@ -303,7 +261,24 @@ export class WaveService {
       }
 
       this.resolvedEnemies.add(enemy);
-      recordResolvedEnemyProgress(this.waveMetrics, enemy);
+      const metrics = this.getMetricsForEnemy(enemy);
+      if (metrics) {
+        recordResolvedEnemyProgress(metrics, enemy);
+      }
     }
+  }
+
+  private getMetricsForEnemy(enemy: EnemyTank): WavePerformanceMetrics | null {
+    const waveNumber = this.waveNumberByEnemy.get(enemy);
+    return waveNumber === undefined ? null : this.activeWaveWindows.find(window => window.waveNumber === waveNumber)?.metrics ?? null;
+  }
+
+  private emitWaveState(state: WaveState): void {
+    if (NgZone.isInAngularZone()) {
+      this.waveState.next(state);
+      return;
+    }
+
+    this.ngZone.run(() => this.waveState.next(state));
   }
 }

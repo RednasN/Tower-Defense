@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone, inject } from '@angular/core';
 
 import { BehaviorSubject } from 'rxjs';
 import { getActiveBalanceConfig } from '../../models/configs/turret-config.model';
@@ -7,6 +7,7 @@ import { getActiveBalanceConfig } from '../../models/configs/turret-config.model
   providedIn: 'root',
 })
 export class GameStateService {
+  private readonly ngZone = inject(NgZone);
   private readonly balance = getActiveBalanceConfig();
   private money = this.balance.economy.startingMoney;
   private readonly moneyChanged = new BehaviorSubject<number>(Math.round(this.balance.economy.startingMoney));
@@ -25,16 +26,25 @@ export class GameStateService {
 
   public addReward(amount: number): void {
     this.money += amount;
-    this.moneyChanged.next(this.money);
+    this.emitInZone(this.moneyChanged, this.money);
   }
 
   public spendMoney(amount: number): void {
     this.money -= amount;
-    this.moneyChanged.next(this.money);
+    this.emitInZone(this.moneyChanged, this.money);
   }
 
   public damageBase(amount: number): void {
     this.baseHealth = Math.max(0, this.baseHealth - amount);
-    this.baseHealthChanged.next(this.baseHealth);
+    this.emitInZone(this.baseHealthChanged, this.baseHealth);
+  }
+
+  private emitInZone(subject: BehaviorSubject<number>, value: number): void {
+    if (NgZone.isInAngularZone()) {
+      subject.next(value);
+      return;
+    }
+
+    this.ngZone.run(() => subject.next(value));
   }
 }

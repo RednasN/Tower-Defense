@@ -6,6 +6,12 @@ export type WaveEnemySpawnPlan = {
   quantity: number;
 };
 
+export type TimedWaveEnemySpawn = {
+  enemyConfig: EnemyConfig;
+  waveNumber: number;
+  spawnOffsetMs: number;
+};
+
 export function getUnlockedEnemyConfigs(enemyConfigs: EnemyConfig[], waveNumber: number): EnemyConfig[] {
   return enemyConfigs.filter(config => config.unlockWave <= waveNumber);
 }
@@ -36,16 +42,6 @@ export function getAdaptiveSpawnIntervalMultiplier(config: WaveBalanceConfig, ad
 export function getAdaptiveEliteWeightMultiplier(config: WaveBalanceConfig, adaptivePressure: number): number {
   const multiplier = config.adaptivePressureEliteWeightMultiplier ?? 0.4;
   return 1 + adaptivePressure * multiplier;
-}
-
-export function getSpawnIntervalMs(waveNumber: number, config: WaveBalanceConfig, adaptivePressure = 0): number {
-  const midGameReduction = waveNumber > 15 ? (waveNumber - 15) * 6 : 0;
-  const lateGameReduction = waveNumber > 25 ? (waveNumber - 25) * 7 : 0;
-  const baseInterval = Math.max(
-    config.minSpawnIntervalMs,
-    config.spawnIntervalMs - config.spawnIntervalDecayPerWave * (waveNumber - 1) - midGameReduction - lateGameReduction
-  );
-  return Math.max(config.minSpawnIntervalMs * 0.6, baseInterval * getAdaptiveSpawnIntervalMultiplier(config, adaptivePressure));
 }
 
 export function createWaveSpawnPlan(
@@ -91,6 +87,29 @@ export function createWaveSpawnPlan(
       enemyConfig: configEntry,
       quantity: quantities.get(configEntry.type)!,
     }));
+}
+
+export function createTimedWaveSpawnSchedule(
+  plan: WaveEnemySpawnPlan[],
+  waveNumber: number,
+  waveDurationMs: number
+): TimedWaveEnemySpawn[] {
+  const flattened = plan.flatMap(entry =>
+    Array.from({ length: entry.quantity }, () => ({
+      enemyConfig: entry.enemyConfig,
+      waveNumber,
+    }))
+  );
+
+  if (flattened.length === 0) {
+    return [];
+  }
+
+  const spacingMs = waveDurationMs / flattened.length;
+  return flattened.map((entry, index) => ({
+    ...entry,
+    spawnOffsetMs: Math.max(0, Math.round((index + 0.5) * spacingMs)),
+  }));
 }
 
 function getMaxEnemiesForWave(waveNumber: number, config: WaveBalanceConfig): number {

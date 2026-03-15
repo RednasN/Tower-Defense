@@ -4,6 +4,7 @@ import { DamageType } from '../../models/configs/turret-config.model';
 import { delta } from '../../models/constants';
 import { Rocket } from '../../models/projectiles/projectile.model';
 import { ProjectileType } from '../../models/projectiles/projectile-type.model';
+import { selectSplitRocketTargets } from '../../simulation/split-rocket';
 import { EnemyService } from '../enemies/enemy.service';
 import { GridService } from '../game/grid.service';
 
@@ -14,7 +15,23 @@ export class RocketService {
   private readonly gridServcie = inject(GridService);
   private readonly enemyService = inject(EnemyService);
 
-  public create(x: number, y: number, enemyIndex: number, angle: number, damage: number, speed: number, damageType: DamageType): Rocket {
+  public create(
+    x: number,
+    y: number,
+    enemyIndex: number,
+    angle: number,
+    damage: number,
+    speed: number,
+    damageType: DamageType,
+    splitConfig?: {
+      isChild: boolean;
+      splitDelayRemainingMs: number | null;
+      childRocketCount: number;
+      childSearchRadius: number;
+      childDamageMultiplier: number;
+      childSpeedMultiplier: number;
+    }
+  ): Rocket {
     const cellHeight = this.gridServcie.grid[x][y].height / 2;
     const cellWidth = this.gridServcie.grid[x][y].width / 2;
 
@@ -39,13 +56,24 @@ export class RocketService {
       plusrotation: null,
       steps: 0,
       speed,
+      isChild: splitConfig?.isChild ?? false,
+      hasSplit: splitConfig?.isChild ?? true,
+      splitDelayRemainingMs: splitConfig?.splitDelayRemainingMs ?? null,
+      childRocketCount: splitConfig?.childRocketCount ?? 0,
+      childSearchRadius: splitConfig?.childSearchRadius ?? 0,
+      childDamageMultiplier: splitConfig?.childDamageMultiplier ?? 1,
+      childSpeedMultiplier: splitConfig?.childSpeedMultiplier ?? 1,
     };
   }
 
-  public calculate(rocket: Rocket): void {
-    if (!rocket.needdraw) return;
+  public calculate(rocket: Rocket): Rocket[] {
+    if (!rocket.needdraw) return [];
 
     const enemy = this.enemyService.enemies[rocket.enemyIndex];
+    if (!enemy || enemy.lives <= 0) {
+      rocket.needdraw = false;
+      return [];
+    }
 
     const centerEnemyX = enemy.drawx + 25;
     const centerEnemyY = enemy.drawy + 25;
@@ -67,10 +95,62 @@ export class RocketService {
     const speed = rocket.locked ? rocket.speed * 2 : rocket.speed;
     moveTowardsTarget(rocket, speed);
 
+    const spawned = this.splitRocketIfReady(rocket);
+    if (spawned.length > 0) {
+      rocket.hasSplit = true;
+      rocket.needdraw = false;
+      return spawned;
+    }
+
     if (hasReachedTarget(rocket, centerEnemyX, centerEnemyY)) {
       rocket.needdraw = false;
       this.enemyService.hit(rocket.enemyIndex, rocket.damage, rocket.damageType);
     }
+
+    return [];
+  }
+
+  private splitRocketIfReady(rocket: Rocket): Rocket[] {
+    if (rocket.isChild || rocket.hasSplit || rocket.splitDelayRemainingMs === null) {
+      return [];
+    }
+
+    const enemy = this.enemyService.enemies[rocket.enemyIndex];
+    if (!enemy || enemy.lives <= 0) {
+      rocket.hasSplit = true;
+      return [];
+    }
+
+    rocket.splitDelayRemainingMs -= delta * 1000;
+    const distanceToPrimary = Math.hypot(enemy.drawx + 25 - rocket.x, enemy.drawy + 25 - rocket.y);
+    const shouldSplit = rocket.splitDelayRemainingMs <= 0 || distanceToPrimary <= Math.max(60, rocket.childSearchRadius * 0.55);
+    if (!shouldSplit) {
+      return [];
+    }
+
+    const targetIndexes = selectSplitRocketTargets(this.enemyService.enemies, rocket.x, rocket.y, rocket.enemyIndex, {
+      childRocketCount: rocket.childRocketCount,
+      childSearchRadius: rocket.childSearchRadius,
+    });
+
+    return targetIndexes.map((enemyIndex, childIndex) => {
+      const childAngle = normalizeAngle(rocket.angle + (childIndex - (targetIndexes.length - 1) / 2) * 26);
+      return {
+        ...rocket,
+        x: rocket.x,
+        y: rocket.y,
+        enemyIndex,
+        angle: childAngle,
+        locked: false,
+        plusrotation: null,
+        steps: 0,
+        damage: rocket.damage * rocket.childDamageMultiplier,
+        speed: rocket.speed * rocket.childSpeedMultiplier,
+        isChild: true,
+        hasSplit: true,
+        splitDelayRemainingMs: null,
+      };
+    });
   }
 }
 

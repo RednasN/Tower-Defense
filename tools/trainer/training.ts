@@ -34,18 +34,36 @@ export type CandidateEvaluation = {
 };
 
 type WorkerPayload = {
+  kind: 'rollouts';
   balance: BalanceConfig;
   rolloutSeeds: number[];
   maxWave: number;
 };
+
+type SoloProbeWorkerPayload = {
+  kind: 'solo-probes';
+  balance: BalanceConfig;
+  towerTypes: WeaponType[];
+  probeSeeds: number[];
+  maxWave: number;
+};
+
+const SOLO_PROBE_SEEDS = [11, 29];
+const SOLO_PROBE_MAX_WAVE = 12;
 
 export async function runTraining(options: TrainerOptions): Promise<CandidateEvaluation> {
   const random = createSeededRandom(options.seed);
   mkdirSync(options.outputDir, { recursive: true });
 
   const initialBalance = options.seedConfig === 'default' ? defaultBalanceConfig : generatedBalanceConfig;
-  let best = await evaluateCandidate(initialBalance, buildRolloutSeeds(options.rollouts, random), options.maxWave);
+  let best =
+    options.workers > 1
+      ? await evaluateCandidateWithWorkers(initialBalance, buildRolloutSeeds(options.rollouts, random), options.workers, options.maxWave)
+      : await evaluateCandidate(initialBalance, buildRolloutSeeds(options.rollouts, random), options.maxWave);
   const leaderboard: CandidateEvaluation[] = [best];
+  if (options.workers > 1) {
+    console.log(`[train] using ${options.workers} worker threads`);
+  }
   logIterationSummary('seed', best, best);
 
   for (let iteration = 0; iteration < options.iterations; iteration++) {
@@ -99,6 +117,7 @@ async function evaluateCandidateWithWorkers(balance: BalanceConfig, rolloutSeeds
           new Promise<ReturnType<typeof simulateBalance>[]>((resolve, reject) => {
             const worker = new Worker(workerPath, {
               workerData: {
+                kind: 'rollouts',
                 balance,
                 rolloutSeeds: chunk,
                 maxWave,
@@ -117,18 +136,19 @@ async function evaluateCandidateWithWorkers(balance: BalanceConfig, rolloutSeeds
     )
   ).flat();
 
-  return summarizeEvaluation(balance, results, maxWave);
+  return summarizeEvaluation(balance, results, maxWave, workers);
 }
 
-function summarizeEvaluation(balance: BalanceConfig, results: ReturnType<typeof simulateBalance>[], maxWave: number): CandidateEvaluation {
+async function summarizeEvaluation(
+  balance: BalanceConfig,
+  results: ReturnType<typeof simulateBalance>[],
+  maxWave: number,
+  workers = 1
+): Promise<CandidateEvaluation> {
   const rawAverageScore = average(results.map(result => result.score.total));
   const averageWave = average(results.map(result => result.finalWave));
-  const soloTowerWaves = Object.fromEntries(
-    balance.towers.map(tower => {
-      const probes = [11, 29].map(seed => simulateSoloTowerProbe(balance, tower.type, seed));
-      return [tower.type, average(probes.map(probe => probe.finalWave))];
-    })
-  );
+  const soloTowerWaves =
+    workers > 1 ? await evaluateSoloTowerWavesWithWorkers(balance, workers) : evaluateSoloTowerWaves(balance);
   const adjustedAverageScore = rawAverageScore - calculateCandidatePenalty(results, soloTowerWaves, maxWave);
   const averageTurretCount = average(
     results.map(result => Object.values(result.towerBuildCounts).reduce((sum, count) => sum + (count ?? 0), 0))
@@ -150,6 +170,46 @@ function summarizeEvaluation(balance: BalanceConfig, results: ReturnType<typeof 
     soloTowerWaves,
     results,
   };
+}
+
+function evaluateSoloTowerWaves(balance: BalanceConfig): Record<string, number> {
+  return Object.fromEntries(
+    balance.towers.map(tower => {
+      const probes = SOLO_PROBE_SEEDS.map(seed => simulateSoloTowerProbe(balance, tower.type, seed, SOLO_PROBE_MAX_WAVE));
+      return [tower.type, average(probes.map(probe => probe.finalWave))];
+    })
+  );
+}
+
+async function evaluateSoloTowerWavesWithWorkers(balance: BalanceConfig, workers: number): Promise<Record<string, number>> {
+  const workerPath = join(__dirname, 'worker.js');
+  const chunks = chunkArray(balance.towers.map(tower => tower.type), workers);
+  const results = await Promise.all(
+    chunks.map(
+      towerTypes =>
+        new Promise<Record<string, number>>((resolve, reject) => {
+          const worker = new Worker(workerPath, {
+            workerData: {
+              kind: 'solo-probes',
+              balance,
+              towerTypes,
+              probeSeeds: SOLO_PROBE_SEEDS,
+              maxWave: SOLO_PROBE_MAX_WAVE,
+            } satisfies SoloProbeWorkerPayload,
+          });
+
+          worker.once('message', message => resolve(message as Record<string, number>));
+          worker.once('error', reject);
+          worker.once('exit', code => {
+            if (code !== 0) {
+              reject(new Error(`Worker exited with code ${code}`));
+            }
+          });
+        })
+    )
+  );
+
+  return Object.assign({}, ...results);
 }
 
 function average(values: number[]): number {
@@ -218,14 +278,15 @@ function calculateSoloTowerPenalty(soloTowerWaves: Record<string, number>): numb
                 ? 4.75
                 : 5.5;
 
-    penalty += Math.max(0, averageWave - allowedWave) * 8;
+    const multiplier = towerType === WeaponType.LaserTurret ? 12 : 8;
+    penalty += Math.max(0, averageWave - allowedWave) * multiplier;
   }
 
   return penalty;
 }
 
-function chunkArray(values: number[], chunkCount: number): number[][] {
-  const chunks = Array.from({ length: Math.max(1, Math.min(chunkCount, values.length)) }, () => [] as number[]);
+function chunkArray<T>(values: T[], chunkCount: number): T[][] {
+  const chunks = Array.from({ length: Math.max(1, Math.min(chunkCount, values.length)) }, () => [] as T[]);
   values.forEach((value, index) => {
     chunks[index % chunks.length].push(value);
   });

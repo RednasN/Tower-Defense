@@ -35,6 +35,29 @@ export type UpgradeDetails = {
   details: UpgradeLevelDetails[];
 };
 
+export type ChainLightningConfig = {
+  chainCount: number;
+  chainRadius: number;
+  damageFalloff: number;
+  durationTicks: number;
+};
+
+export type FlameBubbleConfig = {
+  lifetimeMs: number;
+  hitRadius: number;
+  visualScale: number;
+  bubblesPerShot: number;
+  spreadDegrees: number;
+};
+
+export type SplitRocketConfig = {
+  splitDelayMs: number;
+  childRocketCount: number;
+  childSearchRadius: number;
+  childDamageMultiplier: number;
+  childSpeedMultiplier: number;
+};
+
 export type TurretConfig = {
   imageSrc: string;
   cost: number;
@@ -42,6 +65,9 @@ export type TurretConfig = {
   projectileType: ProjectileType;
   projectileSpeed: number | null;
   upgrades: UpgradeDetails[];
+  chainLightning?: ChainLightningConfig;
+  flameBubble?: FlameBubbleConfig;
+  splitRocket?: SplitRocketConfig;
 };
 
 export enum EnemyType {
@@ -55,6 +81,8 @@ export enum EnemyType {
   HeavyHovercraft = 'heavyHovercraft',
   FighterPlane = 'fighterPlane',
   BomberPlane = 'bomberPlane',
+  InterceptorDrone = 'interceptorDrone',
+  JuggernautMech = 'juggernautMech',
 }
 
 export type EnemyConfig = {
@@ -77,10 +105,8 @@ export type EconomyBalanceConfig = {
 };
 
 export type WaveBalanceConfig = {
-  intermissionMs: number;
-  spawnIntervalMs: number;
-  spawnIntervalDecayPerWave: number;
-  minSpawnIntervalMs: number;
+  initialWaveCountdownMs: number;
+  waveDurationMs: number;
   budgetBase: number;
   budgetGrowthLinear: number;
   budgetGrowthPower: number;

@@ -38,7 +38,8 @@ export class AppComponent implements OnInit {
   private readonly dialog = inject(MatDialog);
 
   private readonly gameState = inject(GameStateService);
-  public readonly waveLabel$ = this.waveService.waveState$.pipe(map(state => state.waveNumber.toString().padStart(3, '0')));
+  public readonly waveLabel$ = this.waveService.waveState$.pipe(map(state => Math.max(1, state.waveNumber).toString().padStart(3, '0')));
+  public readonly nextWaveCountdown$ = this.waveService.waveState$.pipe(map(state => Math.ceil(state.timeUntilNextWaveMs / 1000)));
   public readonly aiPlayEnabled$ = this.aiPlayService.isEnabled$;
   public isMenuOpen = false;
   public isLevelBuilderOpen = false;
@@ -175,8 +176,11 @@ export class AppComponent implements OnInit {
         return 2;
       case EnemyType.FighterPlane:
       case EnemyType.BomberPlane:
+      case EnemyType.InterceptorDrone:
       case EnemyType.Boss:
         return 3;
+      case EnemyType.JuggernautMech:
+        return 4;
       default:
         return 1;
     }

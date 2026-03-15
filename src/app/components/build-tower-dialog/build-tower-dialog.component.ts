@@ -106,6 +106,15 @@ export class BuildTowerDialogComponent implements OnInit {
     return this.gameState.getMoney() >= this.totalCost;
   }
 
+  public get selectedTowerName(): string | null {
+    if (this.isUpgradeMode) {
+      return this.selectedWeapon ? this.formatTowerName(this.selectedWeapon.type) : null;
+    }
+
+    const selectedTurret = this.turrets.find(turret => turret.selected);
+    return selectedTurret ? this.formatTowerName(selectedTurret.type) : null;
+  }
+
   public upgrade(option: UpgradeDetails): void {
     if (option.level < 5) {
       option.level++;
@@ -325,5 +334,9 @@ export class BuildTowerDialogComponent implements OnInit {
     });
 
     this.dialogRef.close();
+  }
+
+  private formatTowerName(name: string): string {
+    return name.replace(/([a-z])([A-Z])/g, '$1 $2').trim();
   }
 }

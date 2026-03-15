@@ -12,6 +12,7 @@ import { GridService } from '../game/grid.service';
 export class LaserService {
   private readonly gridService = inject(GridService);
   private readonly enemyService = inject(EnemyService);
+  private readonly emitterOffset = 20;
 
   public create(x: number, y: number, enemyIndex: number, damage: number, damageType: DamageType): Laser {
     const cellHeight = this.gridService.grid[x][y].height / 2;
@@ -27,14 +28,18 @@ export class LaserService {
     const deltaY = centerTurretY - centerEnemyY;
 
     const rad = Math.atan2(deltaY, deltaX);
+    const emitterX = centerTurretX - this.emitterOffset * Math.cos(rad);
+    const emitterY = centerTurretY - this.emitterOffset * Math.sin(rad);
 
     return {
       duration: 10,
       type: ProjectileType.Laser,
       gridX: x,
       gridY: y,
-      x: centerTurretX - 25 * Math.cos(rad),
-      y: centerTurretY - 25 * Math.sin(rad),
+      x: emitterX,
+      y: emitterY,
+      targetX: centerEnemyX,
+      targetY: centerEnemyY,
       enemyIndex,
       needdraw: true,
       damage,
@@ -68,6 +73,12 @@ export class LaserService {
     const deltaY = centerEnemyY - centerTurretY;
 
     const rad = Math.atan2(deltaY, deltaX);
+    const emitterX = centerTurretX + this.emitterOffset * Math.cos(rad);
+    const emitterY = centerTurretY + this.emitterOffset * Math.sin(rad);
+    bullet.x = emitterX;
+    bullet.y = emitterY;
+    bullet.targetX = centerEnemyX;
+    bullet.targetY = centerEnemyY;
 
     bullet.angle = Math.round((rad * 180) / Math.PI + 180);
 
@@ -91,8 +102,8 @@ export class LaserService {
       const t = i / steps; // Interpolation factor (from 0 to 1)
 
       // Linearly interpolate between the turret and shortened target position
-      const x = centerTurretX + deltaX * (t * (length / (length + 10))) - 16;
-      const y = centerTurretY + deltaY * (t * (length / (length + 10))) - 16;
+      const x = emitterX + deltaX * (t * (length / (length + 10))) - 16;
+      const y = emitterY + deltaY * (t * (length / (length + 10))) - 16;
 
       bullet.laserParts.push({ x, y });
     }
@@ -100,8 +111,8 @@ export class LaserService {
     // Handle remaining length (final segment)
     if (remainingLength > 0) {
       const t = length / (length + 15); // Adjust factor for shortened length
-      const x = centerTurretX + deltaX * t - 16;
-      const y = centerTurretY + deltaY * t - 16;
+      const x = emitterX + deltaX * t - 16;
+      const y = emitterY + deltaY * t - 16;
 
       bullet.laserParts.push({ x, y }); // Add the final segment
     }

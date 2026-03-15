@@ -5,8 +5,11 @@ import {
   Weapon,
   WeaponType,
   isBulletShooter,
+  isChainLightningTower,
+  isFlameThrower,
   isGrenadeThrower,
   isLaserTurret,
+  isMultiRocketLauncher,
   isNucleareLauncher,
   isRocketLauncher,
   isSlowRocketLauncher,
@@ -17,8 +20,11 @@ import { GridService } from '../game/grid.service';
 import { ImageService } from '../game/image.service';
 
 import { BasicTurretService } from './basic-turret.service';
+import { ChainLightningTowerService } from './chain-lightning-tower.service';
+import { FlameThrowerService } from './flame-thrower.service';
 import { GrenadeThrowerService } from './grenade-thrower.service';
 import { LaserTurretService } from './laser-turret.service';
+import { MultiRocketLauncherService } from './multi-rocket-launcher.service';
 import { NuclearLauncherService } from './nuclear-launcher.service';
 import { RocketLauncherService } from './rocket-launcher.service';
 import { SlowRocketLauncherService } from './slow-rocket-launcher.service';
@@ -33,6 +39,9 @@ export class TowerService {
   private readonly imageService = inject(ImageService);
 
   private readonly basicTurretService = inject(BasicTurretService);
+  private readonly chainLightningTowerService = inject(ChainLightningTowerService);
+  private readonly flameThrowerService = inject(FlameThrowerService);
+  private readonly multiRocketLauncherService = inject(MultiRocketLauncherService);
   private readonly rocketLauncherService = inject(RocketLauncherService);
   private readonly laserTurretService = inject(LaserTurretService);
   private readonly slowRocketLauncherService = inject(SlowRocketLauncherService);
@@ -47,8 +56,14 @@ export class TowerService {
     this.weapons.forEach(weapon => {
       if (isRocketLauncher(weapon)) {
         this.rocketLauncherService.calculate(weapon);
+      } else if (isMultiRocketLauncher(weapon)) {
+        this.multiRocketLauncherService.calculate(weapon);
       } else if (isBulletShooter(weapon)) {
         this.basicTurretService.calculate(weapon);
+      } else if (isFlameThrower(weapon)) {
+        this.flameThrowerService.calculate(weapon);
+      } else if (isChainLightningTower(weapon)) {
+        this.chainLightningTowerService.calculate(weapon);
       } else if (isLaserTurret(weapon)) {
         this.laserTurretService.calculate(weapon);
       } else if (isNucleareLauncher(weapon)) {
@@ -69,7 +84,8 @@ export class TowerService {
     this.weapons.forEach(weapon => {
       try {
         const towerFrames = this.imageService.towers[weapon.type];
-        const towerFrame = this.imageService.getRotationFrame(towerFrames, weapon.angle);
+        const towerFrame =
+          weapon.type === WeaponType.ChainLightningTower ? towerFrames[0] : this.imageService.getRotationFrame(towerFrames, weapon.angle);
         this.canvasService.draw(towerFrame, weapon.startx!, weapon.starty!);
       } catch (err) {
         console.log('Error!', err);
@@ -153,6 +169,15 @@ export class TowerService {
       case WeaponType.RocketLauncher:
         this.createRocketLauncher(x, y, speedLevel, powerLevel, rangeLevel);
         break;
+      case WeaponType.MultiRocketLauncher:
+        this.createMultiRocketLauncher(x, y, speedLevel, powerLevel, rangeLevel);
+        break;
+      case WeaponType.FlameThrower:
+        this.createFlameThrower(x, y, speedLevel, powerLevel, rangeLevel);
+        break;
+      case WeaponType.ChainLightningTower:
+        this.createChainLightningTower(x, y, speedLevel, powerLevel, rangeLevel);
+        break;
       case WeaponType.LaserTurret:
         this.createLaserTurret(x, y, speedLevel, powerLevel, rangeLevel);
         break;
@@ -186,6 +211,24 @@ export class TowerService {
     const rocketLauncher = this.rocketLauncherService.create(x, y, speedLevel, powerLevel, rangeLevel);
     this.applyWeaponStats(rocketLauncher);
     this.weapons.push(rocketLauncher);
+  }
+
+  private createMultiRocketLauncher(x: number, y: number, speedLevel: number, powerLevel: number, rangeLevel: number): void {
+    const multiRocketLauncher = this.multiRocketLauncherService.create(x, y, speedLevel, powerLevel, rangeLevel);
+    this.applyWeaponStats(multiRocketLauncher);
+    this.weapons.push(multiRocketLauncher);
+  }
+
+  private createFlameThrower(x: number, y: number, speedLevel: number, powerLevel: number, rangeLevel: number): void {
+    const flameThrower = this.flameThrowerService.create(x, y, speedLevel, powerLevel, rangeLevel);
+    this.applyWeaponStats(flameThrower);
+    this.weapons.push(flameThrower);
+  }
+
+  private createChainLightningTower(x: number, y: number, speedLevel: number, powerLevel: number, rangeLevel: number): void {
+    const chainLightningTower = this.chainLightningTowerService.create(x, y, speedLevel, powerLevel, rangeLevel);
+    this.applyWeaponStats(chainLightningTower);
+    this.weapons.push(chainLightningTower);
   }
 
   private createLaserTurret(x: number, y: number, speedLevel: number, powerLevel: number, rangeLevel: number): void {

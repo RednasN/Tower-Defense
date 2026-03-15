@@ -4,6 +4,8 @@ export enum WeaponType {
 
   RocketLauncher = 'RocketLauncher',
   BulletShooter = 'BulletShooter',
+  FlameThrower = 'FlameThrower',
+  ChainLightningTower = 'ChainLightningTower',
   NuclearLauncher = 'NuclearLauncher',
   MultiRocketLauncher = 'MultiRocketLauncher',
   LaserTurret = 'LaserTurret',
@@ -40,8 +42,21 @@ export type RocketLauncher = Weapon & {
   canons: number[];
 };
 
+export type MultiRocketLauncher = Weapon & {
+  type: WeaponType.MultiRocketLauncher;
+  canons: number[];
+};
+
 export type BulletShooter = Weapon & {
   type: WeaponType.BulletShooter;
+};
+
+export type FlameThrower = Weapon & {
+  type: WeaponType.FlameThrower;
+};
+
+export type ChainLightningTower = Weapon & {
+  type: WeaponType.ChainLightningTower;
 };
 
 export type NuclearLauncher = Weapon & {
@@ -65,8 +80,20 @@ export function isRocketLauncher(weapon: Weapon): weapon is RocketLauncher {
   return weapon.type === WeaponType.RocketLauncher;
 }
 
+export function isMultiRocketLauncher(weapon: Weapon): weapon is MultiRocketLauncher {
+  return weapon.type === WeaponType.MultiRocketLauncher;
+}
+
 export function isBulletShooter(weapon: Weapon): weapon is BulletShooter {
   return weapon.type === WeaponType.BulletShooter;
+}
+
+export function isFlameThrower(weapon: Weapon): weapon is FlameThrower {
+  return weapon.type === WeaponType.FlameThrower;
+}
+
+export function isChainLightningTower(weapon: Weapon): weapon is ChainLightningTower {
+  return weapon.type === WeaponType.ChainLightningTower;
 }
 
 export function isLaserTurret(weapon: Weapon): weapon is LaserTurret {

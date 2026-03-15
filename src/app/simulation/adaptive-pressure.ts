@@ -48,10 +48,10 @@ export function calculateAdaptivePressure(currentPressure: number, completedWave
   let increase = 0;
 
   if (metrics.furthestProgress < 0.5) {
-    increase += 0.12;
+    increase += 0.14;
   }
   if (metrics.furthestProgress < 0.35) {
-    increase += 0.08;
+    increase += 0.1;
   }
   if (metrics.furthestProgress < 0.2) {
     increase += 0.1;

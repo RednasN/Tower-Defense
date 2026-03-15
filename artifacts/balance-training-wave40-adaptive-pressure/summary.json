@@ -1,0 +1,2043 @@
+{
+  "bestAverageScore": 63.36897259031445,
+  "bestAverageWave": 10.5,
+  "maxWave": 40,
+  "buildableCells": 166,
+  "results": [
+    {
+      "policy": "aggressive-expansion",
+      "seed": 368823665,
+      "finalWave": 11,
+      "victory": false,
+      "baseHealthRemaining": 0,
+      "moneyEarned": 733,
+      "moneySpent": 816,
+      "moneyHoardedPeak": 90,
+      "towerBuildCounts": {
+        "BulletShooter": 2,
+        "SlowRocketLauncher": 1,
+        "GrenadeThrower": 1
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 20,
+        "SlowRocketLauncher": 7,
+        "GrenadeThrower": 10
+      },
+      "leakCounts": {
+        "basic": 4,
+        "lightHovercraft": 4,
+        "bomberPlane": 1,
+        "interceptorDrone": 2
+      },
+      "damageByType": {
+        "explosive": 721.2741300000006,
+        "bullet": 875.5209490000012,
+        "slowExplosive": 478.9200699999993
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "SlowRocketLauncher",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "GrenadeThrower",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 9
+        }
+      ],
+      "score": {
+        "challenge": 92.6,
+        "spendPressure": 20,
+        "diversity": 8.7,
+        "antiHoarding": 8,
+        "stability": -8,
+        "total": 121.30000000000001
+      },
+      "averageSpendRatio": 0.9810541555007508,
+      "totalTicks": 21831
+    },
+    {
+      "policy": "upgrade-first",
+      "seed": 368823665,
+      "finalWave": 11,
+      "victory": false,
+      "baseHealthRemaining": 0,
+      "moneyEarned": 725,
+      "moneySpent": 780,
+      "moneyHoardedPeak": 90,
+      "towerBuildCounts": {
+        "BulletShooter": 2,
+        "SlowRocketLauncher": 1,
+        "GrenadeThrower": 1
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 19,
+        "SlowRocketLauncher": 7,
+        "GrenadeThrower": 10
+      },
+      "leakCounts": {
+        "basic": 5,
+        "lightHovercraft": 4,
+        "bomberPlane": 1,
+        "interceptorDrone": 2
+      },
+      "damageByType": {
+        "explosive": 753.7553020000007,
+        "bullet": 809.733314000001,
+        "slowExplosive": 500.3974599999991
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "SlowRocketLauncher",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "GrenadeThrower",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 9
+        }
+      ],
+      "score": {
+        "challenge": 92.6,
+        "spendPressure": 20,
+        "diversity": 8.7,
+        "antiHoarding": 8,
+        "stability": -8,
+        "total": 121.30000000000001
+      },
+      "averageSpendRatio": 0.979918619686974,
+      "totalTicks": 21831
+    },
+    {
+      "policy": "mixed",
+      "seed": 368823665,
+      "finalWave": 11,
+      "victory": false,
+      "baseHealthRemaining": 0,
+      "moneyEarned": 733,
+      "moneySpent": 816,
+      "moneyHoardedPeak": 90,
+      "towerBuildCounts": {
+        "BulletShooter": 2,
+        "SlowRocketLauncher": 1,
+        "GrenadeThrower": 1
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 20,
+        "SlowRocketLauncher": 7,
+        "GrenadeThrower": 10
+      },
+      "leakCounts": {
+        "basic": 4,
+        "lightHovercraft": 4,
+        "bomberPlane": 1,
+        "interceptorDrone": 2
+      },
+      "damageByType": {
+        "explosive": 721.2741300000006,
+        "bullet": 875.5209490000012,
+        "slowExplosive": 478.9200699999993
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "SlowRocketLauncher",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "GrenadeThrower",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 9
+        }
+      ],
+      "score": {
+        "challenge": 92.6,
+        "spendPressure": 20,
+        "diversity": 8.7,
+        "antiHoarding": 8,
+        "stability": -8,
+        "total": 121.30000000000001
+      },
+      "averageSpendRatio": 0.9810541555007508,
+      "totalTicks": 21831
+    },
+    {
+      "policy": "conservative",
+      "seed": 368823665,
+      "finalWave": 9,
+      "victory": false,
+      "baseHealthRemaining": 0,
+      "moneyEarned": 526,
+      "moneySpent": 609,
+      "moneyHoardedPeak": 90,
+      "towerBuildCounts": {
+        "BulletShooter": 2,
+        "SlowRocketLauncher": 1,
+        "GrenadeThrower": 1
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 16,
+        "SlowRocketLauncher": 7,
+        "GrenadeThrower": 8
+      },
+      "leakCounts": {
+        "basic": 7,
+        "scoutTank": 2,
+        "lightHovercraft": 2,
+        "bomberPlane": 1,
+        "siegeTank": 1
+      },
+      "damageByType": {
+        "explosive": 532.5825189999998,
+        "bullet": 441.62316500000003,
+        "slowExplosive": 423.8502029999993
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "SlowRocketLauncher",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "GrenadeThrower",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 3,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 9
+        }
+      ],
+      "score": {
+        "challenge": 81.8,
+        "spendPressure": 20,
+        "diversity": 8.7,
+        "antiHoarding": 8,
+        "stability": -8,
+        "total": 110.5
+      },
+      "averageSpendRatio": 0.9753951873428124,
+      "totalTicks": 18732
+    },
+    {
+      "policy": "hoarder",
+      "seed": 368823665,
+      "finalWave": 11,
+      "victory": false,
+      "baseHealthRemaining": 0,
+      "moneyEarned": 668,
+      "moneySpent": 744,
+      "moneyHoardedPeak": 90,
+      "towerBuildCounts": {
+        "BulletShooter": 2,
+        "SlowRocketLauncher": 1,
+        "GrenadeThrower": 1
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 18,
+        "SlowRocketLauncher": 7,
+        "GrenadeThrower": 10
+      },
+      "leakCounts": {
+        "basic": 5,
+        "scoutTank": 1,
+        "lightHovercraft": 4,
+        "bomberPlane": 1,
+        "interceptorDrone": 1
+      },
+      "damageByType": {
+        "explosive": 716.7180980000004,
+        "bullet": 753.8383290000006,
+        "slowExplosive": 502.54910799999925
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "SlowRocketLauncher",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "GrenadeThrower",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 3,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 9
+        }
+      ],
+      "score": {
+        "challenge": 92.6,
+        "spendPressure": 20,
+        "diversity": 8.7,
+        "antiHoarding": -28.021635883905013,
+        "stability": -8,
+        "total": 85.27836411609499
+      },
+      "averageSpendRatio": 0.9775429540399776,
+      "totalTicks": 21321
+    },
+    {
+      "policy": "aggressive-expansion",
+      "seed": 379978502,
+      "finalWave": 10,
+      "victory": false,
+      "baseHealthRemaining": 0,
+      "moneyEarned": 585,
+      "moneySpent": 654,
+      "moneyHoardedPeak": 90,
+      "towerBuildCounts": {
+        "BulletShooter": 2,
+        "SlowRocketLauncher": 1,
+        "GrenadeThrower": 1
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 17,
+        "SlowRocketLauncher": 7,
+        "GrenadeThrower": 8
+      },
+      "leakCounts": {
+        "basic": 7,
+        "scoutTank": 1,
+        "lightHovercraft": 3,
+        "bomberPlane": 1,
+        "interceptorDrone": 1
+      },
+      "damageByType": {
+        "explosive": 536.1069129999997,
+        "slowExplosive": 464.74436099999923,
+        "bullet": 597.0760480000006
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "SlowRocketLauncher",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "GrenadeThrower",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 9
+        }
+      ],
+      "score": {
+        "challenge": 87.2,
+        "spendPressure": 20,
+        "diversity": 8.7,
+        "antiHoarding": 8,
+        "stability": -8,
+        "total": 115.9
+      },
+      "averageSpendRatio": 0.9805574028115082,
+      "totalTicks": 19827
+    },
+    {
+      "policy": "upgrade-first",
+      "seed": 379978502,
+      "finalWave": 10,
+      "victory": false,
+      "baseHealthRemaining": 0,
+      "moneyEarned": 553,
+      "moneySpent": 635,
+      "moneyHoardedPeak": 90,
+      "towerBuildCounts": {
+        "BulletShooter": 2,
+        "SlowRocketLauncher": 1,
+        "GrenadeThrower": 1
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 16,
+        "SlowRocketLauncher": 7,
+        "GrenadeThrower": 9
+      },
+      "leakCounts": {
+        "basic": 6,
+        "fastAndWeak": 1,
+        "scoutTank": 1,
+        "lightHovercraft": 4,
+        "bomberPlane": 1
+      },
+      "damageByType": {
+        "explosive": 515.0293119999999,
+        "slowExplosive": 425.98044299999947,
+        "bullet": 557.7168730000003
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "SlowRocketLauncher",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "GrenadeThrower",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 9
+        }
+      ],
+      "score": {
+        "challenge": 87.2,
+        "spendPressure": 20,
+        "diversity": 8.7,
+        "antiHoarding": 8,
+        "stability": -8,
+        "total": 115.9
+      },
+      "averageSpendRatio": 0.9822172099463015,
+      "totalTicks": 19298
+    },
+    {
+      "policy": "mixed",
+      "seed": 379978502,
+      "finalWave": 10,
+      "victory": false,
+      "baseHealthRemaining": 0,
+      "moneyEarned": 585,
+      "moneySpent": 654,
+      "moneyHoardedPeak": 90,
+      "towerBuildCounts": {
+        "BulletShooter": 2,
+        "SlowRocketLauncher": 1,
+        "GrenadeThrower": 1
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 17,
+        "SlowRocketLauncher": 7,
+        "GrenadeThrower": 8
+      },
+      "leakCounts": {
+        "basic": 7,
+        "scoutTank": 1,
+        "lightHovercraft": 3,
+        "bomberPlane": 1,
+        "interceptorDrone": 1
+      },
+      "damageByType": {
+        "explosive": 536.1069129999997,
+        "slowExplosive": 464.74436099999923,
+        "bullet": 597.0760480000006
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "SlowRocketLauncher",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "GrenadeThrower",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 9
+        }
+      ],
+      "score": {
+        "challenge": 87.2,
+        "spendPressure": 20,
+        "diversity": 8.7,
+        "antiHoarding": 8,
+        "stability": -8,
+        "total": 115.9
+      },
+      "averageSpendRatio": 0.9805574028115082,
+      "totalTicks": 19827
+    },
+    {
+      "policy": "conservative",
+      "seed": 379978502,
+      "finalWave": 10,
+      "victory": false,
+      "baseHealthRemaining": 0,
+      "moneyEarned": 599,
+      "moneySpent": 675,
+      "moneyHoardedPeak": 90,
+      "towerBuildCounts": {
+        "BulletShooter": 1,
+        "SlowRocketLauncher": 2,
+        "GrenadeThrower": 1
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 9,
+        "SlowRocketLauncher": 14,
+        "GrenadeThrower": 9
+      },
+      "leakCounts": {
+        "basic": 4,
+        "scoutTank": 2,
+        "lightHovercraft": 3,
+        "bomberPlane": 1,
+        "interceptorDrone": 1
+      },
+      "damageByType": {
+        "explosive": 598.4746050000003,
+        "slowExplosive": 751.4588939999979,
+        "bullet": 301.86559900000015
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "SlowRocketLauncher",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "GrenadeThrower",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 4,
+          "type": "SlowRocketLauncher",
+          "x": 9,
+          "y": 9
+        }
+      ],
+      "score": {
+        "challenge": 87.2,
+        "spendPressure": 20,
+        "diversity": 8.7,
+        "antiHoarding": 8,
+        "stability": -8,
+        "total": 115.9
+      },
+      "averageSpendRatio": 0.9741488199243988,
+      "totalTicks": 19827
+    },
+    {
+      "policy": "hoarder",
+      "seed": 379978502,
+      "finalWave": 11,
+      "victory": false,
+      "baseHealthRemaining": 0,
+      "moneyEarned": 664,
+      "moneySpent": 744,
+      "moneyHoardedPeak": 90,
+      "towerBuildCounts": {
+        "BulletShooter": 2,
+        "SlowRocketLauncher": 1,
+        "GrenadeThrower": 1
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 18,
+        "SlowRocketLauncher": 7,
+        "GrenadeThrower": 10
+      },
+      "leakCounts": {
+        "basic": 2,
+        "scoutTank": 1,
+        "lightHovercraft": 5,
+        "bomberPlane": 1,
+        "interceptorDrone": 1
+      },
+      "damageByType": {
+        "explosive": 744.3245570000006,
+        "slowExplosive": 476.64529899999957,
+        "bullet": 722.6661390000007
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "SlowRocketLauncher",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "GrenadeThrower",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 3,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 9
+        }
+      ],
+      "score": {
+        "challenge": 92.6,
+        "spendPressure": 20,
+        "diversity": 8.7,
+        "antiHoarding": -27.959151193633954,
+        "stability": -8,
+        "total": 85.34084880636604
+      },
+      "averageSpendRatio": 0.9751969522245696,
+      "totalTicks": 21321
+    },
+    {
+      "policy": "aggressive-expansion",
+      "seed": 1620943984,
+      "finalWave": 10,
+      "victory": false,
+      "baseHealthRemaining": 0,
+      "moneyEarned": 608,
+      "moneySpent": 670,
+      "moneyHoardedPeak": 90,
+      "towerBuildCounts": {
+        "BulletShooter": 2,
+        "SlowRocketLauncher": 1,
+        "GrenadeThrower": 1
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 17,
+        "SlowRocketLauncher": 7,
+        "GrenadeThrower": 9
+      },
+      "leakCounts": {
+        "basic": 6,
+        "lightHovercraft": 4,
+        "bomberPlane": 1,
+        "interceptorDrone": 1
+      },
+      "damageByType": {
+        "explosive": 587.6901539999994,
+        "slowExplosive": 402.16188399999976,
+        "bullet": 625.4756080000006
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "SlowRocketLauncher",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "GrenadeThrower",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 9
+        }
+      ],
+      "score": {
+        "challenge": 87.2,
+        "spendPressure": 20,
+        "diversity": 8.7,
+        "antiHoarding": 8,
+        "stability": -8,
+        "total": 115.9
+      },
+      "averageSpendRatio": 0.9796964249172858,
+      "totalTicks": 19827
+    },
+    {
+      "policy": "upgrade-first",
+      "seed": 1620943984,
+      "finalWave": 10,
+      "victory": false,
+      "baseHealthRemaining": 0,
+      "moneyEarned": 540,
+      "moneySpent": 609,
+      "moneyHoardedPeak": 90,
+      "towerBuildCounts": {
+        "BulletShooter": 2,
+        "SlowRocketLauncher": 1,
+        "GrenadeThrower": 1
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 16,
+        "SlowRocketLauncher": 7,
+        "GrenadeThrower": 8
+      },
+      "leakCounts": {
+        "basic": 7,
+        "lightHovercraft": 4,
+        "bomberPlane": 1,
+        "siegeTank": 1
+      },
+      "damageByType": {
+        "explosive": 566.3792940000002,
+        "slowExplosive": 425.6932899999996,
+        "bullet": 542.4600120000003
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "SlowRocketLauncher",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "GrenadeThrower",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 9
+        }
+      ],
+      "score": {
+        "challenge": 87.2,
+        "spendPressure": 20,
+        "diversity": 8.7,
+        "antiHoarding": 8,
+        "stability": -8,
+        "total": 115.9
+      },
+      "averageSpendRatio": 0.9795993883226497,
+      "totalTicks": 19298
+    },
+    {
+      "policy": "mixed",
+      "seed": 1620943984,
+      "finalWave": 10,
+      "victory": false,
+      "baseHealthRemaining": 0,
+      "moneyEarned": 608,
+      "moneySpent": 670,
+      "moneyHoardedPeak": 90,
+      "towerBuildCounts": {
+        "BulletShooter": 2,
+        "SlowRocketLauncher": 1,
+        "GrenadeThrower": 1
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 17,
+        "SlowRocketLauncher": 7,
+        "GrenadeThrower": 9
+      },
+      "leakCounts": {
+        "basic": 6,
+        "lightHovercraft": 4,
+        "bomberPlane": 1,
+        "interceptorDrone": 1
+      },
+      "damageByType": {
+        "explosive": 587.6901539999994,
+        "slowExplosive": 402.16188399999976,
+        "bullet": 625.4756080000006
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "SlowRocketLauncher",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "GrenadeThrower",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 9
+        }
+      ],
+      "score": {
+        "challenge": 87.2,
+        "spendPressure": 20,
+        "diversity": 8.7,
+        "antiHoarding": 8,
+        "stability": -8,
+        "total": 115.9
+      },
+      "averageSpendRatio": 0.9796964249172858,
+      "totalTicks": 19827
+    },
+    {
+      "policy": "conservative",
+      "seed": 1620943984,
+      "finalWave": 12,
+      "victory": false,
+      "baseHealthRemaining": 0,
+      "moneyEarned": 858,
+      "moneySpent": 942,
+      "moneyHoardedPeak": 90,
+      "towerBuildCounts": {
+        "BulletShooter": 2,
+        "SlowRocketLauncher": 1,
+        "GrenadeThrower": 1
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 20,
+        "SlowRocketLauncher": 9,
+        "GrenadeThrower": 11
+      },
+      "leakCounts": {
+        "basic": 4,
+        "lightHovercraft": 3,
+        "bomberPlane": 1,
+        "interceptorDrone": 3
+      },
+      "damageByType": {
+        "explosive": 936.779732000001,
+        "slowExplosive": 542.7650139999988,
+        "bullet": 1113.6552580000016
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "SlowRocketLauncher",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "GrenadeThrower",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 3,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 9
+        }
+      ],
+      "score": {
+        "challenge": 98,
+        "spendPressure": 20,
+        "diversity": 8.7,
+        "antiHoarding": 8,
+        "stability": -8,
+        "total": 126.69999999999999
+      },
+      "averageSpendRatio": 0.9773654430782641,
+      "totalTicks": 23834
+    },
+    {
+      "policy": "hoarder",
+      "seed": 1620943984,
+      "finalWave": 12,
+      "victory": false,
+      "baseHealthRemaining": 0,
+      "moneyEarned": 826,
+      "moneySpent": 897,
+      "moneyHoardedPeak": 90,
+      "towerBuildCounts": {
+        "BulletShooter": 2,
+        "SlowRocketLauncher": 1,
+        "GrenadeThrower": 1
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 20,
+        "SlowRocketLauncher": 8,
+        "GrenadeThrower": 11
+      },
+      "leakCounts": {
+        "basic": 3,
+        "lightHovercraft": 4,
+        "bomberPlane": 1,
+        "interceptorDrone": 2
+      },
+      "damageByType": {
+        "explosive": 862.0813280000002,
+        "slowExplosive": 581.1459969999997,
+        "bullet": 1004.5257640000016
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "SlowRocketLauncher",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "GrenadeThrower",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 3,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 9
+        }
+      ],
+      "score": {
+        "challenge": 98,
+        "spendPressure": 20,
+        "diversity": 8.7,
+        "antiHoarding": -29.848908296943232,
+        "stability": -8,
+        "total": 88.85109170305677
+      },
+      "averageSpendRatio": 0.9781312479225082,
+      "totalTicks": 23338
+    },
+    {
+      "policy": "aggressive-expansion",
+      "seed": 1287497644,
+      "finalWave": 10,
+      "victory": false,
+      "baseHealthRemaining": 0,
+      "moneyEarned": 532,
+      "moneySpent": 609,
+      "moneyHoardedPeak": 90,
+      "towerBuildCounts": {
+        "BulletShooter": 2,
+        "SlowRocketLauncher": 1,
+        "GrenadeThrower": 1
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 16,
+        "SlowRocketLauncher": 7,
+        "GrenadeThrower": 8
+      },
+      "leakCounts": {
+        "basic": 5,
+        "fastAndWeak": 1,
+        "scoutTank": 1,
+        "lightHovercraft": 4,
+        "bomberPlane": 1,
+        "siegeTank": 1
+      },
+      "damageByType": {
+        "explosive": 590.9575849999999,
+        "slowExplosive": 436.0328889999994,
+        "bullet": 491.53995900000047
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "SlowRocketLauncher",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "GrenadeThrower",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 9
+        }
+      ],
+      "score": {
+        "challenge": 87.2,
+        "spendPressure": 20,
+        "diversity": 8.7,
+        "antiHoarding": 8,
+        "stability": -8,
+        "total": 115.9
+      },
+      "averageSpendRatio": 0.9784262401817375,
+      "totalTicks": 19298
+    },
+    {
+      "policy": "upgrade-first",
+      "seed": 1287497644,
+      "finalWave": 10,
+      "victory": false,
+      "baseHealthRemaining": 0,
+      "moneyEarned": 545,
+      "moneySpent": 635,
+      "moneyHoardedPeak": 90,
+      "towerBuildCounts": {
+        "BulletShooter": 2,
+        "SlowRocketLauncher": 1,
+        "GrenadeThrower": 1
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 16,
+        "SlowRocketLauncher": 7,
+        "GrenadeThrower": 9
+      },
+      "leakCounts": {
+        "basic": 6,
+        "fastAndWeak": 1,
+        "scoutTank": 1,
+        "lightHovercraft": 4,
+        "bomberPlane": 1
+      },
+      "damageByType": {
+        "explosive": 560.9741389999998,
+        "slowExplosive": 426.30032099999937,
+        "bullet": 560.2589500000005
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "SlowRocketLauncher",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "GrenadeThrower",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 9
+        }
+      ],
+      "score": {
+        "challenge": 87.2,
+        "spendPressure": 20,
+        "diversity": 8.7,
+        "antiHoarding": 8,
+        "stability": -8,
+        "total": 115.9
+      },
+      "averageSpendRatio": 0.977685585284941,
+      "totalTicks": 19298
+    },
+    {
+      "policy": "mixed",
+      "seed": 1287497644,
+      "finalWave": 10,
+      "victory": false,
+      "baseHealthRemaining": 0,
+      "moneyEarned": 532,
+      "moneySpent": 609,
+      "moneyHoardedPeak": 90,
+      "towerBuildCounts": {
+        "BulletShooter": 2,
+        "SlowRocketLauncher": 1,
+        "GrenadeThrower": 1
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 16,
+        "SlowRocketLauncher": 7,
+        "GrenadeThrower": 8
+      },
+      "leakCounts": {
+        "basic": 5,
+        "fastAndWeak": 1,
+        "scoutTank": 1,
+        "lightHovercraft": 4,
+        "bomberPlane": 1,
+        "siegeTank": 1
+      },
+      "damageByType": {
+        "explosive": 590.9575849999999,
+        "slowExplosive": 436.0328889999994,
+        "bullet": 491.53995900000047
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "SlowRocketLauncher",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "GrenadeThrower",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 9
+        }
+      ],
+      "score": {
+        "challenge": 87.2,
+        "spendPressure": 20,
+        "diversity": 8.7,
+        "antiHoarding": 8,
+        "stability": -8,
+        "total": 115.9
+      },
+      "averageSpendRatio": 0.9784262401817375,
+      "totalTicks": 19298
+    },
+    {
+      "policy": "conservative",
+      "seed": 1287497644,
+      "finalWave": 11,
+      "victory": false,
+      "baseHealthRemaining": 0,
+      "moneyEarned": 746,
+      "moneySpent": 834,
+      "moneyHoardedPeak": 90,
+      "towerBuildCounts": {
+        "BulletShooter": 1,
+        "SlowRocketLauncher": 1,
+        "GrenadeThrower": 2
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 10,
+        "SlowRocketLauncher": 7,
+        "GrenadeThrower": 20
+      },
+      "leakCounts": {
+        "basic": 4,
+        "fastAndWeak": 1,
+        "scoutTank": 2,
+        "lightHovercraft": 1,
+        "bomberPlane": 1,
+        "interceptorDrone": 2
+      },
+      "damageByType": {
+        "explosive": 1206.2599810000006,
+        "slowExplosive": 515.8284819999991,
+        "bullet": 406.40894600000036
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "SlowRocketLauncher",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "GrenadeThrower",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 4,
+          "type": "GrenadeThrower",
+          "x": 9,
+          "y": 9
+        }
+      ],
+      "score": {
+        "challenge": 92.6,
+        "spendPressure": 20,
+        "diversity": 8.7,
+        "antiHoarding": 8,
+        "stability": -8,
+        "total": 121.30000000000001
+      },
+      "averageSpendRatio": 0.97489298322081,
+      "totalTicks": 21831
+    },
+    {
+      "policy": "hoarder",
+      "seed": 1287497644,
+      "finalWave": 10,
+      "victory": false,
+      "baseHealthRemaining": 0,
+      "moneyEarned": 597,
+      "moneySpent": 670,
+      "moneyHoardedPeak": 90,
+      "towerBuildCounts": {
+        "BulletShooter": 2,
+        "SlowRocketLauncher": 1,
+        "GrenadeThrower": 1
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 17,
+        "SlowRocketLauncher": 7,
+        "GrenadeThrower": 9
+      },
+      "leakCounts": {
+        "basic": 5,
+        "scoutTank": 2,
+        "lightHovercraft": 3,
+        "bomberPlane": 1,
+        "interceptorDrone": 1
+      },
+      "damageByType": {
+        "explosive": 629.8454280000002,
+        "slowExplosive": 443.13755299999934,
+        "bullet": 553.9903340000004
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "SlowRocketLauncher",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "GrenadeThrower",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 3,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 9
+        }
+      ],
+      "score": {
+        "challenge": 87.2,
+        "spendPressure": 20,
+        "diversity": 8.7,
+        "antiHoarding": -26.29694323144105,
+        "stability": -8,
+        "total": 81.60305676855896
+      },
+      "averageSpendRatio": 0.9704079949252049,
+      "totalTicks": 19827
+    },
+    {
+      "policy": "aggressive-expansion",
+      "seed": 861549231,
+      "finalWave": 10,
+      "victory": false,
+      "baseHealthRemaining": 0,
+      "moneyEarned": 546,
+      "moneySpent": 635,
+      "moneyHoardedPeak": 90,
+      "towerBuildCounts": {
+        "BulletShooter": 2,
+        "SlowRocketLauncher": 1,
+        "GrenadeThrower": 1
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 16,
+        "SlowRocketLauncher": 7,
+        "GrenadeThrower": 9
+      },
+      "leakCounts": {
+        "basic": 5,
+        "scoutTank": 1,
+        "lightHovercraft": 4,
+        "bomberPlane": 1,
+        "siegeTank": 1
+      },
+      "damageByType": {
+        "explosive": 639.9637390000001,
+        "slowExplosive": 401.0270809999997,
+        "bullet": 470.0416240000002
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "SlowRocketLauncher",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "GrenadeThrower",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 9
+        }
+      ],
+      "score": {
+        "challenge": 87.2,
+        "spendPressure": 20,
+        "diversity": 8.7,
+        "antiHoarding": 8,
+        "stability": -8,
+        "total": 115.9
+      },
+      "averageSpendRatio": 0.9768497183369943,
+      "totalTicks": 19298
+    },
+    {
+      "policy": "upgrade-first",
+      "seed": 861549231,
+      "finalWave": 10,
+      "victory": false,
+      "baseHealthRemaining": 0,
+      "moneyEarned": 606,
+      "moneySpent": 670,
+      "moneyHoardedPeak": 90,
+      "towerBuildCounts": {
+        "BulletShooter": 2,
+        "SlowRocketLauncher": 1,
+        "GrenadeThrower": 1
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 17,
+        "SlowRocketLauncher": 7,
+        "GrenadeThrower": 9
+      },
+      "leakCounts": {
+        "basic": 5,
+        "scoutTank": 1,
+        "lightHovercraft": 4,
+        "bomberPlane": 1,
+        "interceptorDrone": 1
+      },
+      "damageByType": {
+        "explosive": 649.186814,
+        "slowExplosive": 438.6578139999996,
+        "bullet": 532.9322510000003
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "SlowRocketLauncher",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "GrenadeThrower",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 9
+        }
+      ],
+      "score": {
+        "challenge": 87.2,
+        "spendPressure": 20,
+        "diversity": 8.7,
+        "antiHoarding": 8,
+        "stability": -8,
+        "total": 115.9
+      },
+      "averageSpendRatio": 0.9764325023329694,
+      "totalTicks": 19827
+    },
+    {
+      "policy": "mixed",
+      "seed": 861549231,
+      "finalWave": 10,
+      "victory": false,
+      "baseHealthRemaining": 0,
+      "moneyEarned": 546,
+      "moneySpent": 635,
+      "moneyHoardedPeak": 90,
+      "towerBuildCounts": {
+        "BulletShooter": 2,
+        "SlowRocketLauncher": 1,
+        "GrenadeThrower": 1
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 16,
+        "SlowRocketLauncher": 7,
+        "GrenadeThrower": 9
+      },
+      "leakCounts": {
+        "basic": 5,
+        "scoutTank": 1,
+        "lightHovercraft": 4,
+        "bomberPlane": 1,
+        "siegeTank": 1
+      },
+      "damageByType": {
+        "explosive": 639.9637390000001,
+        "slowExplosive": 401.0270809999997,
+        "bullet": 470.0416240000002
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "SlowRocketLauncher",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "GrenadeThrower",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 9
+        }
+      ],
+      "score": {
+        "challenge": 87.2,
+        "spendPressure": 20,
+        "diversity": 8.7,
+        "antiHoarding": 8,
+        "stability": -8,
+        "total": 115.9
+      },
+      "averageSpendRatio": 0.9768497183369943,
+      "totalTicks": 19298
+    },
+    {
+      "policy": "conservative",
+      "seed": 861549231,
+      "finalWave": 12,
+      "victory": false,
+      "baseHealthRemaining": 0,
+      "moneyEarned": 905,
+      "moneySpent": 992,
+      "moneyHoardedPeak": 90,
+      "towerBuildCounts": {
+        "BulletShooter": 1,
+        "SlowRocketLauncher": 1,
+        "GrenadeThrower": 2
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 10,
+        "SlowRocketLauncher": 9,
+        "GrenadeThrower": 22
+      },
+      "leakCounts": {
+        "basic": 6,
+        "scoutTank": 1,
+        "bomberPlane": 1,
+        "interceptorDrone": 3
+      },
+      "damageByType": {
+        "explosive": 1510.6092320000018,
+        "slowExplosive": 563.6098659999988,
+        "bullet": 509.6022440000007
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "SlowRocketLauncher",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "GrenadeThrower",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 4,
+          "type": "GrenadeThrower",
+          "x": 9,
+          "y": 9
+        }
+      ],
+      "score": {
+        "challenge": 98,
+        "spendPressure": 20,
+        "diversity": 8.7,
+        "antiHoarding": 8,
+        "stability": -8,
+        "total": 126.69999999999999
+      },
+      "averageSpendRatio": 0.9758126537748221,
+      "totalTicks": 23845
+    },
+    {
+      "policy": "hoarder",
+      "seed": 861549231,
+      "finalWave": 10,
+      "victory": false,
+      "baseHealthRemaining": 0,
+      "moneyEarned": 571,
+      "moneySpent": 635,
+      "moneyHoardedPeak": 90,
+      "towerBuildCounts": {
+        "BulletShooter": 2,
+        "SlowRocketLauncher": 1,
+        "GrenadeThrower": 1
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 16,
+        "SlowRocketLauncher": 7,
+        "GrenadeThrower": 9
+      },
+      "leakCounts": {
+        "basic": 8,
+        "lightHovercraft": 4,
+        "bomberPlane": 1,
+        "interceptorDrone": 1
+      },
+      "damageByType": {
+        "explosive": 660.0676319999999,
+        "slowExplosive": 422.61174799999947,
+        "bullet": 530.9804730000003
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "SlowRocketLauncher",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "GrenadeThrower",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 3,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 9
+        }
+      ],
+      "score": {
+        "challenge": 87.2,
+        "spendPressure": 20,
+        "diversity": 8.7,
+        "antiHoarding": -26.472012102874434,
+        "stability": -8,
+        "total": 81.42798789712558
+      },
+      "averageSpendRatio": 0.9729255976156339,
+      "totalTicks": 19827
+    },
+    {
+      "policy": "aggressive-expansion",
+      "seed": 762091794,
+      "finalWave": 10,
+      "victory": false,
+      "baseHealthRemaining": 0,
+      "moneyEarned": 594,
+      "moneySpent": 670,
+      "moneyHoardedPeak": 90,
+      "towerBuildCounts": {
+        "BulletShooter": 2,
+        "SlowRocketLauncher": 1,
+        "GrenadeThrower": 1
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 17,
+        "SlowRocketLauncher": 7,
+        "GrenadeThrower": 9
+      },
+      "leakCounts": {
+        "basic": 4,
+        "scoutTank": 1,
+        "lightHovercraft": 3,
+        "bomberPlane": 1,
+        "siegeTank": 1,
+        "interceptorDrone": 1
+      },
+      "damageByType": {
+        "explosive": 661.711675,
+        "bullet": 532.1702590000004,
+        "slowExplosive": 456.9936109999994
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "SlowRocketLauncher",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "GrenadeThrower",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 9
+        }
+      ],
+      "score": {
+        "challenge": 87.2,
+        "spendPressure": 20,
+        "diversity": 8.7,
+        "antiHoarding": 8,
+        "stability": -8,
+        "total": 115.9
+      },
+      "averageSpendRatio": 0.9785472323107657,
+      "totalTicks": 19827
+    },
+    {
+      "policy": "upgrade-first",
+      "seed": 762091794,
+      "finalWave": 11,
+      "victory": false,
+      "baseHealthRemaining": 0,
+      "moneyEarned": 678,
+      "moneySpent": 741,
+      "moneyHoardedPeak": 90,
+      "towerBuildCounts": {
+        "BulletShooter": 2,
+        "SlowRocketLauncher": 1,
+        "GrenadeThrower": 1
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 19,
+        "SlowRocketLauncher": 7,
+        "GrenadeThrower": 9
+      },
+      "leakCounts": {
+        "basic": 4,
+        "scoutTank": 1,
+        "lightHovercraft": 4,
+        "bomberPlane": 1,
+        "interceptorDrone": 1
+      },
+      "damageByType": {
+        "explosive": 730.1297900000004,
+        "bullet": 711.6548190000008,
+        "slowExplosive": 475.7069829999995
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "SlowRocketLauncher",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "GrenadeThrower",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 9
+        }
+      ],
+      "score": {
+        "challenge": 92.6,
+        "spendPressure": 20,
+        "diversity": 8.7,
+        "antiHoarding": 8,
+        "stability": -8,
+        "total": 121.30000000000001
+      },
+      "averageSpendRatio": 0.9793072063748072,
+      "totalTicks": 21321
+    },
+    {
+      "policy": "mixed",
+      "seed": 762091794,
+      "finalWave": 10,
+      "victory": false,
+      "baseHealthRemaining": 0,
+      "moneyEarned": 594,
+      "moneySpent": 670,
+      "moneyHoardedPeak": 90,
+      "towerBuildCounts": {
+        "BulletShooter": 2,
+        "SlowRocketLauncher": 1,
+        "GrenadeThrower": 1
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 17,
+        "SlowRocketLauncher": 7,
+        "GrenadeThrower": 9
+      },
+      "leakCounts": {
+        "basic": 4,
+        "scoutTank": 1,
+        "lightHovercraft": 3,
+        "bomberPlane": 1,
+        "siegeTank": 1,
+        "interceptorDrone": 1
+      },
+      "damageByType": {
+        "explosive": 661.711675,
+        "bullet": 532.1702590000004,
+        "slowExplosive": 456.9936109999994
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "SlowRocketLauncher",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "GrenadeThrower",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 9
+        }
+      ],
+      "score": {
+        "challenge": 87.2,
+        "spendPressure": 20,
+        "diversity": 8.7,
+        "antiHoarding": 8,
+        "stability": -8,
+        "total": 115.9
+      },
+      "averageSpendRatio": 0.9785472323107657,
+      "totalTicks": 19827
+    },
+    {
+      "policy": "conservative",
+      "seed": 762091794,
+      "finalWave": 12,
+      "victory": false,
+      "baseHealthRemaining": 0,
+      "moneyEarned": 878,
+      "moneySpent": 956,
+      "moneyHoardedPeak": 90,
+      "towerBuildCounts": {
+        "BulletShooter": 1,
+        "SlowRocketLauncher": 1,
+        "GrenadeThrower": 2
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 10,
+        "SlowRocketLauncher": 8,
+        "GrenadeThrower": 22
+      },
+      "leakCounts": {
+        "basic": 3,
+        "scoutTank": 1,
+        "lightHovercraft": 2,
+        "bomberPlane": 1,
+        "interceptorDrone": 3
+      },
+      "damageByType": {
+        "explosive": 1483.9915230000013,
+        "bullet": 626.3943590000009,
+        "slowExplosive": 563.8574599999992
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "SlowRocketLauncher",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "GrenadeThrower",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 4,
+          "type": "GrenadeThrower",
+          "x": 9,
+          "y": 9
+        }
+      ],
+      "score": {
+        "challenge": 98,
+        "spendPressure": 20,
+        "diversity": 8.7,
+        "antiHoarding": 8,
+        "stability": -8,
+        "total": 126.69999999999999
+      },
+      "averageSpendRatio": 0.9780292338435336,
+      "totalTicks": 23834
+    },
+    {
+      "policy": "hoarder",
+      "seed": 762091794,
+      "finalWave": 11,
+      "victory": false,
+      "baseHealthRemaining": 0,
+      "moneyEarned": 656,
+      "moneySpent": 744,
+      "moneyHoardedPeak": 90,
+      "towerBuildCounts": {
+        "BulletShooter": 2,
+        "SlowRocketLauncher": 1,
+        "GrenadeThrower": 1
+      },
+      "towerUpgradeCounts": {
+        "BulletShooter": 18,
+        "SlowRocketLauncher": 7,
+        "GrenadeThrower": 10
+      },
+      "leakCounts": {
+        "basic": 3,
+        "scoutTank": 1,
+        "lightHovercraft": 5,
+        "bomberPlane": 1,
+        "interceptorDrone": 1
+      },
+      "damageByType": {
+        "explosive": 750.2092880000006,
+        "bullet": 720.7015090000011,
+        "slowExplosive": 490.84882399999924
+      },
+      "buildTimeline": [
+        {
+          "wave": 1,
+          "type": "BulletShooter",
+          "x": 11,
+          "y": 8
+        },
+        {
+          "wave": 1,
+          "type": "SlowRocketLauncher",
+          "x": 11,
+          "y": 9
+        },
+        {
+          "wave": 1,
+          "type": "GrenadeThrower",
+          "x": 11,
+          "y": 7
+        },
+        {
+          "wave": 3,
+          "type": "BulletShooter",
+          "x": 9,
+          "y": 9
+        }
+      ],
+      "score": {
+        "challenge": 92.6,
+        "spendPressure": 20,
+        "diversity": 8.7,
+        "antiHoarding": -27.832171581769437,
+        "stability": -8,
+        "total": 85.46782841823057
+      },
+      "averageSpendRatio": 0.9776467756511193,
+      "totalTicks": 21321
+    }
+  ]
+}

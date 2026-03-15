@@ -41,6 +41,12 @@ export function calculatePlacementScore(x: number, y: number, type?: WeaponType)
   const typeBias =
     type === WeaponType.GrenadeThrower
       ? routeCoverage * 0.1
+      : type === WeaponType.FlameThrower
+        ? routeCoverage * 0.18 + (closestDistance < 110 ? 0.25 : 0)
+      : type === WeaponType.MultiRocketLauncher
+        ? routeCoverage * 0.14 + (closestDistance < 150 ? 0.35 : 0)
+      : type === WeaponType.ChainLightningTower
+        ? routeCoverage * 0.16
       : type === WeaponType.RocketLauncher || type === WeaponType.NuclearLauncher
         ? closestDistance < 140
           ? 0.45
